@@ -1,11 +1,9 @@
 package com.izum.ui.packs
 
 import androidx.lifecycle.viewModelScope
-import com.izum.domain.core.StateViewModel
 import com.izum.data.packs.Pack
 import com.izum.data.packs.PacksRepository
-import com.izum.data.packs.ifNoData
-import com.izum.data.packs.ifPacks
+import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,25 +27,10 @@ class PacksViewModel @Inject constructor(
     override fun init(args: Unit) {
         super.init(args)
         viewModelScope.launch {
-            packsRepository.collect { packsState ->
-                packsState
-                    .ifNoData { fetchPacks() }
-                    .ifPacks { packs ->
-                        updateState {
-                            PacksViewState.Packs(
-                                packs = packs.general
-                            )
-                        }
-                    }
-            }
-        }
-
-        fetchPacks()
-    }
-
-    private fun fetchPacks() {
-        viewModelScope.launch{
-            packsRepository.fetchPacks()
+            packsRepository.getPacks()
+                .collect { packs ->
+                    updateState { PacksViewState.Packs(packs) }
+                }
         }
     }
 

@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -16,9 +17,10 @@ class PacksModule {
     @Provides
     @Singleton
     fun providePacksRepository(
-        packsApi: PacksApi
+        packsApi: PacksApi,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
     ) : PacksRepository {
-        return PacksRepositoryImpl(packsApi)
+        return PacksRepositoryImpl(packsApi, ioDispatcher)
     }
 
 }

@@ -3,8 +3,6 @@ package com.izum.ui.custom
 import androidx.lifecycle.viewModelScope
 import com.izum.data.packs.Pack
 import com.izum.data.packs.PacksRepository
-import com.izum.data.packs.ifNoData
-import com.izum.data.packs.ifPacks
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,25 +26,10 @@ class CustomViewModel @Inject constructor(
     override fun init(args: Unit) {
         super.init(args)
         viewModelScope.launch {
-            packsRepository.collect { packsState ->
-                packsState
-                    .ifNoData { fetchPacks() }
-                    .ifPacks { packs ->
-                        updateState {
-                            CustomViewState.Packs(
-                                packs = packs.custom
-                            )
-                        }
-                    }
-            }
-        }
-
-        // no fetch packs
-    }
-
-    private fun fetchPacks() {
-        viewModelScope.launch{
-            packsRepository.fetchPacks()
+            packsRepository.getCustomPacks()
+                .collect { packs->
+                    updateState { CustomViewState.Packs(packs) }
+                }
         }
     }
 

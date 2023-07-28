@@ -35,13 +35,14 @@ class PollActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.uiStateFlow.collect { state ->
-                state
-                    .ifLoading {
-
+                when (state) {
+                    is PollViewState.Loading -> {
+                        // TODO
                     }
-                    .ifPack { pack ->
-
+                    is PollViewState.Pack -> {
+                        // TODO
                     }
+                }
             }
         }
 

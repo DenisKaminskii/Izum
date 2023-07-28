@@ -31,9 +31,11 @@ class MainActivity : ComponentActivity() {
         setContentView(content)
 
         lifecycleScope.launch {
-            router.attachHost(this@MainActivity)
-            viewModel.routeFlow.collect {
-                router.route(it)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                router.attachHost(this@MainActivity)
+                viewModel.routeFlow.collect {
+                    router.route(it)
+                }
             }
         }
 

@@ -1,67 +1,54 @@
 package com.izum.data.packs
 
+import androidx.annotation.WorkerThread
 import com.izum.api.PackJson
 import com.izum.api.PacksApi
 import com.izum.api.PollJson
-import com.izum.domain.core.MutableStateProducer
-import com.izum.domain.core.StateProducer
-import java.lang.Exception
+import com.izum.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-interface PacksRepository : StateProducer<PacksRepository.State> {
+interface PacksRepository {
 
-    sealed interface State {
-        object NoData : State
+    @WorkerThread
+    suspend fun getPacks() : Flow<List<Pack>>
 
-        data class Packs(
-            val general: List<Pack>,
-            val custom: List<Pack>,
-            val generalPacks: HashMap<Long, List<Poll>> = hashMapOf()
-        ) : State
-    }
+    @WorkerThread
+    suspend fun getCustomPacks() : Flow<List<Pack>>
 
-    @Throws(Exception::class)
-    suspend fun fetchPacks()
-
-    @Throws(Exception::class)
-    suspend fun fetchPackPolls(packId: Long)
+    @WorkerThread
+    suspend fun getPackPolls(packId: Long) : Flow<List<Poll>>
 
 }
 
 class PacksRepositoryImpl @Inject constructor(
-    private val packsApi: PacksApi
-) : PacksRepository,
-    MutableStateProducer<PacksRepository.State>(
-        initialValue = PacksRepository.State.NoData
-    ) {
+    private val packsApi: PacksApi,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+) : PacksRepository {
 
-    override suspend fun fetchPacks() {
-        val general = packsApi.getPacks()
-        val custom = packsApi.getPacks()
-
-        updateState {
-            PacksRepository.State.Packs(
-                general = general.map(::mapFromJson),
-                custom = custom.map(::mapFromJson)
-            )
-        }
+    override suspend fun getPacks(): Flow<List<Pack>> {
+        return flowOf(
+            packsApi.getPacks()
+                .map(::mapFromJson)
+        ).flowOn(ioDispatcher)
     }
 
-    override suspend fun fetchPackPolls(packId: Long) {
-        if (state !is PacksRepository.State.Packs) return
+    override suspend fun getCustomPacks(): Flow<List<Pack>> {
+        return flowOf(
+            packsApi.getPacks() // TODO: replace on custom packs
+                .map(::mapFromJson)
+        ).flowOn(ioDispatcher)
+    }
 
-        val packPolls = packsApi.getPackPolls(packId).map(::mapFromJson)
-        val packs = state.generalPacks
-        packs[packId] = packPolls
-
-        updateState { currentState ->
-            currentState.ifPacks { packsState ->
-                packsState.copy(
-                    generalPacks = packs
-                )
-            }
-            // TODO: ifNoData
-        }
+    override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
+        return flowOf(
+            packsApi.getPackPolls(packId)
+                .map(::mapFromJson)
+        ).flowOn(ioDispatcher)
     }
 
     private fun mapFromJson(packJson: PackJson) = Pack(
@@ -78,18 +65,4 @@ class PacksRepositoryImpl @Inject constructor(
         id = poll.id
     )
 
-}
-
-fun PacksRepository.State.ifNoData(func: (state: PacksRepository.State.NoData) -> Unit): PacksRepository.State {
-    if (this is PacksRepository.State.NoData) {
-        func.invoke(this)
-    }
-    return this
-}
-
-fun PacksRepository.State.ifPacks(func: (state: PacksRepository.State.Packs) -> Unit): PacksRepository.State {
-    if (this is PacksRepository.State.Packs) {
-        func.invoke(this)
-    }
-    return this
 }
