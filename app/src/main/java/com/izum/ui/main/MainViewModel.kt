@@ -12,15 +12,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val userRepository: UserRepository
 ) : StateViewModel<Unit, Unit>(
     initialState = Unit
 ) {
 
     override fun init(args: Unit) {
         super.init(args)
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             try {
                 userRepository.fetchToken()
                 route(Router.Route.Packs)
