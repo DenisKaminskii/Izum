@@ -62,6 +62,9 @@ class PollActivity : BaseActivity() {
         binding.vNext.setOnClickListener {
             viewModel.onNextClick()
         }
+        binding.vPrev.setOnClickListener {
+            viewModel.onPrevClick()
+        }
         binding.vTop.setOnTouchListener(
             onVoted = { viewModel.onTopVoted() },
             onInterrupted = { viewModel.onTopInterrupted() }
@@ -75,7 +78,6 @@ class PollActivity : BaseActivity() {
     private fun update(state: PollViewState) {
         binding.gLoading.isVisible = state is PollViewState.Loading
         binding.gPoll.isVisible = state is PollViewState.Poll || state is PollViewState.VotedPoll
-        binding.gVotedPoll.isVisible = state is PollViewState.VotedPoll
         binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll
         binding.vTop.isClickable = state is PollViewState.Poll
         binding.vBottom.isClickable = state is PollViewState.Poll
@@ -97,6 +99,21 @@ class PollActivity : BaseActivity() {
         binding.vBottom.text = poll.bottom.title
         binding.vBottom.setBackgroundResource(R.drawable.ripple_poll)
         binding.vBottom.setTextColor(getColor(R.color.black))
+
+        binding.vPrev.isEnabled = poll.isPrevButtonEnabled
+        binding.vPrev.setColorFilter(
+            if (poll.isPrevButtonEnabled) getColor(R.color.black)
+            else getColor(R.color.disabledText)
+        )
+
+        binding.vNext.isEnabled = poll.isNextButtonEnabled
+        binding.vNext.setColorFilter(
+            if (poll.isNextButtonEnabled) getColor(R.color.black)
+            else getColor(R.color.disabledText)
+        )
+
+        binding.vAnalytics.isEnabled = false
+        binding.vAnalytics.setTextColor(getColor(R.color.disabledText))
     }
 
     private fun showVotedPoll(votedPoll: PollViewState.VotedPoll) {
@@ -137,6 +154,9 @@ class PollActivity : BaseActivity() {
 
         votedTextView.setBackgroundColor(getColor(R.color.colorAccent))
         votedTextView.setTextColor(getColor(R.color.white))
+
+        binding.vAnalytics.isEnabled = true
+        binding.vAnalytics.setTextColor(getColor(R.color.colorAccent))
     }
 
     private fun TextView.setOnTouchListener(

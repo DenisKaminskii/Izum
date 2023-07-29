@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="colorAccent">#FF5454</color>
+    <color name="disabledText">#B6B6B6</color>
 </resources>

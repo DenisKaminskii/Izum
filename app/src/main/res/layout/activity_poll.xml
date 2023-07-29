@@ -20,14 +20,6 @@
         app:constraint_referenced_ids="vTop, vBottom"
         tools:visibility="visible" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/gVotedPoll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="vBottomBar"
-        tools:visibility="visible" />
-
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/vTopBar"
         android:layout_width="match_parent"
@@ -125,8 +117,16 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/vPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_arrow_back_24"
+            app:tint="@color/black" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/vAnalytics"
@@ -139,7 +139,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="Посмотреть аналитику"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/disabledText" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/vNext"
@@ -148,7 +148,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:padding="16dp"
             android:src="@drawable/ic_arrow_forward_24"
-            app:tint="@color/colorAccent" />
+            app:tint="@color/black" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

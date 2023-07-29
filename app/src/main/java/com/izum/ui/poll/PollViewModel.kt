@@ -19,7 +19,9 @@ sealed interface PollViewState {
     data class Poll(
         val votesCount: Long,
         val top: OptionViewState,
-        val bottom: OptionViewState
+        val bottom: OptionViewState,
+        val isPrevButtonEnabled: Boolean,
+        val isNextButtonEnabled: Boolean
     ) : PollViewState
 
     data class VotedPoll(
@@ -76,8 +78,6 @@ class PollViewModel @Inject constructor(
 
     private fun updateView() {
         updateState {
-            val votedOptionId = this.poll.votedOptionId
-
             val pollViewState = PollViewState.Poll(
                 votesCount = poll.options.sumOf { it.votesCount },
                 top = OptionViewState(
@@ -89,14 +89,22 @@ class PollViewModel @Inject constructor(
                     id = optionBottom.id,
                     title = optionBottom.title,
                     votesCount = optionBottom.votesCount
-                )
+                ),
+                isPrevButtonEnabled = index > 0,
+                isNextButtonEnabled = false
             )
 
+            val votedOptionId = this.poll.votedOptionId
             if (votedOptionId == null) {
                 pollViewState
             } else {
+                val nextPoll: Poll? = polls.getOrNull(index + 1)
+                val isNextPollVoted = nextPoll?.votedOptionId != null
+
                 PollViewState.VotedPoll(
-                    poll = pollViewState,
+                    poll = pollViewState.copy(
+                        isNextButtonEnabled = index < polls.lastIndex || isNextPollVoted
+                    ),
                     votedOptionId = votedOptionId
                 )
             }
@@ -104,14 +112,13 @@ class PollViewModel @Inject constructor(
     }
 
     fun onNextClick() {
-        if (index < polls.lastIndex) {
-            index = ++index
-            updateView()
-        } else {
-            viewModelScope.launch {
-                emit(ViewAction.Finish)
-            }
-        }
+        index = ++index
+        updateView()
+    }
+
+    fun onPrevClick() {
+        index = --index
+        updateView()
     }
 
     fun onTopVoted() = onVoted(optionTop.id)
