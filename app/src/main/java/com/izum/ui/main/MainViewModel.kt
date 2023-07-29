@@ -1,12 +1,10 @@
 package com.izum.ui.main
 
 import androidx.lifecycle.viewModelScope
-import com.izum.data.user.UserRepository
-import com.izum.di.IoDispatcher
+import com.izum.data.repository.UserRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

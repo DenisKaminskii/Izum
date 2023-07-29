@@ -1,16 +1,18 @@
-package com.izum.data.packs
+package com.izum.data.repository
 
 import androidx.annotation.WorkerThread
 import com.izum.api.PackJson
 import com.izum.api.PacksApi
 import com.izum.api.PollJson
+import com.izum.data.Pack
+import com.izum.data.Poll
+import com.izum.data.PollOption
 import com.izum.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
+import kotlinx.coroutines.flow.onEach
 
 interface PacksRepository {
 
@@ -25,30 +27,50 @@ interface PacksRepository {
 
 }
 
-class PacksRepositoryImpl @Inject constructor(
+class PacksRepositoryImpl(
     private val packsApi: PacksApi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : PacksRepository {
+
+    private val packs = mutableListOf<Pack>()
 
     override suspend fun getPacks(): Flow<List<Pack>> {
         return flowOf(
             packsApi.getPacks()
                 .map(::mapFromJson)
-        ).flowOn(ioDispatcher)
+        )
+            .onEach {
+                packs.clear()
+                packs.addAll(it)
+            }
+            .flowOn(ioDispatcher)
     }
+
+    private val customPacks = mutableListOf<Pack>()
 
     override suspend fun getCustomPacks(): Flow<List<Pack>> {
         return flowOf(
             packsApi.getPacks() // TODO: replace on custom packs
                 .map(::mapFromJson)
-        ).flowOn(ioDispatcher)
+        )
+            .onEach {
+                customPacks.clear()
+                customPacks.addAll(it)
+            }
+            .flowOn(ioDispatcher)
     }
+
+    private val packPolls = hashMapOf<Long, List<Poll>>()
 
     override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
         return flowOf(
             packsApi.getPackPolls(packId)
                 .map(::mapFromJson)
-        ).flowOn(ioDispatcher)
+        )
+            .onEach {
+                packPolls[packId] = it
+            }
+            .flowOn(ioDispatcher)
     }
 
     private fun mapFromJson(packJson: PackJson) = Pack(
@@ -62,7 +84,16 @@ class PacksRepositoryImpl @Inject constructor(
     )
 
     private fun mapFromJson(poll: PollJson) = Poll(
-        id = poll.id
+        id = poll.id,
+        packId = poll.packId,
+        options = poll.options.map { option ->
+            PollOption(
+                id = option.id,
+                title = option.title,
+                votesCount = option.votesCount
+            )
+        },
+        votedOptionId = poll.vote?.optionId
     )
 
 }

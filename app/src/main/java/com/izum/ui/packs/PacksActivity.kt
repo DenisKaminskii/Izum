@@ -33,6 +33,7 @@ class PacksActivity : ComponentActivity() {
         _binding = ActivityPacksBinding.inflate(layoutInflater)
         val content = binding.root
         setContentView(content)
+        initView()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -51,7 +52,6 @@ class PacksActivity : ComponentActivity() {
             }
         }
 
-        initView()
         viewModel.init(Unit)
     }
 

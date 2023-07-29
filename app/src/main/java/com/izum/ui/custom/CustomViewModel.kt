@@ -1,8 +1,8 @@
 package com.izum.ui.custom
 
 import androidx.lifecycle.viewModelScope
-import com.izum.data.packs.Pack
-import com.izum.data.packs.PacksRepository
+import com.izum.data.Pack
+import com.izum.data.repository.PacksRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel

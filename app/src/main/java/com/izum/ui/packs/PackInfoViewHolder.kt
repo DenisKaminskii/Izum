@@ -1,6 +1,6 @@
 package com.izum.ui.packs
 
-import com.izum.data.packs.Pack
+import com.izum.data.Pack
 import com.izum.databinding.ViewHolderPackInfoBinding
 
 class PackInfoViewHolder(

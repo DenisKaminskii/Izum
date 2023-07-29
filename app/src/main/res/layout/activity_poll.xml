@@ -4,34 +4,140 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="vProgress" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gPoll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="vTop, vBottom" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/gVotedPoll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="vBottomBar" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/vTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/vBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:src="@drawable/ic_arrow_back_24" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/vVotes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/vAgreeWithYou"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:text="Agree with you: 36%"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:visibility="invisible" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <ProgressBar
+        android:id="@+id/vProgress"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:indeterminateTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vTop"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/ripple_poll"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/ripple_poll"
         android:gravity="center"
-        android:text="AAAA"
+        android:textColor="@color/black"
         android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/vBottom"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vTopBar"
         app:layout_constraintVertical_chainStyle="spread" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vBottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/ripple_poll"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/ripple_poll"
         android:gravity="center"
-        android:text="AAAA"
+        android:textColor="@color/black"
         android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/vBottomBar"
         app:layout_constraintTop_toBottomOf="@id/vTop" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/vBottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/vAnalytics"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="Посмотреть аналитику"
+            android:textColor="@color/colorAccent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/vNext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="16dp"
+            android:src="@drawable/ic_arrow_forward_24"
+            app:tint="@color/colorAccent" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

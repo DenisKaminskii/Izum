@@ -1,4 +1,4 @@
-package com.izum.data.packs
+package com.izum.data
 
 data class Pack(
     val id: Long,

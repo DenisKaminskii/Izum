@@ -1,8 +1,8 @@
 package com.izum.di
 
 import com.izum.api.PacksApi
-import com.izum.data.packs.PacksRepository
-import com.izum.data.packs.PacksRepositoryImpl
+import com.izum.data.repository.PacksRepository
+import com.izum.data.repository.PacksRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -42,7 +42,9 @@ data class AuthorJson(
 )
 
 @JsonClass(generateAdapter = true)
-data class PollJson(
-    @Json(name="id")
-    val id: Long
+data class VoteJson(
+    @Json(name="date")
+    val date: String,
+    @Json(name="optionId")
+    val optionId: Long
 )

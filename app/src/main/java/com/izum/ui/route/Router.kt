@@ -2,7 +2,7 @@ package com.izum.ui.route
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
-import com.izum.data.packs.Pack
+import com.izum.data.Pack
 import com.izum.ui.custom.CustomActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity

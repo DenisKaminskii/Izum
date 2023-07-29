@@ -2,5 +2,8 @@
 <resources>
 
     <style name="Theme.Izum" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/colorAccent</item>
+        <item name="android:colorSecondary">@color/colorAccent</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 </resources>

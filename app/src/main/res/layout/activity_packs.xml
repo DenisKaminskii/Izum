@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/vToolbar"
+        android:id="@+id/vTopBar"
         android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
-        app:layout_constraintTop_toBottomOf="@id/vToolbar"
+        app:layout_constraintTop_toBottomOf="@id/vTopBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -40,8 +40,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vToolbar"
-        android:progressTint="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/vTopBar"
+        android:indeterminateTint="@color/colorAccent"
         android:layout_height="48dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

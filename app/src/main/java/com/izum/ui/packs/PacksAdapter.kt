@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.izum.data.packs.Pack
+import com.izum.data.Pack
 import com.izum.databinding.ViewHolderPackInfoBinding
-import javax.inject.Inject
 
 abstract class PackViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
 
