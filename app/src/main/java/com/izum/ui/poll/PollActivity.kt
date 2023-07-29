@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.slider.Slider
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
 import com.izum.ui.BaseActivity
@@ -31,12 +32,15 @@ class PollActivity : BaseActivity() {
 
     private val viewModel: PollViewModel by viewModels()
 
+    private var onSliderChangeListener: Slider.OnChangeListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityPollBinding.inflate(layoutInflater)
         val content = binding.root
         setContentView(content)
         initView()
+        update(PollViewState.Loading)
 
         lifecycleScope.launch {
             viewModel.viewStateFlow.collect { state -> update(state) }
@@ -51,8 +55,6 @@ class PollActivity : BaseActivity() {
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1)
             )
         )
-
-        update(PollViewState.Loading)
     }
 
     private fun initView() {
@@ -73,14 +75,23 @@ class PollActivity : BaseActivity() {
             onVoted = { viewModel.onBottomVoted() },
             onInterrupted = { viewModel.onBottomInterrupted() }
         )
+        binding.vSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                viewModel.onSliderTrackingStart()
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                viewModel.onSliderTrackingStop()
+            }
+        })
     }
 
     private fun update(state: PollViewState) {
         binding.gLoading.isVisible = state is PollViewState.Loading
         binding.gPoll.isVisible = state is PollViewState.Poll || state is PollViewState.VotedPoll
-        binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll
-        binding.vTop.isClickable = state is PollViewState.Poll
-        binding.vBottom.isClickable = state is PollViewState.Poll
+        binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll && !state.poll.isSliderTracking
+        binding.vTop.isClickable = state is PollViewState.Poll && !state.isSliderTracking
+        binding.vBottom.isClickable = state is PollViewState.Poll && !state.isSliderTracking
 
         when(state) {
             is PollViewState.Poll -> showPoll(state)
@@ -114,6 +125,25 @@ class PollActivity : BaseActivity() {
 
         binding.vAnalytics.isEnabled = false
         binding.vAnalytics.setTextColor(getColor(R.color.disabledText))
+
+        binding.vBottomBar.isVisible = !poll.isSliderTracking
+
+        if (onSliderChangeListener == null) {
+            onSliderChangeListener = Slider.OnChangeListener { slider, value, fromUser ->
+                if (!fromUser) return@OnChangeListener
+
+                if (value > poll.lastAvailablePollIndex) {
+                    slider.value = poll.lastAvailablePollIndex.toFloat()
+                } else {
+                    viewModel.onSliderChanged(value.toInt())
+                }
+
+            }
+            binding.vSlider.addOnChangeListener(onSliderChangeListener!!)
+            binding.vSlider.valueTo = poll.pollsCount.toFloat()
+        }
+
+        binding.vSlider.value = poll.pollIndex.toFloat()
     }
 
     private fun showVotedPoll(votedPoll: PollViewState.VotedPoll) {
@@ -203,6 +233,7 @@ class PollActivity : BaseActivity() {
         super.onDestroy()
         binding.vTop.setOnTouchListener(null)
         binding.vBottom.setOnTouchListener(null)
+        onSliderChangeListener?.let(binding.vSlider::removeOnChangeListener)
     }
 
 }

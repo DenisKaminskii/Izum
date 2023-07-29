@@ -47,10 +47,13 @@ class PacksRepositoryImpl(
     }
 
     override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
+//        return flowOf(
+//            packsApi.getPackPolls(packId)
+//                .map(::mapFromJson)
+//        ).flowOn(ioDispatcher)
         return flowOf(
-            packsApi.getPackPolls(packId)
-                .map(::mapFromJson)
-        ).flowOn(ioDispatcher)
+            PacksMocks.getPackMocks(packId)
+        )
     }
 
     private fun mapFromJson(packJson: PackJson) = Pack(

@@ -21,7 +21,11 @@ sealed interface PollViewState {
         val top: OptionViewState,
         val bottom: OptionViewState,
         val isPrevButtonEnabled: Boolean,
-        val isNextButtonEnabled: Boolean
+        val isNextButtonEnabled: Boolean,
+        val isSliderTracking: Boolean,
+        val pollsCount: Long,
+        val pollIndex: Int,
+        val lastAvailablePollIndex: Long
     ) : PollViewState
 
     data class VotedPoll(
@@ -91,7 +95,13 @@ class PollViewModel @Inject constructor(
                     votesCount = optionBottom.votesCount
                 ),
                 isPrevButtonEnabled = index > 0,
-                isNextButtonEnabled = false
+                isNextButtonEnabled = false,
+                isSliderTracking = isSliderTracking,
+                pollsCount = polls.size.toLong(),
+                pollIndex = index,
+                lastAvailablePollIndex = polls.indexOfFirst { poll ->
+                    poll.votedOptionId == null
+                }.toLong()
             )
 
             val votedOptionId = this.poll.votedOptionId
@@ -167,6 +177,23 @@ class PollViewModel @Inject constructor(
 
     fun onBottomInterrupted() {
         // ..
+    }
+
+    private var isSliderTracking = false
+
+    fun onSliderTrackingStart() {
+        isSliderTracking = true
+        updateView()
+    }
+
+    fun onSliderTrackingStop() {
+        isSliderTracking = false
+        updateView()
+    }
+
+    fun onSliderChanged(index: Int) {
+        this.index = index
+        updateView()
     }
 
 }
