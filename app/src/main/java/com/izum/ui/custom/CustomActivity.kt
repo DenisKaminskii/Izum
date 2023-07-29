@@ -44,7 +44,7 @@ class CustomActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiStateFlow.collect {
+                viewModel.viewStateFlow.collect {
                     updateViewState(it)
                 }
             }

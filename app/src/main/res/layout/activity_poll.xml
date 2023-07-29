@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,21 +9,24 @@
         android:id="@+id/gLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="vProgress" />
+        app:constraint_referenced_ids="vProgress"
+        tools:visibliity="gone" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/gPoll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="vTop, vBottom" />
+        app:constraint_referenced_ids="vTop, vBottom"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/gVotedPoll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="vBottomBar" />
+        app:constraint_referenced_ids="vBottomBar"
+        tools:visibility="visible" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/vTopBar"
@@ -81,6 +85,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/ripple_poll"
         android:clickable="true"
         android:focusable="true"
@@ -91,30 +97,36 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/vBottom"
         app:layout_constraintTop_toBottomOf="@id/vTopBar"
-        app:layout_constraintVertical_chainStyle="spread" />
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_goneMarginTop="56dp"
+        tools:text="Alladin" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/vBottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/ripple_poll"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
+        android:text="Jafar"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/vBottomBar"
-        app:layout_constraintTop_toBottomOf="@id/vTop" />
+        app:layout_constraintTop_toBottomOf="@id/vTop"
+        app:layout_goneMarginBottom="56dp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/vBottomBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/vAnalytics"

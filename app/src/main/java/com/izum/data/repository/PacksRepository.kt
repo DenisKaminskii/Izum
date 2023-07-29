@@ -32,45 +32,25 @@ class PacksRepositoryImpl(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : PacksRepository {
 
-    private val packs = mutableListOf<Pack>()
-
     override suspend fun getPacks(): Flow<List<Pack>> {
         return flowOf(
             packsApi.getPacks()
                 .map(::mapFromJson)
-        )
-            .onEach {
-                packs.clear()
-                packs.addAll(it)
-            }
-            .flowOn(ioDispatcher)
+        ).flowOn(ioDispatcher)
     }
-
-    private val customPacks = mutableListOf<Pack>()
 
     override suspend fun getCustomPacks(): Flow<List<Pack>> {
         return flowOf(
             packsApi.getPacks() // TODO: replace on custom packs
                 .map(::mapFromJson)
-        )
-            .onEach {
-                customPacks.clear()
-                customPacks.addAll(it)
-            }
-            .flowOn(ioDispatcher)
+        ).flowOn(ioDispatcher)
     }
-
-    private val packPolls = hashMapOf<Long, List<Poll>>()
 
     override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
         return flowOf(
             packsApi.getPackPolls(packId)
                 .map(::mapFromJson)
-        )
-            .onEach {
-                packPolls[packId] = it
-            }
-            .flowOn(ioDispatcher)
+        ).flowOn(ioDispatcher)
     }
 
     private fun mapFromJson(packJson: PackJson) = Pack(

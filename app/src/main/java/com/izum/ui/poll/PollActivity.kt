@@ -2,39 +2,34 @@ package com.izum.ui.poll
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
 import android.view.MotionEvent
 import android.widget.TextView
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
-import com.izum.ui.route.Router
-import dagger.hilt.android.AndroidEntryPoint
+import com.izum.ui.BaseActivity
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.withContext
 
-@AndroidEntryPoint
 @SuppressLint("ClickableViewAccessibility")
-class PollActivity : ComponentActivity() {
+class PollActivity : BaseActivity() {
 
     companion object {
         const val KEY_ARGS_PACK_ID = "KEY_ARGS_PACK_ID"
 
-        private val LONG_PRESS_DURATION = 750L
+        private val LONG_PRESS_DURATION = 350L
     }
-
-    @Inject lateinit var router: Router
 
     private var _binding: ActivityPollBinding? = null
     private val binding: ActivityPollBinding
         get() = _binding!!
 
     private val viewModel: PollViewModel by viewModels()
-    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +38,12 @@ class PollActivity : ComponentActivity() {
         setContentView(content)
         initView()
 
-        router.attachHost(this@PollActivity)
+        lifecycleScope.launch {
+            viewModel.viewStateFlow.collect { state -> update(state) }
+        }
 
         lifecycleScope.launch {
-            viewModel.uiStateFlow.collect { state -> update(state) }
+            viewModel.viewActionsFlow.collect { action -> accept(action) }
         }
 
         viewModel.init(
@@ -77,7 +74,7 @@ class PollActivity : ComponentActivity() {
 
     private fun update(state: PollViewState) {
         binding.gLoading.isVisible = state is PollViewState.Loading
-        binding.gPoll.isVisible = state is PollViewState.Poll
+        binding.gPoll.isVisible = state is PollViewState.Poll || state is PollViewState.VotedPoll
         binding.gVotedPoll.isVisible = state is PollViewState.VotedPoll
         binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll
         binding.vTop.isClickable = state is PollViewState.Poll
@@ -108,12 +105,29 @@ class PollActivity : ComponentActivity() {
 
         showPoll(poll)
 
-        val agreeWithYouPercent = (poll.votesCount / 100f) * when(votedOptionId) {
+        val agreeWithYouPercent = when(votedOptionId) {
             poll.top.id -> poll.top.votesCount
             poll.bottom.id -> poll.bottom.votesCount
             else -> throw IllegalStateException("Unknown voted option id: $votedOptionId")
+        } / poll.votesCount.toFloat() * 100
+
+        binding.vAgreeWithYou.text = "Agree with you: ${agreeWithYouPercent.toInt()}%"
+
+        when(votedOptionId) {
+            poll.top.id -> {
+                binding.vTop.setBackgroundColor(getColor(R.color.colorAccent))
+                binding.vTop.setTextColor(getColor(R.color.white))
+
+                binding.vBottom.setBackgroundColor(getColor(R.color.white))
+            }
+            poll.bottom.id -> {
+                binding.vBottom.setBackgroundColor(getColor(R.color.colorAccent))
+                binding.vBottom.setTextColor(getColor(R.color.white))
+
+                binding.vTop.setBackgroundColor(getColor(R.color.white))
+            }
+            else -> throw IllegalStateException("Unknown voted option id: $votedOptionId")
         }
-        binding.vAgreeWithYou.text = "Agree with you: $agreeWithYouPercent}"
 
         val votedTextView = when(votedOptionId) {
             poll.top.id -> binding.vTop
@@ -129,6 +143,8 @@ class PollActivity : ComponentActivity() {
         onVoted: () -> Unit,
         onInterrupted: () -> Unit,
     ) {
+        var votePressingJob: Job? = null
+
         setOnTouchListener { view, motionEvent ->
             val x = motionEvent.x + view.left
             val y = motionEvent.y + view.top
@@ -142,12 +158,19 @@ class PollActivity : ComponentActivity() {
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    handler.postDelayed({
-                        onVoted.invoke()
-                    }, LONG_PRESS_DURATION)
+                    votePressingJob = lifecycleScope.launch {
+                        withContext(ioDispatcher) {
+                            delay(LONG_PRESS_DURATION)
+                        }
+                        if (isActive) {
+                            onVoted.invoke()
+                            votePressingJob = null
+                        }
+                    }
                 }
-                MotionEvent.ACTION_UP -> {
-                    handler.removeCallbacksAndMessages(null)
+                MotionEvent.ACTION_UP -> if (votePressingJob != null) {
+                    votePressingJob?.cancel()
+                    votePressingJob = null
                     onInterrupted.invoke()
                 }
             }
@@ -158,7 +181,6 @@ class PollActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        router.detachHost()
         binding.vTop.setOnTouchListener(null)
         binding.vBottom.setOnTouchListener(null)
     }

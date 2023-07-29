@@ -1,9 +1,14 @@
 package com.izum.ui.poll
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.repository.PacksRepository
 import com.izum.data.Poll
+import com.izum.data.PollOption
+import com.izum.data.SendVoteException
+import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
+import com.izum.ui.ViewAction
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -31,7 +36,8 @@ data class OptionViewState(
 
 @HiltViewModel
 class PollViewModel @Inject constructor(
-    private val packsRepository: PacksRepository
+    private val packsRepository: PacksRepository,
+    private val pollsRepository: PollsRepository
 ) : StateViewModel<Arguments, PollViewState>(
     initialState = PollViewState.Loading
 ) {
@@ -42,11 +48,17 @@ class PollViewModel @Inject constructor(
         )
     }
 
-    private val packPolls = mutableListOf<Poll>()
+    private val polls = mutableListOf<Poll>()
     private var index = 0
 
     private val poll: Poll
-        get() = packPolls[index]
+        get() = polls[index]
+
+    private val optionTop: PollOption
+        get() = poll.options[0]
+
+    private val optionBottom: PollOption
+        get() = poll.options[1]
 
     override fun init(args: Arguments) {
         super.init(args)
@@ -54,9 +66,9 @@ class PollViewModel @Inject constructor(
 
         viewModelScope.launch {
             packsRepository.getPackPolls(packId)
-                .collect { polls ->
-                    packPolls.clear()
-                    packPolls.addAll(polls)
+                .collect {
+                    polls.clear()
+                    polls.addAll(it)
                     updateView()
                 }
         }
@@ -64,9 +76,7 @@ class PollViewModel @Inject constructor(
 
     private fun updateView() {
         updateState {
-            val optionTop = poll.options[0]
-            val optionBottom = poll.options[1]
-            val votedOptionId = poll.votedOptionId
+            val votedOptionId = this.poll.votedOptionId
 
             val pollViewState = PollViewState.Poll(
                 votesCount = poll.options.sumOf { it.votesCount },
@@ -94,18 +104,57 @@ class PollViewModel @Inject constructor(
     }
 
     fun onNextClick() {
-        // ..
+        if (index < polls.lastIndex) {
+            index = ++index
+            updateView()
+        } else {
+            viewModelScope.launch {
+                emit(ViewAction.Finish)
+            }
+        }
     }
 
-    fun onTopVoted() {
-        // ..
+    fun onTopVoted() = onVoted(optionTop.id)
+
+    fun onBottomVoted() = onVoted(optionBottom.id)
+
+    private fun onVoted(optionId: Long) {
+        // TODO: ignore if already voted
+        val viewState = viewState
+        if (viewState !is PollViewState.Poll) {
+            Log.d("Steve", "onVoted: viewState is not PollViewState.Poll")
+            return
+        }
+
+        updateState {
+            PollViewState.VotedPoll(
+                poll = viewState,
+                votedOptionId = optionId
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                pollsRepository.vote(poll.id, optionId)
+            } catch (exception: SendVoteException) {
+                emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
+                updateState { viewState }
+                return@launch
+            }
+
+            polls.replaceAll {
+                if (it.id == poll.id) {
+                    it.copy(votedOptionId = optionId)
+                } else {
+                    it
+                }
+            }
+
+            updateView()
+        }
     }
 
     fun onTopInterrupted() {
-        // ..
-    }
-
-    fun onBottomVoted() {
         // ..
     }
 
