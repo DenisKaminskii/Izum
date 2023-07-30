@@ -32,7 +32,7 @@ data class PackJson(
     @Json(name="pollsCount")
     val pollsCount: Long,
     @Json(name="author")
-    val author: AuthorJson
+    val author: AuthorJson? = null
 )
 
 @JsonClass(generateAdapter = true)

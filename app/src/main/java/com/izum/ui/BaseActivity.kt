@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import com.izum.di.IoDispatcher
 import com.izum.ui.route.Router
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,7 +13,7 @@ import java.util.function.Consumer
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : ComponentActivity(), Consumer<ViewAction> {
+abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     @Inject
     lateinit var router: Router

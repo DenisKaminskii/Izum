@@ -2,16 +2,16 @@ package com.izum.ui.poll
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.izum.data.repository.PacksRepository
 import com.izum.data.Poll
 import com.izum.data.PollOption
-import com.izum.data.SendVoteException
+import com.izum.data.repository.PacksRepository
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 sealed interface PollViewState {
@@ -166,7 +166,7 @@ class PollViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 pollsRepository.vote(poll.id, optionId)
-            } catch (exception: SendVoteException) {
+            } catch (exception: Exception) {
                 emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
                 updateState { viewState }
                 return@launch

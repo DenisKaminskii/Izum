@@ -66,7 +66,7 @@ class PacksRepositoryImpl(
         isPaid = packJson.isPaid,
         productId = packJson.productId,
         pollsCount = packJson.pollsCount,
-        authorId = packJson.author.id
+        authorId = packJson.author?.id
     )
 
     private fun mapFromJson(poll: PollJson) = Poll(

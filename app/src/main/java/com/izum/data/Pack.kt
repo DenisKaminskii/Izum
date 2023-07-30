@@ -7,5 +7,5 @@ data class Pack(
     val isPaid: Boolean,
     val productId: String?,
     val pollsCount: Long,
-    val authorId: Long
+    val authorId: Long?
 )

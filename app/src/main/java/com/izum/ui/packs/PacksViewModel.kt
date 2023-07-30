@@ -46,4 +46,10 @@ class PacksViewModel @Inject constructor(
         }
     }
 
+    fun onCreatePollClick() {
+        viewModelScope.launch {
+            route(Router.Route.CreatePoll)
+        }
+    }
+
 }

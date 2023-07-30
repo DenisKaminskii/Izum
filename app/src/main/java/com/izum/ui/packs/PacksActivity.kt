@@ -64,6 +64,7 @@ class PacksActivity : ComponentActivity() {
         binding.vPacks.layoutManager = GridLayoutManager(this, 2)
         binding.vPacks.adapter = adapter
         binding.vCustom.setOnClickListener { viewModel.onCustomClick() }
+        binding.vCreatePoll.setOnClickListener { viewModel.onCreatePollClick() }
     }
 
     private fun updateViewState(state: PacksViewState) {

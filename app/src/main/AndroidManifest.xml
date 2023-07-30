@@ -41,6 +41,11 @@
             android:name=".ui.poll.PollActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.create.CreatePollActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.izum.ui.route
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import com.izum.data.Pack
+import com.izum.ui.create.CreatePollActivity
 import com.izum.ui.custom.CustomActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
@@ -17,6 +18,8 @@ interface Router {
         object Packs : Route
         object Custom : Route
         data class Poll(val pack: Pack) : Route
+
+        object CreatePoll : Route
     }
 
     fun route(route: Route)
@@ -56,6 +59,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     Router.Route.Packs -> showPacksActivity()
                     Router.Route.Custom -> showCustomActivity()
                     is Router.Route.Poll -> showPollActivity(route.pack)
+                    Router.Route.CreatePoll -> showCreatePoll()
                 }
             }
         }
@@ -80,6 +84,13 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, PollActivity::class.java)
             intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, pack.id)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun showCreatePoll() {
+        host?.let { activity ->
+            val intent = Intent(activity, CreatePollActivity::class.java)
             activity.startActivity(intent)
         }
     }

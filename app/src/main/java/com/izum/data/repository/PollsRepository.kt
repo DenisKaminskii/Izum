@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.izum.api.PollsApi
 import com.izum.api.VoteRequestJson
-import com.izum.data.SendVoteException
-import com.izum.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 interface PollsRepository {
 
     @WorkerThread
-    @Throws(SendVoteException::class)
+    @Throws(IOException::class)
     suspend fun vote(pollId: Long, optionId: Long)
+
+    @WorkerThread
+    @Throws(Exception::class)
+    suspend fun suggest()
 
 }
 
@@ -28,8 +31,12 @@ class PollsRepositoryImpl(
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
             Log.e("Steve", exception.toString())
-            throw SendVoteException()
+            throw exception
         }
+    }
+
+    override suspend fun suggest() {
+        // TODO:
     }
 
 }

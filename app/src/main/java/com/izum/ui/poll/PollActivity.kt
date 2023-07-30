@@ -37,8 +37,7 @@ class PollActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityPollBinding.inflate(layoutInflater)
-        val content = binding.root
-        setContentView(content)
+        setContentView(binding.root)
         initView()
         update(PollViewState.Loading)
 
