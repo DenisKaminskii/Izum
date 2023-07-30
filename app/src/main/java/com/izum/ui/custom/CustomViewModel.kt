@@ -45,4 +45,10 @@ class CustomViewModel @Inject constructor(
         }
     }
 
+    fun onCreatePackClick() {
+        viewModelScope.launch {
+            route(Router.Route.CreatePack)
+        }
+    }
+
 }

@@ -88,9 +88,9 @@ class PollActivity : BaseActivity() {
     private fun update(state: PollViewState) {
         binding.gLoading.isVisible = state is PollViewState.Loading
         binding.gPoll.isVisible = state is PollViewState.Poll || state is PollViewState.VotedPoll
-        binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll && !state.poll.isSliderTracking
-        binding.vTop.isClickable = state is PollViewState.Poll && !state.isSliderTracking
-        binding.vBottom.isClickable = state is PollViewState.Poll && !state.isSliderTracking
+        binding.vAgreeWithYou.isVisible = state is PollViewState.VotedPoll && state.poll.slider.isTracking == false
+        binding.vTop.isClickable = state is PollViewState.Poll && !state.slider.isTracking
+        binding.vBottom.isClickable = state is PollViewState.Poll && !state.slider.isTracking
 
         when(state) {
             is PollViewState.Poll -> showPoll(state)
@@ -125,24 +125,25 @@ class PollActivity : BaseActivity() {
         binding.vAnalytics.isEnabled = false
         binding.vAnalytics.setTextColor(getColor(R.color.disabledText))
 
-        binding.vBottomBar.isVisible = !poll.isSliderTracking
+        binding.vBottomBar.isVisible = !poll.slider.isTracking
 
         if (onSliderChangeListener == null) {
             onSliderChangeListener = Slider.OnChangeListener { slider, value, fromUser ->
                 if (!fromUser) return@OnChangeListener
 
-                if (value > poll.lastAvailablePollIndex) {
-                    slider.value = poll.lastAvailablePollIndex.toFloat()
+                val lastAvailableIndex = poll.slider.lastAvailableIndex
+                if (lastAvailableIndex != null && value > lastAvailableIndex) {
+                    slider.value = lastAvailableIndex.toFloat()
                 } else {
                     viewModel.onSliderChanged(value.toInt())
                 }
 
             }
             binding.vSlider.addOnChangeListener(onSliderChangeListener!!)
-            binding.vSlider.valueTo = poll.pollsLastIndex.toFloat()
+            binding.vSlider.valueTo = poll.slider.lastIndex.toFloat()
         }
 
-        binding.vSlider.value = poll.pollIndex.toFloat()
+        binding.vSlider.value = poll.slider.index.toFloat()
     }
 
     private fun showVotedPoll(votedPoll: PollViewState.VotedPoll) {

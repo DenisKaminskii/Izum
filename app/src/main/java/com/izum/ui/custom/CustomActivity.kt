@@ -63,6 +63,7 @@ class CustomActivity : ComponentActivity() {
         binding.vPacks.layoutManager = GridLayoutManager(this, 2)
         binding.vPacks.adapter = adapter
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
+        binding.vCreatePack.setOnClickListener { viewModel.onCreatePackClick() }
     }
 
     private fun updateViewState(state: CustomViewState) {

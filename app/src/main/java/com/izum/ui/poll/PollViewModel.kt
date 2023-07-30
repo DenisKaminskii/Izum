@@ -7,6 +7,7 @@ import com.izum.data.PollOption
 import com.izum.data.repository.PacksRepository
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
+import com.izum.ui.SliderViewState
 import com.izum.ui.ViewAction
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,17 +16,16 @@ import java.lang.Exception
 import javax.inject.Inject
 
 sealed interface PollViewState {
+
     object Loading : PollViewState
+
     data class Poll(
         val votesCount: Long,
         val top: OptionViewState,
         val bottom: OptionViewState,
         val isPrevButtonEnabled: Boolean,
         val isNextButtonEnabled: Boolean,
-        val isSliderTracking: Boolean,
-        val pollsLastIndex: Long,
-        val pollIndex: Int,
-        val lastAvailablePollIndex: Long
+        val slider: SliderViewState,
     ) : PollViewState
 
     data class VotedPoll(
@@ -104,10 +104,12 @@ class PollViewModel @Inject constructor(
                 ),
                 isPrevButtonEnabled = index > 0,
                 isNextButtonEnabled = index < polls.lastIndex,
-                isSliderTracking = isSliderTracking,
-                pollsLastIndex = polls.lastIndex.toLong(),
-                pollIndex = index,
-                lastAvailablePollIndex = lastAvailablePollIndex.toLong()
+                slider = SliderViewState(
+                    index = index,
+                    lastIndex = polls.lastIndex,
+                    isTracking = isSliderTracking,
+                    lastAvailableIndex = lastAvailablePollIndex
+                )
             )
 
             val votedOptionId = this.poll.votedOptionId

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,8 +24,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
-                android:minHeight="150dp"
-                android:paddingVertical="16dp">
+                android:padding="16dp"
+                android:minHeight="150dp">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/vTop"
@@ -34,12 +35,12 @@
                     android:layout_marginHorizontal="16dp"
                     android:background="@null"
                     android:gravity="center"
-                    android:inputType="textCapSentences"
                     android:maxLength="150"
                     android:minWidth="100dp"
-                    android:text="Dog"
+                    android:hyphenationFrequency="normal"
                     android:textSize="18sp"
-                    app:layout_constraintVertical_chainStyle="spread" />
+                    app:layout_constraintVertical_chainStyle="spread"
+                    tools:text="Dog" />
 
             </FrameLayout>
 
@@ -50,6 +51,7 @@
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:padding="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:minHeight="150dp">
@@ -61,11 +63,10 @@
                     android:layout_gravity="center"
                     android:background="@null"
                     android:gravity="center"
-                    android:inputType="textCapSentences"
                     android:maxLength="150"
                     android:minWidth="100dp"
-                    android:text="Cat"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="Cat" />
 
 
             </FrameLayout>
