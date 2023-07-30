@@ -23,14 +23,15 @@ sealed interface PollViewState {
         val isPrevButtonEnabled: Boolean,
         val isNextButtonEnabled: Boolean,
         val isSliderTracking: Boolean,
-        val pollsCount: Long,
+        val pollsLastIndex: Long,
         val pollIndex: Int,
         val lastAvailablePollIndex: Long
     ) : PollViewState
 
     data class VotedPoll(
         val poll: Poll,
-        val votedOptionId: Long
+        val votedOptionId: Long,
+        val agreePercent: Int = 0
     ) : PollViewState
 }
 
@@ -82,8 +83,15 @@ class PollViewModel @Inject constructor(
 
     private fun updateView() {
         updateState {
+            val allVotesCount = poll.options.sumOf { it.votesCount }
+            val lastAvailablePollIndex = if (polls.any { it.votedOptionId == null }) {
+                polls.indexOfLast { it.votedOptionId == null }
+            } else {
+                polls.lastIndex
+            }
+
             val pollViewState = PollViewState.Poll(
-                votesCount = poll.options.sumOf { it.votesCount },
+                votesCount = allVotesCount,
                 top = OptionViewState(
                     id = optionTop.id,
                     title = optionTop.title,
@@ -95,27 +103,29 @@ class PollViewModel @Inject constructor(
                     votesCount = optionBottom.votesCount
                 ),
                 isPrevButtonEnabled = index > 0,
-                isNextButtonEnabled = false,
+                isNextButtonEnabled = index < polls.lastIndex,
                 isSliderTracking = isSliderTracking,
-                pollsCount = polls.size.toLong(),
+                pollsLastIndex = polls.lastIndex.toLong(),
                 pollIndex = index,
-                lastAvailablePollIndex = polls.indexOfFirst { poll ->
-                    poll.votedOptionId == null
-                }.toLong()
+                lastAvailablePollIndex = lastAvailablePollIndex.toLong()
             )
 
             val votedOptionId = this.poll.votedOptionId
             if (votedOptionId == null) {
                 pollViewState
             } else {
-                val nextPoll: Poll? = polls.getOrNull(index + 1)
-                val isNextPollVoted = nextPoll?.votedOptionId != null
+                val sameVotesCount = poll.options
+                    .firstOrNull() { it.id == votedOptionId }?.votesCount
+                    ?: return@updateState pollViewState
+
+                val agreePercent = ((sameVotesCount.toFloat() / allVotesCount.toFloat()) * 100F).toInt()
 
                 PollViewState.VotedPoll(
                     poll = pollViewState.copy(
-                        isNextButtonEnabled = index < polls.lastIndex || isNextPollVoted
+                        isNextButtonEnabled = index < polls.lastIndex
                     ),
-                    votedOptionId = votedOptionId
+                    votedOptionId = votedOptionId,
+                    agreePercent = agreePercent
                 )
             }
         }
@@ -136,17 +146,20 @@ class PollViewModel @Inject constructor(
     fun onBottomVoted() = onVoted(optionBottom.id)
 
     private fun onVoted(optionId: Long) {
-        // TODO: ignore if already voted
         val viewState = viewState
         if (viewState !is PollViewState.Poll) {
             Log.d("Steve", "onVoted: viewState is not PollViewState.Poll")
             return
         }
 
+        val allVotesCount = poll.options.sumOf { it.votesCount }
+        val sameVotesCount = poll.options.first { it.id == optionId }.votesCount
+        val agreePercent = ((sameVotesCount.toFloat() / allVotesCount.toFloat()) * 100F).toInt()
         updateState {
             PollViewState.VotedPoll(
                 poll = viewState,
-                votedOptionId = optionId
+                votedOptionId = optionId,
+                agreePercent = agreePercent
             )
         }
 

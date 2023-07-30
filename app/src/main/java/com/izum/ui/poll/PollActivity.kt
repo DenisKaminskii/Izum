@@ -140,7 +140,7 @@ class PollActivity : BaseActivity() {
 
             }
             binding.vSlider.addOnChangeListener(onSliderChangeListener!!)
-            binding.vSlider.valueTo = poll.pollsCount.toFloat()
+            binding.vSlider.valueTo = poll.pollsLastIndex.toFloat()
         }
 
         binding.vSlider.value = poll.pollIndex.toFloat()
@@ -151,14 +151,7 @@ class PollActivity : BaseActivity() {
         val votedOptionId = votedPoll.votedOptionId
 
         showPoll(poll)
-
-        val agreeWithYouPercent = when(votedOptionId) {
-            poll.top.id -> poll.top.votesCount
-            poll.bottom.id -> poll.bottom.votesCount
-            else -> throw IllegalStateException("Unknown voted option id: $votedOptionId")
-        } / poll.votesCount.toFloat() * 100
-
-        binding.vAgreeWithYou.text = "Agree with you: ${agreeWithYouPercent.toInt()}%"
+        binding.vAgreeWithYou.text = "Agree with you: ${votedPoll.agreePercent}%"
 
         when(votedOptionId) {
             poll.top.id -> {

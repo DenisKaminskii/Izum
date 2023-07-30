@@ -24,7 +24,7 @@ data class PackJson(
     @Json(name="title")
     val title: String,
     @Json(name="description")
-    val description: String,
+    val description: String? = null,
     @Json(name="isPaid")
     val isPaid: Boolean,
     @Json(name="productId")

@@ -12,9 +12,9 @@ class PackInfoViewHolder(
     override fun bind(item: Pack) {
         binding.vId.text = item.id.toString()
         binding.vTitle.text = item.title
-        binding.vDescription.text = item.description
-        binding.vIsPaid.text = item.isPaid.toString()
-        binding.vProductId.text = item.productId
+        binding.vDescription.text = item.description ?: "no description"
+        binding.vIsPaid.text = "isPaid: ${item.isPaid}"
+        binding.vProductId.text = item.productId ?: "no product id"
         binding.vPollsCount.text = item.pollsCount.toString()
 
         binding.root.setOnClickListener {

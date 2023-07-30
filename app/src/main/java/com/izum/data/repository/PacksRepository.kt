@@ -17,13 +17,13 @@ import kotlinx.coroutines.flow.onEach
 interface PacksRepository {
 
     @WorkerThread
-    suspend fun getPacks() : Flow<List<Pack>>
+    suspend fun getPacks(): Flow<List<Pack>>
 
     @WorkerThread
-    suspend fun getCustomPacks() : Flow<List<Pack>>
+    suspend fun getCustomPacks(): Flow<List<Pack>>
 
     @WorkerThread
-    suspend fun getPackPolls(packId: Long) : Flow<List<Poll>>
+    suspend fun getPackPolls(packId: Long): Flow<List<Poll>>
 
 }
 
@@ -47,13 +47,16 @@ class PacksRepositoryImpl(
     }
 
     override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
-//        return flowOf(
-//            packsApi.getPackPolls(packId)
-//                .map(::mapFromJson)
-//        ).flowOn(ioDispatcher)
-        return flowOf(
-            PacksMocks.getPackMocks(packId)
-        )
+        if (packId == 2L) {
+            return flowOf(
+                packsApi.getPackPolls(packId)
+                    .map(::mapFromJson)
+            ).flowOn(ioDispatcher)
+        } else {
+            return flowOf(
+                PacksMocks.getPackMocks(packId)
+            )
+        }
     }
 
     private fun mapFromJson(packJson: PackJson) = Pack(

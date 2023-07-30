@@ -14,7 +14,7 @@ interface AuthApi {
 
 @JsonClass(generateAdapter = true)
 data class GetTokenRequest(
-    @Json(name = "deviceID")
+    @Json(name = "deviceId")
     val deviceId: String
 )
 
