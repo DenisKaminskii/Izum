@@ -6,4 +6,10 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSecondary">@color/purple_200</item>
     </style>
+
+    <style name="PacksTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

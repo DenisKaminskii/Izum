@@ -76,7 +76,7 @@ class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
         }
 
         binding.vTop.addTextChangedListener(topTextWatcher)
-        binding.vTop.removeTextChangedListener(bottomTextWatcher)
+        binding.vBottom.addTextChangedListener(bottomTextWatcher)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -91,18 +91,11 @@ class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
 
         when (state) {
             is CreatePackViewState.Input -> {
-                val newTopText = state.topText
-                val oldTopText = binding.vTop.text.toString()
-                if (newTopText != oldTopText) {
-                    binding.vTop.setText(newTopText)
-                    binding.vTop.setSelection(newTopText.length)
+                if (binding.vTop.text.toString() != state.topText) {
+                    binding.vTop.setText(state.topText)
                 }
-
-                val newBottomText = state.bottomText
-                val oldBottomText = binding.vBottom.text.toString()
-                if (newBottomText != oldBottomText) {
-                    binding.vBottom.setText(newBottomText)
-                    binding.vBottom.setSelection(newBottomText.length)
+                if (binding.vBottom.text.toString() != state.bottomText) {
+                    binding.vBottom.setText(state.bottomText)
                 }
             }
             is CreatePackViewState.Loading -> {

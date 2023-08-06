@@ -24,8 +24,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
-                android:padding="16dp"
-                android:minHeight="150dp">
+                android:minHeight="150dp"
+                android:padding="16dp">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/vTop"
@@ -35,12 +35,12 @@
                     android:layout_marginHorizontal="16dp"
                     android:background="@null"
                     android:gravity="center"
+                    android:hint="Option 1"
+                    android:hyphenationFrequency="normal"
                     android:maxLength="150"
                     android:minWidth="100dp"
-                    android:hyphenationFrequency="normal"
                     android:textSize="18sp"
-                    app:layout_constraintVertical_chainStyle="spread"
-                    tools:text="Dog" />
+                    app:layout_constraintVertical_chainStyle="spread" />
 
             </FrameLayout>
 
@@ -51,10 +51,10 @@
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:padding="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:minHeight="150dp">
+                android:minHeight="150dp"
+                android:padding="16dp">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/vBottom"
@@ -63,10 +63,10 @@
                     android:layout_gravity="center"
                     android:background="@null"
                     android:gravity="center"
+                    android:hint="Option 1"
                     android:maxLength="150"
                     android:minWidth="100dp"
-                    android:textSize="18sp"
-                    tools:text="Cat" />
+                    android:textSize="18sp" />
 
 
             </FrameLayout>

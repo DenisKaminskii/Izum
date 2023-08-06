@@ -1,31 +1,29 @@
 package com.izum.ui.packs
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.tabs.TabLayoutMediator
+import com.izum.R
 import com.izum.databinding.ActivityPacksBinding
-import com.izum.ui.route.Router
+import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class PacksActivity : ComponentActivity() {
-
-    @Inject lateinit var router: Router
+class PacksActivity : BaseActivity() {
 
     private var _binding: ActivityPacksBinding? = null
     private val binding: ActivityPacksBinding
         get() = _binding!!
 
     private val viewModel: PacksViewModel by viewModels()
-    private val adapter = PacksAdapter { pack ->
-        viewModel.onPackClick(pack)
+    private val viewPagerAdapter: PacksViewPagerAdapter by lazy {
+        PacksViewPagerAdapter(supportFragmentManager, lifecycle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,24 +59,18 @@ class PacksActivity : ComponentActivity() {
     }
 
     private fun initView() {
-        binding.vPacks.layoutManager = GridLayoutManager(this, 2)
-        binding.vPacks.adapter = adapter
-        binding.vCustom.setOnClickListener { viewModel.onCustomClick() }
-        binding.vCreatePoll.setOnClickListener { viewModel.onCreatePollClick() }
+        binding.vPager.adapter = viewPagerAdapter
+        TabLayoutMediator(binding.vTabs, binding.vPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Official"
+                1 -> "Custom"
+                else -> ""
+            }
+        }.attach()
     }
 
     private fun updateViewState(state: PacksViewState) {
-        when(state) {
-            is PacksViewState.Loading -> {
-                binding.vProgress.isVisible = true
-                binding.vPacks.isVisible = false
-            }
-            is PacksViewState.Packs -> {
-                binding.vProgress.isVisible = false
-                binding.vPacks.isVisible = true
-                adapter.setItems(state.packs)
-            }
-        }
+
     }
 
 }

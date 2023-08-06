@@ -4,20 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.izum.R
 import com.izum.data.Pack
-import com.izum.databinding.ViewHolderPackInfoBinding
-
-abstract class PackViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
-
-    open fun bind(item: T) = Unit
-
-    open fun unbind() = Unit
-
-}
+import com.izum.databinding.ViewHolderPackBinding
+import com.izum.ui.BaseViewHolder
 
 class PacksAdapter(
     val onPackClick: (Pack) -> Unit
-) : RecyclerView.Adapter<PackViewHolder<*>>() {
+) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private val items = mutableListOf<Pack>()
 
@@ -35,22 +29,22 @@ class PacksAdapter(
         return 0
     }
 
-    override fun onBindViewHolder(holder: PackViewHolder<*>, position: Int) {
+    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         val item = items[position]
         when(holder) {
-            is PackInfoViewHolder -> holder.bind(item)
+            is PackViewHolder -> holder.bind(item)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PackViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when(viewType) {
             0 -> {
-                val binding = ViewHolderPackInfoBinding.inflate(
+                val binding = ViewHolderPackBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
-                PackInfoViewHolder(binding) { pack ->
+                PackViewHolder(binding, R.color.purple) { pack ->
                     onPackClick(pack)
                 }
             }
@@ -58,7 +52,7 @@ class PacksAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: PackViewHolder<*>) {
+    override fun onViewRecycled(holder: BaseViewHolder<*>) {
         super.onViewRecycled(holder)
         holder.unbind()
     }

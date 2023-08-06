@@ -23,6 +23,7 @@ class SuggestPollActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivitySuggestPollBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        update(viewModel.viewState)
 
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
         binding.vDone.setOnClickListener { viewModel.onDoneClick() }
@@ -38,6 +39,8 @@ class SuggestPollActivity : BaseActivity() {
                 viewModel.viewActionsFlow.collect { action -> accept(action) }
             }
         }
+
+        viewModel.init(Unit)
     }
 
     private fun update(state: SuggestPollViewState) {

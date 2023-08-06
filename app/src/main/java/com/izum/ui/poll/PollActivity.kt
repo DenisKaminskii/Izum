@@ -6,7 +6,9 @@ import android.view.MotionEvent
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.slider.Slider
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
@@ -42,11 +44,15 @@ class PollActivity : BaseActivity() {
         update(PollViewState.Loading)
 
         lifecycleScope.launch {
-            viewModel.viewStateFlow.collect { state -> update(state) }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewStateFlow.collect { state -> update(state) }
+            }
         }
 
         lifecycleScope.launch {
-            viewModel.viewActionsFlow.collect { action -> accept(action) }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewActionsFlow.collect { action -> accept(action) }
+            }
         }
 
         viewModel.init(
