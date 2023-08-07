@@ -24,7 +24,6 @@ class CreatePackActivity : BaseActivity() {
     private val binding get() = _binding!!
     
     private val viewModel: CreatePackViewModel by viewModels()
-    private var onSliderChangeListener: Slider.OnChangeListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +80,6 @@ class CreatePackActivity : BaseActivity() {
 
             is CreatePackViewState.Input -> {
                 binding.vDone.isEnabled = state.isDoneEnabled
-                binding.vSlider.isVisible = state.slider != null
                 binding.vDone.imageTintList = ContextCompat.getColorStateList(
                     this,
                     if (state.isDoneEnabled) R.color.black else R.color.disabledIcon
@@ -90,27 +88,6 @@ class CreatePackActivity : BaseActivity() {
 
                 binding.vPrev.apply(state.prevButton, R.drawable.ic_arrow_back_24) { viewModel.onPrevClick(state.prevButton) }
                 binding.vNext.apply(state.nextButton, R.drawable.ic_arrow_forward_24) { viewModel.onNextClick(state.nextButton) }
-
-                if (onSliderChangeListener == null && state.slider != null) {
-                    onSliderChangeListener = Slider.OnChangeListener { slider, value, fromUser ->
-                        if (!fromUser) return@OnChangeListener
-
-                        val lastAvailableIndex = state.slider.lastAvailableIndex
-                        if (lastAvailableIndex != null && value > lastAvailableIndex) {
-                            binding.vSlider.value = lastAvailableIndex.toFloat()
-                        } else {
-                            viewModel.onSliderChanged(value.toInt())
-                        }
-
-                    }
-                    binding.vSlider.valueFrom = 0f
-                    binding.vSlider.addOnChangeListener(onSliderChangeListener!!)
-                }
-
-                state.slider?.let {
-                    binding.vSlider.valueTo = it.lastIndex.toFloat()
-                    binding.vSlider.value = it.index.toFloat()
-                }
             }
         }
     }

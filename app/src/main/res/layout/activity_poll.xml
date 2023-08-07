@@ -3,40 +3,120 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/gLoading"
+        android:id="@+id/vgContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="vProgress"
-        tools:visibliity="gone" />
+        app:constraint_referenced_ids="vgTop, vgBottom, vgToolbar" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/gPoll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="vTop, vBottom, vSlider"
-        tools:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/vProgress"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:indeterminateTint="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/vTopBar"
+    <FrameLayout
+        android:id="@+id/vgTop"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/red"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/vgBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="150"
+            android:padding="24dp"
+            android:text="Option 1"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTopCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:paddingVertical="12dp"
+            android:text="36% (192)"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/vgBottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/purple"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vgTop">
+
+        <TextView
+            android:id="@+id/tvBottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="150"
+            android:padding="24dp"
+            android:text="Option 2"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvBottomCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:gravity="center_horizontal"
+            android:paddingVertical="12dp"
+            android:text="64% (391)"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/vgToolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/vTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/vBack"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center_vertical"
             android:padding="16dp"
-            android:src="@drawable/ic_arrow_back_24" />
+            android:src="@drawable/ic_arrow_back_24"
+            app:tint="@color/white" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/vVotes"
+        <TextView
+            android:id="@+id/tvPackTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -44,125 +124,46 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
+            android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:text="Pack name"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/vAgreeWithYou"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical"
-            android:text="Agree with you: 36%"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
-            android:visibility="invisible" />
+    </LinearLayout>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    <TextView
+        android:id="@+id/tvAnalytics"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/rect_filled_sand_14dp"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="SHOW ANALYTICS"
+        android:textColor="@color/black_wet"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivNext"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/vProgress"
+    <ImageView
+        android:id="@+id/ivNext"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:indeterminateTint="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="4dp"
+        android:background="@drawable/rect_filled_sand_14dp"
+        android:elevation="6dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_arrow_forward_24"
+        app:layout_constraintBottom_toBottomOf="@id/tvAnalytics"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/vTop"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/ripple_poll"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/vBottom"
-        app:layout_constraintTop_toBottomOf="@id/vTopBar"
-        app:layout_constraintVertical_chainStyle="spread"
-        app:layout_goneMarginTop="56dp"
-        tools:text="Alladin" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/vBottom"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/ripple_poll"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="Jafar"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/vSlider"
-        app:layout_constraintTop_toBottomOf="@id/vTop"
-        app:layout_goneMarginBottom="68dp" />
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/vSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:stepSize="1"
-        android:valueFrom="0"
-        app:haloColor="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@id/vBottomBar"
-        app:tickVisible="false" />
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/vBottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/vPrev"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:foreground="?attr/selectableItemBackground"
-            android:padding="16dp"
-            android:src="@drawable/ic_arrow_back_24"
-            app:tint="@color/black" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/vAnalytics"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:fontFamily="sans-serif-medium"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:text="Посмотреть аналитику"
-            android:textColor="@color/disabledText" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/vNext"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:foreground="?attr/selectableItemBackground"
-            android:padding="16dp"
-            android:src="@drawable/ic_arrow_forward_24"
-            app:tint="@color/black" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintStart_toEndOf="@id/tvAnalytics"
+        app:tint="@color/black_wet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

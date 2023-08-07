@@ -2,13 +2,10 @@ package com.izum.ui.packs
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.tabs.TabLayoutMediator
-import com.izum.R
 import com.izum.databinding.ActivityPacksBinding
 import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,36 +38,19 @@ class PacksActivity : BaseActivity() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewStateFlow.collect {
-                    updateViewState(it)
-                }
-            }
-        }
-
-        viewModel.init(Unit)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        router.detachHost()
     }
 
     private fun initView() {
-        binding.vPager.adapter = viewPagerAdapter
-        TabLayoutMediator(binding.vTabs, binding.vPager) { tab, position ->
+        binding.vgPager.adapter = viewPagerAdapter
+        TabLayoutMediator(binding.vgTabs, binding.vgPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Official"
                 1 -> "Custom"
                 else -> ""
             }
         }.attach()
-    }
 
-    private fun updateViewState(state: PacksViewState) {
-
+        viewModel.init(Unit)
     }
 
 }

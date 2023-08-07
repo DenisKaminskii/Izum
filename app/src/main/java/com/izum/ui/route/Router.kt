@@ -86,6 +86,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, PollActivity::class.java)
             intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, pack.id)
+            intent.putExtra(PollActivity.KEY_ARGS_PACK_TITLE, pack.title)
             activity.startActivity(intent)
         }
     }

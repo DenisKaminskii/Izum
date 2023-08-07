@@ -21,8 +21,7 @@ object PacksMocks {
                         title = "Strawberry",
                         votesCount = 25
                     )
-                ),
-                votedOptionId = 1
+                )
             ),
             Poll(
                 id = 2,
@@ -38,8 +37,7 @@ object PacksMocks {
                         title = "Plain",
                         votesCount = 90
                     )
-                ),
-                votedOptionId = 2
+                )
             ),
             Poll(
                 id = 3,
@@ -55,8 +53,7 @@ object PacksMocks {
                         title = "Dogs",
                         votesCount = 252
                     )
-                ),
-                votedOptionId = 1
+                )
             ),
             Poll(
                 id = 4,
@@ -72,8 +69,7 @@ object PacksMocks {
                         title = "Girl",
                         votesCount = 6
                     )
-                ),
-                votedOptionId = 2
+                )
             ),
             Poll(
                 id = 5,
@@ -89,8 +85,7 @@ object PacksMocks {
                         title = "Dogs",
                         votesCount = 252
                     )
-                ),
-                votedOptionId = 1
+                )
             ),
             Poll(
                 id = 6,
@@ -106,8 +101,7 @@ object PacksMocks {
                         title = "Fish",
                         votesCount = 432
                     )
-                ),
-                votedOptionId = null
+                )
             ),
             Poll(
                 id = 7,
@@ -123,8 +117,7 @@ object PacksMocks {
                         title = "Vanilla",
                         votesCount = 321
                     )
-                ),
-                votedOptionId = null
+                )
             ),
             Poll(
                 id = 8,
@@ -141,7 +134,6 @@ object PacksMocks {
                         votesCount = 134
                     )
                 ),
-                votedOptionId = null
             ),
             Poll(
                 id = 9,
@@ -157,8 +149,7 @@ object PacksMocks {
                         title = "Mountains",
                         votesCount = 512
                     )
-                ),
-                votedOptionId = null
+                )
             )
         )
     }

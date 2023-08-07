@@ -11,11 +11,13 @@
     <color name="disabledIcon">#9E9E9E</color>
 
     <color name="black">#000000</color>
+    <color name="black_wet">#4B4B4B</color>
     <color name="white">#EFEFEF</color>
     <color name="white_25">#40EFEFEF</color>
-    <color name="red">#EA616A</color>
+    <color name="red">#E8434D</color>
     <color name="blue">#616FEA</color>
-    <color name="purple">#AE61EA</color>
+    <color name="purple">#C233F4</color>
+    <color name="sand">#FFCF72</color>
     <color name="mint">#1ECF9A</color>
     <color name="peach">#EA8261</color>
     <color name="grey">#818181</color>

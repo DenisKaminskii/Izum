@@ -8,6 +8,7 @@ import com.izum.data.Pack
 import com.izum.databinding.ViewHolderPackBinding
 import com.izum.ui.BaseViewHolder
 import com.izum.ui.dpF
+import com.izum.ui.getBackgroundGradient
 
 class PackViewHolder(
     private val binding: ViewHolderPackBinding,
@@ -19,8 +20,10 @@ class PackViewHolder(
         super.bind(item)
 
         binding.vgRoot.background = getBackgroundGradient(
-            itemView.context.getColor(color)
-        )
+            color = itemView.context.getColor(color)
+        ).apply {
+            cornerRadius = itemView.context.dpF(16)
+        }
 
         binding.vLock.isVisible = item.isPaid // && !hasSubscription
         binding.vTitle.text = item.title
@@ -35,27 +38,5 @@ class PackViewHolder(
         binding.root.setOnContextClickListener(null)
     }
 
-    private fun getBackgroundGradient(color: Int): GradientDrawable {
-        val deltaRed = 35
-        val deltaGreen = 22
-        val deltaBlue = 14
-
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-
-        val darkerRed = (red - deltaRed).coerceAtLeast(0)
-        val darkerGreen = (green - deltaGreen).coerceAtLeast(0)
-        val darkerBlue = (blue - deltaBlue).coerceAtLeast(0)
-
-        val gradientDrawable = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(color, Color.rgb(darkerRed, darkerGreen, darkerBlue))
-        ).apply {
-            cornerRadius = itemView.context.dpF(16)
-        }
-
-        return gradientDrawable
-    }
 
 }

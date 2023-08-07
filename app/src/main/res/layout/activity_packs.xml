@@ -6,7 +6,7 @@
     android:background="@color/black">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/vTabs"
+        android:id="@+id/vgTabs"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@color/black"
@@ -31,14 +31,14 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vPager"
+        android:id="@+id/vgPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vTabs" />
+        app:layout_constraintTop_toBottomOf="@id/vgTabs" />
 
     <LinearLayout
         android:id="@+id/vCreatePack"

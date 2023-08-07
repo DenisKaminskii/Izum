@@ -3,7 +3,6 @@ package com.izum.ui.create.pack
 import androidx.lifecycle.viewModelScope
 import com.izum.data.CreatePoll
 import com.izum.domain.core.StateViewModel
-import com.izum.ui.SliderViewState
 import com.izum.ui.ViewAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,8 +17,7 @@ sealed interface CreatePackViewState {
         val prevButton: Button,
         val nextButton: Button,
         val visibleIndex: Int,
-        val visibleLastIndex: Int,
-        val slider: SliderViewState?
+        val visibleLastIndex: Int
     ) : CreatePackViewState
 
     enum class Button {
@@ -38,8 +36,7 @@ class CreatePackViewModel @Inject constructor(
         prevButton = CreatePackViewState.Button.HIDDEN,
         nextButton = CreatePackViewState.Button.CREATE_NEW,
         visibleIndex = 1,
-        visibleLastIndex = 1,
-        slider = null
+        visibleLastIndex = 1
     )
 ) {
 
@@ -90,15 +87,7 @@ class CreatePackViewModel @Inject constructor(
                     else -> CreatePackViewState.Button.HIDDEN
                 },
                 visibleIndex = index + 1,
-                visibleLastIndex = polls.lastIndex + 1,
-                slider = if (polls.size > 1) {
-                    SliderViewState(
-                        index = index,
-                        lastIndex = polls.lastIndex,
-                        isTracking = isSliderTracking,
-                        lastAvailableIndex = null
-                    )
-                } else null
+                visibleLastIndex = polls.lastIndex + 1
             )
         }
     }
