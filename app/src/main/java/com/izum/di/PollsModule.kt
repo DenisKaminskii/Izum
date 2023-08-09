@@ -1,6 +1,6 @@
 package com.izum.di
 
-import com.izum.api.PollsApi
+import com.izum.api.PollApi
 import com.izum.data.repository.PollsRepository
 import com.izum.data.repository.PollsRepositoryImpl
 import dagger.Module
@@ -17,7 +17,7 @@ class PollsModule {
     @Provides
     @Singleton
     fun providePollsRepository(
-        pollsApi: PollsApi,
+        pollsApi: PollApi,
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): PollsRepository {
         return PollsRepositoryImpl(pollsApi, ioDispatcher)

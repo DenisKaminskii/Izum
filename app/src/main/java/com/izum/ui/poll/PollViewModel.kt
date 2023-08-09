@@ -123,7 +123,7 @@ class PollViewModel @Inject constructor(
 
     fun onStatisticClick() {
         viewModelScope.launch {
-            route(Router.Route.Statistic(poll.id))
+            route(Router.Route.Statistic(poll))
         }
     }
 

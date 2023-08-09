@@ -1,10 +1,19 @@
 package com.izum.ui.poll.statistic
 
 import android.os.Bundle
+import android.util.Log
+import androidx.annotation.WorkerThread
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.izum.data.Poll
 import com.izum.databinding.ActivityPollStatisticBinding
 import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class StatisticItem {
 
@@ -35,7 +44,7 @@ sealed class StatisticItem {
 class PollStatisticActivity : BaseActivity() {
 
     companion object {
-        const val KEY_ARGS_POLL_ID = "KEY_ARGS_POLL_ID"
+        const val KEY_ARGS_POLL = "KEY_ARGS_POLL"
     }
 
     private var _binding: ActivityPollStatisticBinding? = null
@@ -44,39 +53,57 @@ class PollStatisticActivity : BaseActivity() {
 
     private val adapter = PollStatisticAdapter()
 
-    private var pollId = -1L
+    private val pollOptions: StatisticItem
+        get() = StatisticItem.TwoOptionsBar(
+            leftTop = null,
+            rightTop = null,
+            leftBottom = StatisticItem.TwoOptionsBar.Value.Text(poll.options[0].title),
+            rightBottom = StatisticItem.TwoOptionsBar.Value.Text(poll.options[1].title),
+            barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
+        )
+
+    private val statistic = mutableListOf<StatisticItem>()
+
+    private lateinit var poll: Poll
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityPollStatisticBinding.inflate(layoutInflater)
         val content = binding.root
         setContentView(content)
-        pollId = intent.getLongExtra(KEY_ARGS_POLL_ID, -1L)
-
-        if (pollId == -1L) {
+        try {
+            poll = intent.getParcelableExtra(KEY_ARGS_POLL) ?: return
+        } catch (e: Exception) {
+            Log.d("Steve", "PollStatisticActivity: onCreate: ${e.message}")
             finish()
         }
 
         initView()
-
+        lifecycleScope.launch {
+            fetchStatistic()
+        }
     }
 
     private fun initView() {
+        binding.ivBack.setOnClickListener { finish() }
         binding.rvStatistic.adapter = adapter
-        binding.rvStatistic.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
+        binding.rvStatistic.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        updateView()
+    }
+
+    private fun updateView() = lifecycleScope.launch {
+        binding.vProgress.isVisible = statistic.isEmpty()
+        binding.rvStatistic.isVisible = statistic.isNotEmpty()
         adapter.setItems(
+            listOf(pollOptions) + statistic
+        )
+    }
+
+    private suspend fun fetchStatistic() = withContext(ioDispatcher) {
+        delay(1_000)
+        statistic.addAll(
             listOf(
-                StatisticItem.TwoOptionsBar(
-                    leftTop = null,
-                    rightTop = null,
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Text("Это очень длинная история и мне понадобится две карточки чтобы ее рассказать"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Text("Так вот, дело было вечеромm делать было нечего, так что писал изюм, спс за внмне"),
-                    barPercent = 5
-                ),
                 StatisticItem.Header("Gender"),
                 StatisticItem.TwoOptionsBar(
                     leftTop = StatisticItem.TwoOptionsBar.Value.Text("Male"),
@@ -117,11 +144,7 @@ class PollStatisticActivity : BaseActivity() {
                 ),
             )
         )
+        updateView()
     }
-
-
-//    private suspend fun getStatistic(pollId: Long) : List<StatisticItem> = withContext(ioDispatcher) {
-//
-//    }
 
 }

@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface PollsApi {
+interface PollApi {
 
    @POST("polls/{pollId}/vote")
     suspend fun vote(

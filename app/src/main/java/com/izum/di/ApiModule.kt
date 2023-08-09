@@ -5,7 +5,7 @@ import com.izum.domain.core.PreferenceCache
 import com.izum.api.HeadersInterceptor
 import com.izum.api.AuthApi
 import com.izum.api.PacksApi
-import com.izum.api.PollsApi
+import com.izum.api.PollApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -47,8 +47,8 @@ class ApiModule {
     @Provides
     fun providePollsApi(
         retrofit: Retrofit
-    ) : PollsApi {
-        return retrofit.create(PollsApi::class.java)
+    ) : PollApi {
+        return retrofit.create(PollApi::class.java)
     }
 
     @Provides

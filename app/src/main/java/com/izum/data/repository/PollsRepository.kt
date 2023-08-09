@@ -2,7 +2,7 @@ package com.izum.data.repository
 
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.izum.api.PollsApi
+import com.izum.api.PollApi
 import com.izum.api.VoteRequestJson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -21,7 +21,7 @@ interface PollsRepository {
 }
 
 class PollsRepositoryImpl(
-    private val pollsApi: PollsApi,
+    private val pollsApi: PollApi,
     private val ioDispatcher: CoroutineDispatcher
 ) : PollsRepository {
 
