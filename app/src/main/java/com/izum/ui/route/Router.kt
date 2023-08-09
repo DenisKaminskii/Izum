@@ -6,7 +6,6 @@ import com.izum.data.Pack
 import com.izum.data.Poll
 import com.izum.ui.create.SuggestPollActivity
 import com.izum.ui.create.pack.CreatePackActivity
-import com.izum.ui.custom.CustomActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
@@ -19,7 +18,6 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        object Custom : Route
         data class Poll(val pack: Pack) : Route
         object CreatePoll : Route
         object CreatePack : Route
@@ -61,7 +59,6 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             routeQueue.poll()?.let { route ->
                 when(route) {
                     Router.Route.Packs -> showPacksActivity()
-                    Router.Route.Custom -> showCustomActivity()
                     is Router.Route.Poll -> showPollActivity(route.pack)
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
@@ -75,13 +72,6 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, PacksActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            activity.startActivity(intent)
-        }
-    }
-
-    private fun showCustomActivity() {
-        host?.let { activity ->
-            val intent = Intent(activity, CustomActivity::class.java)
             activity.startActivity(intent)
         }
     }

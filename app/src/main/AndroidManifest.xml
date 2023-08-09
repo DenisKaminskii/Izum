@@ -34,10 +34,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.custom.CustomActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".ui.poll.PollActivity"
             android:screenOrientation="portrait" />
 

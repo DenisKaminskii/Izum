@@ -34,12 +34,6 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onCustomClick() {
-        viewModelScope.launch {
-            route(Router.Route.Custom)
-        }
-    }
-
     fun onPackClick(pack: Pack) {
         viewModelScope.launch {
             route(Router.Route.Poll(pack))

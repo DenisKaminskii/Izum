@@ -3,6 +3,7 @@ package com.izum.ui.packs
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import androidx.annotation.ColorRes
 import androidx.core.view.isVisible
 import com.izum.data.Pack
 import com.izum.databinding.ViewHolderPackBinding
@@ -12,7 +13,7 @@ import com.izum.ui.getBackgroundGradient
 
 class PackViewHolder(
     private val binding: ViewHolderPackBinding,
-    private val color: Int,
+    @ColorRes private val color: Int,
     private val onClick: (Pack) -> Unit
 ) : BaseViewHolder<Pack>(binding.root) {
 

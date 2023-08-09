@@ -10,6 +10,7 @@ import com.izum.databinding.ViewHolderPackBinding
 import com.izum.ui.BaseViewHolder
 
 class PacksAdapter(
+    val isOfficial: Boolean,
     val onPackClick: (Pack) -> Unit
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
@@ -44,7 +45,18 @@ class PacksAdapter(
                     parent,
                     false
                 )
-                PackViewHolder(binding, R.color.peach) { pack ->
+                // get random color from 4 variant
+                val color = if (isOfficial) {
+                    when((0..3).random()) {
+                        0 -> R.color.peach
+                        1 -> R.color.mint
+                        2 -> R.color.red
+                        3 -> R.color.purple
+                        else -> R.color.mint
+                    }
+                } else R.color.black_soft
+
+                PackViewHolder(binding, color) { pack ->
                     onPackClick(pack)
                 }
             }

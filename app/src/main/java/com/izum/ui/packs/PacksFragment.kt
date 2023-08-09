@@ -41,11 +41,13 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         ViewModelProvider(requireActivity())[PacksViewModel::class.java]
     }
 
-    private val adapter = PacksAdapter { pack ->
-        viewModel.onPackClick(pack)
-    }
-
     private var isOfficial: Boolean = true
+
+    private val adapter by lazy {
+        PacksAdapter(isOfficial) { pack ->
+            viewModel.onPackClick(pack)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
