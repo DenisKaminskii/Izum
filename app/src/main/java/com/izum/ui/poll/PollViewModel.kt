@@ -9,6 +9,7 @@ import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
+import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -118,6 +119,12 @@ class PollViewModel @Inject constructor(
 
     fun onBottomVote() {
         onVote(optionBottom.id)
+    }
+
+    fun onStatisticClick() {
+        viewModelScope.launch {
+            route(Router.Route.Statistic(poll.id))
+        }
     }
 
     private fun onVote(optionId: Long) {

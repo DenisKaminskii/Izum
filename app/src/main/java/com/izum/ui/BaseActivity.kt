@@ -5,10 +5,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.izum.di.IoDispatcher
+import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import java.util.function.Consumer
 import javax.inject.Inject
 
@@ -19,7 +24,8 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     lateinit var router: Router
 
     @IoDispatcher
-    @Inject lateinit var ioDispatcher: CoroutineDispatcher
+    @Inject
+    lateinit var ioDispatcher: CoroutineDispatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +38,7 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     }
 
     override fun accept(action: ViewAction) {
-        when(action) {
+        when (action) {
             is ViewAction.ShowToast -> showToast(action.message)
             is ViewAction.Finish -> finish()
         }
@@ -40,6 +46,26 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    protected fun <T> subscribe(viewModel: StateViewModel<*, T>, onViewState: (T) -> Unit) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewStateFlow.collect { state -> onViewState(state) }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.viewActionsFlow.collect { action -> accept(action) }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.routeFlow.collect { route -> router.route(route) }
+            }
+        }
     }
 
 }

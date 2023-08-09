@@ -8,6 +8,7 @@ import com.izum.ui.create.pack.CreatePackActivity
 import com.izum.ui.custom.CustomActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
+import com.izum.ui.poll.statistic.PollStatisticActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -21,6 +22,7 @@ interface Router {
         data class Poll(val pack: Pack) : Route
         object CreatePoll : Route
         object CreatePack : Route
+        data class Statistic(val pollId: Long) : Route
     }
 
     fun route(route: Route)
@@ -62,6 +64,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Poll -> showPollActivity(route.pack)
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
+                    is Router.Route.Statistic -> showPollStatistic(route.pollId)
                 }
             }
         }
@@ -101,6 +104,14 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
     private fun showCreatePack() {
         host?.let { activity ->
             val intent = Intent(activity, CreatePackActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun showPollStatistic(pollId: Long) {
+        host?.let { activity ->
+            val intent = Intent(activity, PollStatisticActivity::class.java)
+            intent.putExtra(PollStatisticActivity.KEY_ARGS_POLL_ID, pollId)
             activity.startActivity(intent)
         }
     }

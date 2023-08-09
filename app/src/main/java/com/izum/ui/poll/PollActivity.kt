@@ -37,18 +37,8 @@ class PollActivity : BaseActivity() {
         _binding = ActivityPollBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewStateFlow.collect { state -> update(state) }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewActionsFlow.collect { action -> accept(action) }
-            }
-        }
+        subscribe(viewModel) { viewState -> update(viewState) }
+        update(PollViewState.Loading)
     }
 
     private fun initView() {
@@ -56,11 +46,10 @@ class PollActivity : BaseActivity() {
         binding.tvTop.setOnClickListener { viewModel.onTopVote() }
         binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
         binding.ivNext.setOnClickListener { viewModel.onNextClick() }
+        binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
 
         binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
-        binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.purple))
-
-        update(PollViewState.Loading)
+        binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
 
         viewModel.init(
             args = PollViewModel.Companion.Arguments(
@@ -136,13 +125,13 @@ class PollActivity : BaseActivity() {
         }
 
         if (isVoted) {
-            if (!binding.tvAnalytics.isVisible) {
-                binding.tvAnalytics.animateShow()
+            if (!binding.tvStatistic.isVisible) {
+                binding.tvStatistic.animateShow()
                 binding.ivNext.animateShow()
             }
         } else {
-            if (binding.tvAnalytics.isVisible) {
-                binding.tvAnalytics.animateHide()
+            if (binding.tvStatistic.isVisible) {
+                binding.tvStatistic.animateHide()
                 binding.ivNext.animateHide()
             }
         }

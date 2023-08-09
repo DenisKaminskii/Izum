@@ -44,7 +44,7 @@ class PacksAdapter(
                     parent,
                     false
                 )
-                PackViewHolder(binding, R.color.purple) { pack ->
+                PackViewHolder(binding, R.color.peach) { pack ->
                     onPackClick(pack)
                 }
             }

@@ -29,15 +29,7 @@ class PacksActivity : BaseActivity() {
         val content = binding.root
         setContentView(content)
         initView()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                router.attachHost(this@PacksActivity)
-                viewModel.routeFlow.collect {
-                    router.route(it)
-                }
-            }
-        }
+        subscribe(viewModel) { viewState -> /*ignore*/ }
     }
 
     private fun initView() {

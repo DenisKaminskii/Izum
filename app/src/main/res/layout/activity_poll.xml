@@ -64,7 +64,7 @@
         android:id="@+id/vgBottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/purple"
+        android:background="@color/sand"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +100,7 @@
     <LinearLayout
         android:id="@+id/vgToolbar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="72dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,10 +108,10 @@
 
         <ImageView
             android:id="@+id/ivBack"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="center_vertical"
-            android:padding="16dp"
+            android:padding="20dp"
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/white" />
 
@@ -128,22 +128,22 @@
             android:maxLines="1"
             android:text="Pack name"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvAnalytics"
+        android:id="@+id/tvStatistic"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginHorizontal="4dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/rect_filled_sand_14dp"
+        android:background="@drawable/rect_filled_white_14dp"
         android:elevation="6dp"
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:text="SHOW ANALYTICS"
+        android:text="SHOW STATISTIC"
         android:textColor="@color/black_wet"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -157,13 +157,13 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginHorizontal="4dp"
-        android:background="@drawable/rect_filled_sand_14dp"
+        android:background="@drawable/rect_filled_white_14dp"
         android:elevation="6dp"
         android:padding="12dp"
         android:src="@drawable/ic_arrow_forward_24"
-        app:layout_constraintBottom_toBottomOf="@id/tvAnalytics"
+        app:layout_constraintBottom_toBottomOf="@id/tvStatistic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvAnalytics"
+        app:layout_constraintStart_toEndOf="@id/tvStatistic"
         app:tint="@color/black_wet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
