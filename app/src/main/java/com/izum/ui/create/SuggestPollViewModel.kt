@@ -31,8 +31,8 @@ class SuggestPollViewModel @Inject constructor(
         bottomText = ""
     )
 
-    override fun init(args: Unit) {
-        super.init(args)
+    override fun onViewInitialized(args: Unit) {
+        super.onViewInitialized(args)
         // ..
     }
 

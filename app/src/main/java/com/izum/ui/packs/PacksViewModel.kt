@@ -24,8 +24,8 @@ class PacksViewModel @Inject constructor(
     initialState = PacksViewState.Loading
 ) {
 
-    override fun init(args: Unit) {
-        super.init(args)
+    override fun onViewInitialized(args: Unit) {
+        super.onViewInitialized(args)
         viewModelScope.launch {
             packsRepository.getPacks()
                 .collect { packs ->
@@ -36,7 +36,7 @@ class PacksViewModel @Inject constructor(
 
     fun onPackClick(pack: Pack) {
         viewModelScope.launch {
-            route(Router.Route.Poll(pack))
+            route(Router.Route.Pack(pack))
         }
     }
 

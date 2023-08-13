@@ -15,30 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-sealed class StatisticItem {
-
-    data class Header(
-        val title: String
-    ) : StatisticItem()
-
-    data class TwoOptionsBar(
-        val leftTop: Value? = null,
-        val rightTop: Value? = null,
-        val leftBottom: Value? = null,
-        val rightBottom: Value? = null,
-        val barPercent: Int
-    ) : StatisticItem() {
-
-        sealed class Value {
-            class Text(val text: String) : Value()
-            class Double(val text: Pair<String, String>) : Value()
-        }
-
-    }
-
-
-}
-
 // No View Model
 @AndroidEntryPoint
 class PollStatisticActivity : BaseActivity() {

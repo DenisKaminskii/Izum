@@ -44,7 +44,7 @@ class CreatePackActivity : BaseActivity() {
             }
         }
 
-        viewModel.init(Unit)
+        viewModel.onViewInitialized(Unit)
     }
 
     private val titleTextWatcher = object : SimpleTextWatcher() {

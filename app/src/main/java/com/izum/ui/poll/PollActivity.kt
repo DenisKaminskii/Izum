@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
 import com.izum.ui.BaseActivity
@@ -51,7 +49,7 @@ class PollActivity : BaseActivity() {
         binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
         binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
 
-        viewModel.init(
+        viewModel.onViewInitialized(
             args = PollViewModel.Companion.Arguments(
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
                 packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: ""

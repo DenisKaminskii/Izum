@@ -1,12 +1,11 @@
 package com.izum.ui.packs
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.izum.R
 import com.izum.data.Pack
-import com.izum.databinding.ViewHolderPackBinding
+import com.izum.databinding.ItemPackBinding
 import com.izum.ui.BaseViewHolder
 
 class PacksAdapter(
@@ -40,7 +39,7 @@ class PacksAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when(viewType) {
             0 -> {
-                val binding = ViewHolderPackBinding.inflate(
+                val binding = ItemPackBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

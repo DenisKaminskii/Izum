@@ -1,11 +1,12 @@
 package com.izum.ui.route
 
 import android.content.Intent
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import com.izum.data.Pack
 import com.izum.data.Poll
 import com.izum.ui.create.SuggestPollActivity
 import com.izum.ui.create.pack.CreatePackActivity
+import com.izum.ui.pack.PackFragment
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
@@ -18,15 +19,16 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        data class Poll(val pack: Pack) : Route
+        data class Poll(val pack: com.izum.data.Pack) : Route
         object CreatePoll : Route
         object CreatePack : Route
         data class Statistic(val poll: com.izum.data.Poll) : Route
+        data class Pack(val pack: com.izum.data.Pack) : Route
     }
 
     fun route(route: Route)
 
-    fun attachHost(activity: ComponentActivity)
+    fun attachHost(activity: FragmentActivity)
 
     fun detachHost()
 
@@ -36,9 +38,9 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
 
     private val routeQueue = ConcurrentLinkedQueue<Router.Route>()
 
-    private var host: ComponentActivity? = null
+    private var host: FragmentActivity? = null
 
-    override fun attachHost(activity: ComponentActivity) {
+    override fun attachHost(activity: FragmentActivity) {
         this.host = activity
         executeRoutes()
     }
@@ -63,6 +65,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
+                    is Router.Route.Pack -> showPackDialog(route.pack)
                 }
             }
         }
@@ -104,6 +107,15 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             val intent = Intent(activity, PollStatisticActivity::class.java)
             intent.putExtra(PollStatisticActivity.KEY_ARGS_POLL, poll)
             activity.startActivity(intent)
+        }
+    }
+
+    private fun showPackDialog(pack: Pack) {
+        host?.let { activity ->
+            PackFragment.show(
+                activity.supportFragmentManager,
+                pack
+            )
         }
     }
 

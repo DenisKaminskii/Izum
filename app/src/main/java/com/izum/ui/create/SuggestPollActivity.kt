@@ -40,7 +40,7 @@ class SuggestPollActivity : BaseActivity() {
             }
         }
 
-        viewModel.init(Unit)
+        viewModel.onViewInitialized(Unit)
     }
 
     private fun update(state: SuggestPollViewState) {

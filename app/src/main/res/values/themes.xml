@@ -12,10 +12,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="BaseFullScreenDialogFragment" parent="Theme.MaterialComponents.Dialog">
-
-    </style>
-
     <style name="TextViewStyle">
         <item name="android:gravity">center</item>
         <item name="android:paddingHorizontal">16dp</item>
@@ -41,6 +37,12 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint">@color/white</item>
         <item name="android:background">@drawable/rect_filled_gradient_premium_14dp</item>
+    </style>
+
+    <style name="Dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.izum.ui.main
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.repository.UserRepository
 import com.izum.domain.core.StateViewModel
@@ -15,13 +16,14 @@ class MainViewModel @Inject constructor(
     initialState = Unit
 ) {
 
-    override fun init(args: Unit) {
-        super.init(args)
+    override fun onViewInitialized(args: Unit) {
+        super.onViewInitialized(args)
         viewModelScope.launch {
             try {
                 userRepository.fetchToken()
                 route(Router.Route.Packs)
             } catch (ex: Exception) {
+                Log.e("Steve", ex.toString())
                 // TODO: Show retry button
             }
         }

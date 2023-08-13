@@ -38,7 +38,7 @@ class PacksActivity : BaseActivity() {
             }
         }.attach()
 
-        viewModel.init(Unit)
+        viewModel.onViewInitialized(Unit)
     }
 
 }

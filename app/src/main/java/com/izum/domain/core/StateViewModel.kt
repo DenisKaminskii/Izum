@@ -31,7 +31,7 @@ abstract class StateViewModel<Arguments ,ViewState>(
 
     private val updateMutex = Mutex()
 
-    open fun init(args: Arguments) {
+    open fun onViewInitialized(args: Arguments) {
         updateState { initialState }
     }
 

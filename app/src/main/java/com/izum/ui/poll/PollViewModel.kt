@@ -1,6 +1,5 @@
 package com.izum.ui.poll
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.Poll
 import com.izum.data.PollOption
@@ -65,8 +64,8 @@ class PollViewModel @Inject constructor(
     private var votedOptionId: Long? = null
     private var jobVoting: Job? = null
 
-    override fun init(args: Arguments) {
-        super.init(args)
+    override fun onViewInitialized(args: Arguments) {
+        super.onViewInitialized(args)
         val packId = args.packId
         packTitle = args.packTitle
 
