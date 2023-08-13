@@ -69,8 +69,7 @@ class PollStatisticActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityPollStatisticBinding.inflate(layoutInflater)
-        val content = binding.root
-        setContentView(content)
+        setContentView(binding.root)
         try {
             poll = intent.getParcelableExtra(KEY_ARGS_POLL) ?: return
         } catch (e: Exception) {

@@ -12,4 +12,35 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="BaseFullScreenDialogFragment" parent="Theme.MaterialComponents.Dialog">
+
+    </style>
+
+    <style name="TextViewStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:elevation">6dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="WhiteTextViewStyle" parent="TextViewStyle">
+        <item name="android:textColor">@color/black_wet</item>
+        <item name="android:drawableTint">@color/black_wet</item>
+        <item name="android:background">@drawable/rect_filled_white_14dp</item>
+    </style>
+
+    <style name="SandTextViewStyle" parent="TextViewStyle">
+        <item name="android:textColor">@color/black_wet</item>
+        <item name="android:drawableTint">@color/black_wet</item>
+        <item name="android:background">@drawable/rect_filled_sand_14dp</item>
+    </style>
+
+    <style name="GradientTextViewStyle" parent="TextViewStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint">@color/white</item>
+        <item name="android:background">@drawable/rect_filled_gradient_premium_14dp</item>
+    </style>
+
 </resources>

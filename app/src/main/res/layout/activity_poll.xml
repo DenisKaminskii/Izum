@@ -134,38 +134,32 @@
 
     <TextView
         android:id="@+id/tvStatistic"
+        style="@style/WhiteTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginHorizontal="4dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/rect_filled_white_14dp"
-        android:elevation="6dp"
-        android:gravity="center"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:text="SHOW STATISTIC"
-        android:textColor="@color/black_wet"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:text="STATISTIC"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ivNext"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
-    <ImageView
+    <TextView
         android:id="@+id/ivNext"
-        android:layout_width="48dp"
+        style="@style/WhiteTextViewStyle"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginHorizontal="4dp"
-        android:background="@drawable/rect_filled_white_14dp"
-        android:elevation="6dp"
-        android:padding="12dp"
-        android:src="@drawable/ic_arrow_forward_24"
+        android:drawableEnd="@drawable/ic_arrow_forward_16"
+        android:drawablePadding="4dp"
+        android:text="NEXT"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tvStatistic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvStatistic"
-        app:tint="@color/black_wet" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

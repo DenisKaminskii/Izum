@@ -22,5 +22,7 @@
     <color name="mint">#1ECF9A</color>
     <color name="peach">#EA8261</color>
     <color name="grey">#818181</color>
+    <color name="premium_gradient_start">#FF51B9</color>
+    <color name="premium_gradient_end">#F3BC7D</color>
 
 </resources>

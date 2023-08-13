@@ -46,7 +46,7 @@ class PacksRepositoryImpl(
         ).flowOn(ioDispatcher)
     }
 
-    override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> {
+    override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> { // shoud save
         if (packId == 2L) {
             return flowOf(
                 packsApi.getPackPolls(packId)
