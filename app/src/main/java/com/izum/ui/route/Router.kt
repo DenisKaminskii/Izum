@@ -19,7 +19,7 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        data class Poll(val pack: com.izum.data.Pack) : Route
+        data class PackPolls(val pack: com.izum.data.Pack) : Route
         object CreatePoll : Route
         object CreatePack : Route
         data class Statistic(val poll: com.izum.data.Poll) : Route
@@ -61,7 +61,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             routeQueue.poll()?.let { route ->
                 when(route) {
                     Router.Route.Packs -> showPacksActivity()
-                    is Router.Route.Poll -> showPollActivity(route.pack)
+                    is Router.Route.PackPolls -> showPollActivity(route.pack)
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)

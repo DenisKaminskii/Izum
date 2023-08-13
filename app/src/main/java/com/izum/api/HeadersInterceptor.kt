@@ -13,7 +13,7 @@ class HeadersInterceptor(
         val request = chain.request().newBuilder()
 
         val token = preferenceCache.getString(PreferenceKey.Token)
-        request.addHeader("Authorization", token)
+        request.addHeader("Authorization", token ?: "")
 
         return chain.proceed(request.build())
     }

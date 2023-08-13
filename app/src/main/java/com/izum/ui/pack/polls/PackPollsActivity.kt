@@ -25,7 +25,6 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
-// 1. Adapter -> onItem OnClick
 @AndroidEntryPoint
 class PackPollsActivity : BaseActivity() {
 
@@ -47,21 +46,24 @@ class PackPollsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityPackPollsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        try {
-            pack = intent.getParcelableExtra(KEY_ARGS_PACK) ?: return
-        } catch (ex: Exception) {
-            Log.d("Steve", "PackPollsActivity: onCreate: ${ex.message}")
-            finish()
-        }
-        initView()
+
         lifecycleScope.launch {
             fetchPolls()
         }
     }
 
-    private fun initView() {
+    override fun initArgs(args: Bundle) {
+        super.initArgs(args)
+        pack = args.getParcelable(KEY_ARGS_PACK)!!
+    }
+
+    override fun initLayout() {
+        super.initLayout()
+        _binding = ActivityPackPollsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
+    override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvPackTitle.text = pack.title
         binding.rvPolls.adapter = adapter

@@ -1,9 +1,8 @@
 package com.izum.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -29,8 +28,25 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        try {
+            intent.extras?.let(::initArgs)
+        } catch (ex: Exception) {
+            Log.e("Steve", "BaseActivity: onCreate: ${ex.message}")
+            finish()
+        }
+
         router.attachHost(this)
+
+        initLayout()
+        initView()
+        initSubs()
     }
+
+    @Throws(Exception::class)
+    open fun initArgs(args: Bundle) {}
+    open fun initLayout() {}
+    open fun initView() {}
+    open fun initSubs() {}
 
     override fun onDestroy() {
         super.onDestroy()

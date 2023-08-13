@@ -44,22 +44,24 @@ class PollStatisticActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityPollStatisticBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        try {
-            poll = intent.getParcelableExtra(KEY_ARGS_POLL) ?: return
-        } catch (e: Exception) {
-            Log.d("Steve", "PollStatisticActivity: onCreate: ${e.message}")
-            finish()
-        }
 
-        initView()
         lifecycleScope.launch {
             fetchStatistic()
         }
     }
 
-    private fun initView() {
+    override fun initLayout() {
+        super.initLayout()
+        _binding = ActivityPollStatisticBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
+    override fun initArgs(args: Bundle) {
+        super.initArgs(args)
+        poll = intent.getParcelableExtra(KEY_ARGS_POLL)!!
+    }
+
+    override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         binding.rvStatistic.adapter = adapter
         binding.rvStatistic.layoutManager =

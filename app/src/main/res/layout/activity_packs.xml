@@ -78,7 +78,7 @@
         android:orientation="vertical"
         android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/vPlan"
+        app:layout_constraintEnd_toStartOf="@id/vgSubscription"
         app:layout_constraintStart_toEndOf="@id/vCreatePack">
 
         <ImageView
@@ -100,7 +100,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/vPlan"
+        android:id="@+id/vgSubscription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -111,17 +111,19 @@
         app:layout_constraintStart_toEndOf="@id/vSuggest">
 
         <ImageView
+            android:id="@+id/ivSubscription"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_stars_24" />
 
         <TextView
+            android:id="@+id/tvSubscription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="1"
-            android:text="Membership"
+            android:text="Subscribe"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold" />

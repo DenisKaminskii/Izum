@@ -25,35 +25,19 @@ class CreatePackActivity : BaseActivity() {
     
     private val viewModel: CreatePackViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _binding = ActivityCreatePackBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        initView()
-        update(viewModel.viewState)
-        
-        lifecycleScope.launch { 
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewStateFlow.collect { state -> update(state) }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewActionsFlow.collect { action -> accept(action) }
-            }
-        }
-
-        viewModel.onViewInitialized(Unit)
-    }
-
     private val titleTextWatcher = object : SimpleTextWatcher() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             viewModel.onTitleTextChanged(s.toString())
         }
     }
 
-    private fun initView() {
+    override fun initLayout() {
+        super.initLayout()
+        _binding = ActivityCreatePackBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
+    override fun initView() {
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
         binding.vDone.setOnClickListener { viewModel.onDoneClick() }
         binding.vTitle.addTextChangedListener(titleTextWatcher)
@@ -67,6 +51,14 @@ class CreatePackActivity : BaseActivity() {
                 viewModel.onSliderTrackingStop()
             }
         })
+
+        update(viewModel.viewState)
+        viewModel.onViewInitialized(Unit)
+    }
+
+    override fun initSubs() {
+        super.initSubs()
+        subscribe(viewModel) { viewState -> update(viewState) }
     }
 
     private fun update(state: CreatePackViewState) {

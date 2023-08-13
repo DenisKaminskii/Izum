@@ -1,15 +1,10 @@
 package com.izum.ui.create
 
-import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.izum.databinding.ActivitySuggestPollBinding
 import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SuggestPollActivity : BaseActivity() {
@@ -19,28 +14,26 @@ class SuggestPollActivity : BaseActivity() {
 
     private val viewModel: SuggestPollViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initLayout() {
+        super.initLayout()
         _binding = ActivitySuggestPollBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        update(viewModel.viewState)
+    }
+
+    override fun initView() {
+        super.initView()
 
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
         binding.vDone.setOnClickListener { viewModel.onDoneClick() }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewStateFlow.collect { state -> update(state) }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewActionsFlow.collect { action -> accept(action) }
-            }
-        }
+        update(viewModel.viewState)
 
         viewModel.onViewInitialized(Unit)
+    }
+
+    override fun initSubs() {
+        super.initSubs()
+        subscribe(viewModel, ::update)
     }
 
     private fun update(state: SuggestPollViewState) {

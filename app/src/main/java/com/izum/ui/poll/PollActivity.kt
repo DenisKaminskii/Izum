@@ -1,7 +1,6 @@
 package com.izum.ui.poll
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -29,17 +28,13 @@ class PollActivity : BaseActivity() {
         get() = _binding!!
 
     private val viewModel: PollViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initLayout() {
+        super.initLayout()
         _binding = ActivityPollBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initView()
-        subscribe(viewModel) { viewState -> update(viewState) }
-        update(PollViewState.Loading)
     }
 
-    private fun initView() {
+    override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvTop.setOnClickListener { viewModel.onTopVote() }
         binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
@@ -49,12 +44,19 @@ class PollActivity : BaseActivity() {
         binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
         binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
 
+        update(PollViewState.Loading)
+
         viewModel.onViewInitialized(
             args = PollViewModel.Companion.Arguments(
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
                 packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: ""
             )
         )
+    }
+
+    override fun initSubs() {
+        super.initSubs()
+        subscribe(viewModel) { viewState -> update(viewState) }
     }
 
     private fun View.animateShow() = lifecycleScope.launch {
@@ -84,7 +86,6 @@ class PollActivity : BaseActivity() {
         binding.vProgress.isVisible = state is PollViewState.Loading
         binding.vgContent.isVisible = state !is PollViewState.Loading
 
-        // Text
         if (state !is PollViewState.Poll) return
 
         val isTopVoted = state.votedOptionId == state.top.id

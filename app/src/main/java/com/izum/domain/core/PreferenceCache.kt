@@ -9,12 +9,17 @@ interface PreferenceCache {
 
     fun putString(key: PreferenceKey, value: String)
 
-    fun getString(key: PreferenceKey) : String
+    fun putBoolean(key: PreferenceKey, value: Boolean)
+
+    fun getString(key: PreferenceKey) : String?
+
+    fun getBoolean(key: PreferenceKey, fallback: Boolean) : Boolean
 
 }
 
 enum class PreferenceKey {
-    Token
+    Token,
+    HasSubscription
 }
 
 class PreferenceCacheImpl @Inject constructor(
@@ -33,8 +38,18 @@ class PreferenceCacheImpl @Inject constructor(
             .apply()
     }
 
-    override fun getString(key: PreferenceKey): String {
-        return preferences.getString(key.name, "") ?: ""
+    override fun putBoolean(key: PreferenceKey, value: Boolean) {
+        preferences.edit()
+            .putBoolean(key.name, value)
+            .apply()
+    }
+
+    override fun getString(key: PreferenceKey): String? {
+        return preferences.getString(key.name, "")
+    }
+
+    override fun getBoolean(key: PreferenceKey, fallback: Boolean) : Boolean {
+        return preferences.getBoolean(key.name, fallback)
     }
 
 }

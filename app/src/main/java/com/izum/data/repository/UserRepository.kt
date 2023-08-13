@@ -11,6 +11,8 @@ import kotlinx.coroutines.withContext
 
 interface UserRepository  {
 
+    var hasSubscription: Boolean
+
     suspend fun fetchToken()
 
 }
@@ -21,6 +23,12 @@ class UserRepositoryImpl(
     private val deviceIdProvider: DeviceIdProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : UserRepository {
+
+    override var hasSubscription: Boolean
+        get() = preferenceCache.getBoolean(key = PreferenceKey.HasSubscription, fallback = false)
+        set(value) {
+            preferenceCache.putBoolean(PreferenceKey.HasSubscription, value)
+        }
 
     override suspend fun fetchToken() = withContext(ioDispatcher) {
         val response = authApi.getToken(
