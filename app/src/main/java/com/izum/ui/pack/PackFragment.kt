@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import com.izum.ui.packs.PacksViewModel
 import com.izum.ui.packs.PacksViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class PackFragment : BaseDialogFragment() {
@@ -165,7 +163,7 @@ class PackFragment : BaseDialogFragment() {
                         )
                     )
                     setBackgroundResource(
-                        if (hasSubscription) R.drawable.rect_filled_sand_14dp else R.drawable.rect_filled_gradient_premium_14dp
+                        if (hasSubscription) R.drawable.rect_filled_sand_14 else R.drawable.rect_filled_gradient_premium_14
                     )
                     if (hasSubscription) {
                         setCompoundDrawables(null, null, null, null)

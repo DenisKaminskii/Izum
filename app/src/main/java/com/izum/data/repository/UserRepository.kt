@@ -13,6 +13,8 @@ interface UserRepository  {
 
     var hasSubscription: Boolean
 
+    var isStatisticInfoProvided: Boolean
+
     suspend fun fetchToken()
 
 }
@@ -28,6 +30,12 @@ class UserRepositoryImpl(
         get() = preferenceCache.getBoolean(key = PreferenceKey.HasSubscription, fallback = false)
         set(value) {
             preferenceCache.putBoolean(PreferenceKey.HasSubscription, value)
+        }
+
+    override var isStatisticInfoProvided: Boolean
+        get() = preferenceCache.getBoolean(key = PreferenceKey.UserInfoProvided, fallback = false)
+        set(value) {
+            preferenceCache.putBoolean(PreferenceKey.UserInfoProvided, value)
         }
 
     override suspend fun fetchToken() = withContext(ioDispatcher) {

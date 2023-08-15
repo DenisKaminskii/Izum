@@ -1,6 +1,7 @@
 package com.izum.ui.main
 
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.izum.databinding.ActivityMainBinding
 import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,12 +23,20 @@ class MainActivity : BaseActivity() {
 
     override fun initView() {
         super.initView()
+
+        binding.tvReload.setOnClickListener { viewModel.onReloadClick() }
+
         viewModel.onViewInitialized(Unit)
     }
 
     override fun initSubs() {
         super.initSubs()
-        subscribe(viewModel) { /* no viewState */ }
+        subscribe(viewModel) { viewState -> update(viewState) }
+    }
+
+    fun update(state: MainViewState) {
+        binding.vProgress.isVisible = state.isLoading
+        binding.vgReload.isVisible = !state.isLoading
     }
 
 }

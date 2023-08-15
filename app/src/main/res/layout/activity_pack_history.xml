@@ -77,7 +77,7 @@
 
         <TextView
             android:id="@+id/tvNoPolls"
-            style="@style/SandTextViewStyle"
+            style="@style/Text.Button.White.Outline"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginHorizontal="16dp"

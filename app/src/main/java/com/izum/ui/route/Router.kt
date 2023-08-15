@@ -11,6 +11,7 @@ import com.izum.ui.pack.history.PackHistoryActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
+import com.izum.ui.user.UserInfoActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -26,6 +27,7 @@ interface Router {
         data class Statistic(val poll: Poll) : Route
         data class Pack(val pack: com.izum.data.Pack) : Route
         data class PackHistory(val pack: com.izum.data.Pack) : Route
+        object ProvideUserInfo : Route
     }
 
     fun route(route: Route)
@@ -69,6 +71,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
                     is Router.Route.Pack -> showPackDialog(route.pack)
                     is Router.Route.PackHistory -> showPackHistory(route.pack)
+                    is Router.Route.ProvideUserInfo -> showUserInfo()
                 }
             }
         }
@@ -126,6 +129,14 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, PackHistoryActivity::class.java)
             intent.putExtra(PackHistoryActivity.KEY_ARGS_PACK, pack)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun showUserInfo() {
+        host?.let { activity ->
+            val intent = Intent(activity, UserInfoActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             activity.startActivity(intent)
         }
     }

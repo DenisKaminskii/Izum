@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
 
     <ProgressBar
         android:id="@+id/vProgress"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:indeterminateTint="@color/red" />
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/white" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/vgReload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/network_problems_try_reload" />
+
+        <TextView
+            android:id="@+id/tvReload"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:text="@string/button_reload" />
+
+    </LinearLayout>
+
+</FrameLayout>

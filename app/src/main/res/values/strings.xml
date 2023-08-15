@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Izum</string>
+
+    <string name="network_problems_try_reload">Network problems.\nTry to reload the application.</string>
+    <string name="set_up_your_profile">Set up your profile</string>
+    <string name="tap_to_enter">Tap to enter</string>
+    <string name="gender">Gender</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="other">Other</string>
+    <string name="age">Age</string>
+
+
+    <string name="button_reload">Reload</string>
+
 </resources>

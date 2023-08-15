@@ -19,7 +19,8 @@ interface PreferenceCache {
 
 enum class PreferenceKey {
     Token,
-    HasSubscription
+    HasSubscription,
+    UserInfoProvided
 }
 
 class PreferenceCacheImpl @Inject constructor(
