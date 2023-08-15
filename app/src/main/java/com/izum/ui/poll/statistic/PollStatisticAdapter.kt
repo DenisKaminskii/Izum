@@ -2,6 +2,7 @@ package com.izum.ui.poll.statistic
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.izum.databinding.ItemStatisticHeaderBinding
 import com.izum.databinding.ItemStatisticTwoOptionsBinding
@@ -21,16 +22,19 @@ sealed class StatisticItem {
         val barPercent: Int
     ) : StatisticItem() {
 
-        sealed class Value {
-            class Text(val text: String) : Value()
-            class Double(val text: Pair<String, String>) : Value()
-        }
+        data class Value(
+            val text: String,
+            @ColorInt
+            val color: Int
+        )
 
     }
 
 }
 
-class PollStatisticAdapter : RecyclerView.Adapter<BaseViewHolder<*>>() {
+class PollStatisticAdapter(
+    private val onPollClick: () -> Unit,
+) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     enum class ViewType {
         HEADER,
@@ -80,7 +84,7 @@ class PollStatisticAdapter : RecyclerView.Adapter<BaseViewHolder<*>>() {
             }
             ViewType.TWO_OPTIONS.ordinal -> {
                 val binding = ItemStatisticTwoOptionsBinding.inflate(inflater, parent, false)
-                StatisticTwoOptionsViewHolder(binding)
+                StatisticTwoOptionsViewHolder(binding, onPollClick)
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }

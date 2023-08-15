@@ -134,6 +134,7 @@ object PacksMocks {
                         votesCount = 134
                     )
                 ),
+                votedOptionId = 7
             ),
             Poll(
                 id = 9,
@@ -149,7 +150,8 @@ object PacksMocks {
                         title = "Mountains",
                         votesCount = 512
                     )
-                )
+                ),
+                votedOptionId = 10
             )
         )
     }

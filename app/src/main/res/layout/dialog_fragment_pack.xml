@@ -29,7 +29,7 @@
             tools:text="Daily Life" />
 
         <ImageView
-            android:id="@+id/ivLock"
+            android:id="@+id/ivHistory"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="8dp"
@@ -99,6 +99,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
         android:drawableStart="@drawable/ic_unlock_24"
+        android:drawableTint="@color/white"
         android:minWidth="150dp"
         android:text="Subscribe"
         app:layout_constraintBottom_toBottomOf="parent"

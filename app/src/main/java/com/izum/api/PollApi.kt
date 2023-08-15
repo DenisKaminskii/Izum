@@ -3,10 +3,16 @@ package com.izum.api
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface PollApi {
+
+    @GET("packs/{packId}/polls")
+    suspend fun getPackPolls(
+        @Path("packId") packId: Long
+    ) : List<PollJson>
 
    @POST("polls/{pollId}/vote")
     suspend fun vote(

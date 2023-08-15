@@ -6,6 +6,7 @@ import androidx.annotation.WorkerThread
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.izum.R
 import com.izum.data.Poll
 import com.izum.databinding.ActivityPollStatisticBinding
 import com.izum.ui.BaseActivity
@@ -27,14 +28,20 @@ class PollStatisticActivity : BaseActivity() {
     private val binding: ActivityPollStatisticBinding
         get() = _binding!!
 
-    private val adapter = PollStatisticAdapter()
+    private val adapter = PollStatisticAdapter { /* ignore */ }
 
     private val pollOptions: StatisticItem
         get() = StatisticItem.TwoOptionsBar(
             leftTop = null,
             rightTop = null,
-            leftBottom = StatisticItem.TwoOptionsBar.Value.Text(poll.options[0].title),
-            rightBottom = StatisticItem.TwoOptionsBar.Value.Text(poll.options[1].title),
+            leftBottom = StatisticItem.TwoOptionsBar.Value(
+                text = poll.options[0].title,
+                color = getColor(R.color.red)
+            ),
+            rightBottom = StatisticItem.TwoOptionsBar.Value(
+                text = poll.options[1].title,
+                 color = getColor(R.color.sand)
+            ),
             barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
         )
 
@@ -79,48 +86,48 @@ class PollStatisticActivity : BaseActivity() {
 
     private suspend fun fetchStatistic() = withContext(ioDispatcher) {
         delay(1_000)
-        statistic.addAll(
-            listOf(
-                StatisticItem.Header("Gender"),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Male"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("748" to "57%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("457" to "43%"),
-                    barPercent = 57
-                ),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Female"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("1234" to "36%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("2468" to "64%"),
-                    barPercent = 36
-                ),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Other"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("0" to "0%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("100" to "100%"),
-                    barPercent = 0
-                ),
-                StatisticItem.Header("Age"),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("<18"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("748" to "57%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("457" to "43%"),
-                    barPercent = 57
-                ),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("18-25"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("1234" to "36%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("2468" to "64%"),
-                    barPercent = 36
-                ),
-                StatisticItem.TwoOptionsBar(
-                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("25+"),
-                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("984" to "23%"),
-                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("3280" to "77%"),
-                    barPercent = 23
-                ),
-            )
-        )
+//        statistic.addAll(
+//            listOf(
+//                StatisticItem.Header("Gender"),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Male"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("748" to "57%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("457" to "43%"),
+//                    barPercent = 57
+//                ),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Female"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("1234" to "36%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("2468" to "64%"),
+//                    barPercent = 36
+//                ),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("Other"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("0" to "0%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("100" to "100%"),
+//                    barPercent = 0
+//                ),
+//                StatisticItem.Header("Age"),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("<18"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("748" to "57%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("457" to "43%"),
+//                    barPercent = 57
+//                ),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("18-25"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("1234" to "36%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("2468" to "64%"),
+//                    barPercent = 36
+//                ),
+//                StatisticItem.TwoOptionsBar(
+//                    leftTop = StatisticItem.TwoOptionsBar.Value.Text("25+"),
+//                    leftBottom = StatisticItem.TwoOptionsBar.Value.Double("984" to "23%"),
+//                    rightBottom = StatisticItem.TwoOptionsBar.Value.Double("3280" to "77%"),
+//                    barPercent = 23
+//                ),
+//            )
+//        )
         updateView()
     }
 

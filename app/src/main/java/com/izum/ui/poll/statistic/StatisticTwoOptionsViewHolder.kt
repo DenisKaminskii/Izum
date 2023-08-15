@@ -2,6 +2,7 @@ package com.izum.ui.poll.statistic
 
 import android.graphics.drawable.GradientDrawable
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
 import com.izum.R
 import com.izum.databinding.ItemStatisticTwoOptionsBinding
@@ -10,10 +11,9 @@ import com.izum.ui.dpF
 import kotlin.math.max
 
 class StatisticTwoOptionsViewHolder(
-    private val binding: ItemStatisticTwoOptionsBinding
+    private val binding: ItemStatisticTwoOptionsBinding,
+    val onClick: () -> Unit
 ) : BaseViewHolder<StatisticItem.TwoOptionsBar>(binding.root) {
-
-    private var isInverseValueType = true
 
     override fun bind(item: StatisticItem.TwoOptionsBar) {
         super.bind(item)
@@ -38,30 +38,19 @@ class StatisticTwoOptionsViewHolder(
         setValue(binding.tvLeftBottom, item.leftBottom)
         setValue(binding.tvRightBottom, item.rightBottom)
 
-        binding.root.setOnClickListener {
-            isInverseValueType = !isInverseValueType
-            setValue(binding.tvLeftTop, item.leftTop)
-            setValue(binding.tvRightTop, item.rightTop)
-            setValue(binding.tvLeftBottom, item.leftBottom)
-            setValue(binding.tvRightBottom, item.rightBottom)
-        }
+        binding.root.setOnClickListener { onClick() }
     }
 
 
-    private fun setValue(textView: TextView, value: StatisticItem.TwoOptionsBar.Value?) {
+    private fun setValue(
+        textView: TextView,
+        value: StatisticItem.TwoOptionsBar.Value?
+    ) {
         textView.isVisible = value != null
         if (value == null) return
 
-        when (value) {
-            is StatisticItem.TwoOptionsBar.Value.Text -> textView.text = value.text
-            is StatisticItem.TwoOptionsBar.Value.Double -> {
-                if (isInverseValueType) {
-                    textView.text = value.text.first
-                } else {
-                    textView.text = value.text.second
-                }
-            }
-        }
+        textView.setTextColor(value.color)
+        textView.text = value.text
     }
 
     override fun unbind() {

@@ -28,6 +28,7 @@ import com.izum.ui.packs.PacksViewModel
 import com.izum.ui.packs.PacksViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PackFragment : BaseDialogFragment() {
@@ -63,17 +64,30 @@ class PackFragment : BaseDialogFragment() {
     private val visibleItemPosition: Int?
         get() = (binding.rvPreview.layoutManager as LinearLayoutManager?)?.findFirstVisibleItemPosition()
 
+    private val onPreviewScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            when (newState) {
+                RecyclerView.SCROLL_STATE_IDLE -> {
+                    visibleItemPosition?.let { position ->
+                        val checked = R.drawable.ic_radio_checked_24
+                        val unchecked = R.drawable.ic_radio_unchecked_24
+                        binding.ivFirst.setImageResource(if (position == 0) checked else unchecked)
+                        binding.ivSecond.setImageResource(if (position == 1) checked else unchecked)
+                        binding.ivThird.setImageResource(if (position == 2) checked else unchecked)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)
+    }
 
-        try {
-            pack = requireArguments().getParcelable(KEY_ARGS_PACK)!!
-        } catch (e: Exception) {
-            Log.d("Steve", "PackFragment onCreate: pack is null. Exception: $e")
-            dismiss()
-            return
-        }
+    override fun initArgs(args: Bundle) {
+        super.initArgs(args)
+        pack = args.getParcelable(KEY_ARGS_PACK)!!
     }
 
     override fun onCreateView(
@@ -82,44 +96,20 @@ class PackFragment : BaseDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DialogFragmentPackBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    private fun initPreviewList() {
         with(binding.rvPreview) {
-
-            val layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             this.layoutManager = layoutManager
 
             val snapHelper = LinearSnapHelper()
             snapHelper.attachToRecyclerView(this)
 
             adapter = previewAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    when (newState) {
-                        RecyclerView.SCROLL_STATE_IDLE -> {
-                            visibleItemPosition?.let { position ->
-                                binding.ivFirst.setImageResource(
-                                    if (position == 0) R.drawable.ic_radio_checked_24
-                                    else R.drawable.ic_radio_unchecked_24
-                                )
-                                binding.ivSecond.setImageResource(
-                                    if (position == 1) R.drawable.ic_radio_checked_24
-                                    else R.drawable.ic_radio_unchecked_24
-                                )
-                                binding.ivThird.setImageResource(
-                                    if (position == 2) R.drawable.ic_radio_checked_24
-                                    else R.drawable.ic_radio_unchecked_24
-                                )
-                            }
-                        }
-                    }
-                }
-            })
+            addOnScrollListener(onPreviewScrollListener)
         }
-
-        binding.tvPolls.text = "${pack.pollsCount} polls"
-
-        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -136,14 +126,24 @@ class PackFragment : BaseDialogFragment() {
         return dialog
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initView() {
+        super.initView()
         dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
+        binding.tvAction.setOnClickListener { viewModel.onPackActionClick(pack) }
+        binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(pack) }
+
+        binding.tvPolls.text = "${pack.pollsCount} polls"
+        binding.tvTitle.text = pack.title
+
+        initPreviewList()
+    }
+
+    override fun initSubs() {
+        super.initSubs()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.viewStateFlow.collect { viewState -> update(viewState) }
@@ -164,15 +164,12 @@ class PackFragment : BaseDialogFragment() {
                             if (hasSubscription) R.color.black_wet else R.color.white
                         )
                     )
-                    setCompoundDrawables(
-                        null,
-                        null,
-                        if (hasSubscription) requireContext().getDrawable(R.drawable.ic_unlock_24) else null,
-                        null
-                    )
                     setBackgroundResource(
                         if (hasSubscription) R.drawable.rect_filled_sand_14dp else R.drawable.rect_filled_gradient_premium_14dp
                     )
+                    if (hasSubscription) {
+                        setCompoundDrawables(null, null, null, null)
+                    }
                 }
 
                 previewAdapter.setItems(
@@ -194,25 +191,6 @@ class PackFragment : BaseDialogFragment() {
 
                 binding.vgIndicators.isVisible = visibleItemPosition != null
             }
-        }
-    }
-
-    private fun updateView() {
-        binding.vgIndicators.isVisible = visibleItemPosition != null
-
-        visibleItemPosition?.let { position ->
-            binding.ivFirst.setImageResource(
-                if (position == 0) R.drawable.ic_radio_checked_24
-                else R.drawable.ic_radio_unchecked_24
-            )
-            binding.ivSecond.setImageResource(
-                if (position == 1) R.drawable.ic_radio_checked_24
-                else R.drawable.ic_radio_unchecked_24
-            )
-            binding.ivThird.setImageResource(
-                if (position == 2) R.drawable.ic_radio_checked_24
-                else R.drawable.ic_radio_unchecked_24
-            )
         }
     }
 

@@ -3,20 +3,31 @@ package com.izum.data.repository
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.izum.api.PollApi
+import com.izum.api.PollJson
 import com.izum.api.VoteRequestJson
+import com.izum.data.Poll
+import com.izum.data.PollOption
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
 interface PollsRepository {
 
     @WorkerThread
-    @Throws(IOException::class)
-    suspend fun vote(pollId: Long, optionId: Long)
+    suspend fun getPackPolls(packId: Long): Flow<List<Poll>>
 
     @WorkerThread
-    @Throws(Exception::class)
-    suspend fun suggest()
+    suspend fun getPackVotedPolls(packId: Long): Flow<List<Poll>>
+
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun vote(pollId: Long, optionId: Long)
 
 }
 
@@ -24,6 +35,25 @@ class PollsRepositoryImpl(
     private val pollsApi: PollApi,
     private val ioDispatcher: CoroutineDispatcher
 ) : PollsRepository {
+
+    private val polls = hashMapOf<Long, List<Poll>>()
+
+    override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> =
+        if (polls.containsKey(packId)) {
+            flowOf(polls[packId]!!)
+        } else {
+            flowOf(
+                PacksMocks.getPackMocks(packId)
+            ).onEach {
+                polls[packId] = it
+            }
+        }
+            .flowOn(ioDispatcher)
+
+    override suspend fun getPackVotedPolls(packId: Long): Flow<List<Poll>> {
+        return getPackPolls(packId)
+            .map { it.filter { poll -> poll.votedOptionId != null } }
+    }
 
     override suspend fun vote(pollId: Long, optionId: Long) = withContext(ioDispatcher) {
         try {
@@ -35,8 +65,17 @@ class PollsRepositoryImpl(
         }
     }
 
-    override suspend fun suggest() {
-        // TODO:
-    }
+    private fun mapFromJson(poll: PollJson) = Poll(
+        id = poll.id,
+        packId = poll.packId,
+        options = poll.options.map { option ->
+            PollOption(
+                id = option.id,
+                title = option.title,
+                votesCount = option.votesCount
+            )
+        },
+        votedOptionId = poll.vote?.optionId
+    )
 
 }

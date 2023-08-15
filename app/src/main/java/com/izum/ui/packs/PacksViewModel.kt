@@ -5,6 +5,7 @@ import com.izum.data.Pack
 import com.izum.data.repository.PacksRepository
 import com.izum.data.repository.UserRepository
 import com.izum.domain.core.StateViewModel
+import com.izum.ui.ViewAction
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -55,6 +56,22 @@ class PacksViewModel @Inject constructor(
     fun onPackClick(pack: Pack) {
         viewModelScope.launch {
             route(Router.Route.Pack(pack))
+        }
+    }
+
+    fun onPackActionClick(pack: Pack) {
+        viewModelScope.launch {
+            if (hasSubscription) {
+                route(Router.Route.Polls(pack))
+            } else {
+                emit(ViewAction.ShowToast("This pack available only for subscribers"))
+            }
+        }
+    }
+
+    fun onPackHistoryClick(pack: Pack) {
+        viewModelScope.launch {
+            route(Router.Route.PackHistory(pack))
         }
     }
 

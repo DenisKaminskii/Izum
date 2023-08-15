@@ -111,7 +111,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
-            android:padding="20dp"
+            android:padding="24dp"
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/white" />
 
@@ -119,7 +119,6 @@
             android:id="@+id/tvPackTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"

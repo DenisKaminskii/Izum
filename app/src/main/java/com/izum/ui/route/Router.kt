@@ -7,6 +7,7 @@ import com.izum.data.Poll
 import com.izum.ui.create.SuggestPollActivity
 import com.izum.ui.create.pack.CreatePackActivity
 import com.izum.ui.pack.PackFragment
+import com.izum.ui.pack.history.PackHistoryActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
@@ -19,11 +20,12 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        data class PackPolls(val pack: com.izum.data.Pack) : Route
+        data class Polls(val pack: com.izum.data.Pack) : Route
         object CreatePoll : Route
         object CreatePack : Route
-        data class Statistic(val poll: com.izum.data.Poll) : Route
+        data class Statistic(val poll: Poll) : Route
         data class Pack(val pack: com.izum.data.Pack) : Route
+        data class PackHistory(val pack: com.izum.data.Pack) : Route
     }
 
     fun route(route: Route)
@@ -61,11 +63,12 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             routeQueue.poll()?.let { route ->
                 when(route) {
                     Router.Route.Packs -> showPacksActivity()
-                    is Router.Route.PackPolls -> showPollActivity(route.pack)
+                    is Router.Route.Polls -> showPollActivity(route.pack)
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
                     is Router.Route.Pack -> showPackDialog(route.pack)
+                    is Router.Route.PackHistory -> showPackHistory(route.pack)
                 }
             }
         }
@@ -116,6 +119,14 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                 activity.supportFragmentManager,
                 pack
             )
+        }
+    }
+
+    private fun showPackHistory(pack: Pack) {
+        host?.let { activity ->
+            val intent = Intent(activity, PackHistoryActivity::class.java)
+            intent.putExtra(PackHistoryActivity.KEY_ARGS_PACK, pack)
+            activity.startActivity(intent)
         }
     }
 

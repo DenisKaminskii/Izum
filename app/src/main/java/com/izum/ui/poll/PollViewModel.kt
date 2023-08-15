@@ -3,7 +3,6 @@ package com.izum.ui.poll
 import androidx.lifecycle.viewModelScope
 import com.izum.data.Poll
 import com.izum.data.PollOption
-import com.izum.data.repository.PacksRepository
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
@@ -36,7 +35,6 @@ data class OptionViewState(
 
 @HiltViewModel
 class PollViewModel @Inject constructor(
-    private val packsRepository: PacksRepository,
     private val pollsRepository: PollsRepository
 ) : StateViewModel<Arguments, PollViewState>(
     initialState = PollViewState.Loading
@@ -70,7 +68,7 @@ class PollViewModel @Inject constructor(
         packTitle = args.packTitle
 
         viewModelScope.launch {
-            packsRepository.getPackPolls(packId)
+            pollsRepository.getPackPolls(packId)
                 .collect {
                     polls.clear()
                     polls.addAll(it)

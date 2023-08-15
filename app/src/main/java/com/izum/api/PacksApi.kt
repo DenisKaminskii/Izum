@@ -10,11 +10,6 @@ interface PacksApi {
     @GET("packs")
     suspend fun getPacks() : List<PackJson>
 
-    @GET("packs/{packId}/polls")
-    suspend fun getPackPolls(
-        @Path("packId") packId: Long
-    ) : List<PollJson>
-
 }
 
 @JsonClass(generateAdapter = true)

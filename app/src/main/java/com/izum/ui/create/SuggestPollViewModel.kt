@@ -46,7 +46,7 @@ class SuggestPollViewModel @Inject constructor(
         updateState { SuggestPollViewState.Loading }
         viewModelScope.launch {
             try {
-                pollsRepository.suggest()
+                ///pollsRepository.suggest()
                 emit(ViewAction.Finish)
             } catch (exception: Exception) {
                 Log.e("Steve", "CreatePollViewModel: $exception")
