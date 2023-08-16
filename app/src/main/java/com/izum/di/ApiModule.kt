@@ -1,11 +1,15 @@
 package com.izum.di
 
 import android.content.Context
+import com.izum.R
 import com.izum.domain.core.PreferenceCache
 import com.izum.api.HeadersInterceptor
-import com.izum.api.AuthApi
+import com.izum.api.UserApi
 import com.izum.api.PacksApi
 import com.izum.api.PollApi
+import com.izum.api.TokenApi
+import com.izum.api.TokenAuthenticator
+import com.izum.data.DeviceIdProvider
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -19,6 +23,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -33,28 +38,44 @@ class ApiModule {
     @Provides
     fun provideUserApi(
         retrofit: Retrofit
-    ) : AuthApi {
-        return retrofit.create(AuthApi::class.java)
+    ): UserApi {
+        return retrofit.create(UserApi::class.java)
     }
 
     @Provides
     fun providePacksApi(
         retrofit: Retrofit
-    ) : PacksApi {
+    ): PacksApi {
         return retrofit.create(PacksApi::class.java)
     }
 
     @Provides
     fun providePollsApi(
         retrofit: Retrofit
-    ) : PollApi {
+    ): PollApi {
         return retrofit.create(PollApi::class.java)
+    }
+
+    // Exception cause of cycle dependency
+    @Provides
+    fun provideTokenApi(
+        @ApplicationContext context: Context,
+        moshi: Moshi,
+        @Named("token") okHttpClient: OkHttpClient
+    ): TokenApi {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(context.getString(R.string.backend_url))
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(okHttpClient)
+            .build()
+
+        return retrofit.create(TokenApi::class.java)
     }
 
     @Provides
     fun provideRetrofit(
         moshi: Moshi,
-        okHttpClient: OkHttpClient
+        @Named("base") okHttpClient: OkHttpClient
     ): Retrofit {
 
         return Retrofit.Builder()
@@ -65,16 +86,21 @@ class ApiModule {
     }
 
     @Provides
+    @Named("base")
     @Singleton
     fun provideOkHttpClient(
         @ApplicationContext context: Context,
-        moshi: Moshi,
+        tokenApi: TokenApi,
+        deviceIdProvider: DeviceIdProvider,
         preferenceCache: PreferenceCache
-    ) : OkHttpClient {
+    ): OkHttpClient {
         val cacheFolder = File(context.cacheDir, CACHE_FOLDER)
         val cache = Cache(cacheFolder, CACHE_SIZE)
 
         return OkHttpClient.Builder()
+            .authenticator(TokenAuthenticator(
+                tokenApi, preferenceCache, deviceIdProvider
+            ))
             .addInterceptor(HeadersInterceptor(preferenceCache))
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
@@ -86,5 +112,22 @@ class ApiModule {
             .build()
     }
 
+    @Provides
+    @Named("token")
+    @Singleton
+    fun provideTokenOkHttpClient(@ApplicationContext context: Context) : OkHttpClient {
+        val cacheFolder = File(context.cacheDir, CACHE_FOLDER)
+        val cache = Cache(cacheFolder, CACHE_SIZE)
+
+        return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .cache(cache)
+            .build()
+    }
 
 }

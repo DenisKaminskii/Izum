@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface AuthApi {
+interface TokenApi {
 
     @POST("auth/device")
     suspend fun getToken(@Body request: GetTokenRequest) : GetTokenResponse

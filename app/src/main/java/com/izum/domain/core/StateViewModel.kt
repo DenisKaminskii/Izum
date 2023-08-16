@@ -22,7 +22,7 @@ abstract class StateViewModel<Arguments ,ViewState>(
     val viewActionsFlow: SharedFlow<ViewAction>
         get() = _viewActionsFlow
 
-    private val _routeFlow = MutableSharedFlow<Router.Route>()
+    private val _routeFlow = MutableSharedFlow<Router.Route>(replay = 1)
     val routeFlow: SharedFlow<Router.Route>
         get() = _routeFlow
 

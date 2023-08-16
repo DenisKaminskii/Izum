@@ -12,7 +12,7 @@ abstract class SimpleTextWatcher : TextWatcher {
     }
 
     override fun afterTextChanged(s: android.text.Editable?) {
-        // no-op
+        s?.drop(1)
     }
 }
 

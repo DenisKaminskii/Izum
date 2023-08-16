@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 interface PreferenceCache {
 
-    fun putString(key: PreferenceKey, value: String)
+    fun putString(key: PreferenceKey, value: String?)
 
     fun putBoolean(key: PreferenceKey, value: Boolean)
 
@@ -33,7 +33,7 @@ class PreferenceCacheImpl @Inject constructor(
 
     private val preferences: SharedPreferences = context.getSharedPreferences(KEY_IZUM_CACHE, Context.MODE_PRIVATE)
 
-    override fun putString(key: PreferenceKey, value: String) {
+    override fun putString(key: PreferenceKey, value: String?) {
         preferences.edit()
             .putString(key.name, value)
             .apply()

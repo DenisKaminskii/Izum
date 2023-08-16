@@ -1,11 +1,11 @@
 package com.izum.data.repository
 
+import com.izum.api.UpdateUserInfoRequest
+import com.izum.api.UserApi
+import com.izum.di.IoDispatcher
 import com.izum.domain.core.PreferenceCache
 import com.izum.domain.core.PreferenceKey
-import com.izum.api.AuthApi
-import com.izum.api.GetTokenRequest
-import com.izum.data.DeviceIdProvider
-import com.izum.di.IoDispatcher
+import com.izum.ui.user.Gender
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -15,14 +15,13 @@ interface UserRepository  {
 
     var isStatisticInfoProvided: Boolean
 
-    suspend fun fetchToken()
+    suspend fun updateUserInfo(age: Int, gender: Gender) : Boolean
 
 }
 
 class UserRepositoryImpl(
     private val preferenceCache: PreferenceCache,
-    private val authApi: AuthApi,
-    private val deviceIdProvider: DeviceIdProvider,
+    private val userApi: UserApi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : UserRepository {
 
@@ -38,15 +37,20 @@ class UserRepositoryImpl(
             preferenceCache.putBoolean(PreferenceKey.UserInfoProvided, value)
         }
 
-    override suspend fun fetchToken() = withContext(ioDispatcher) {
-        val response = authApi.getToken(
-            GetTokenRequest(
-                deviceId = deviceIdProvider.deviceId
-            )
-        )
-
-        val token = response.token
-        preferenceCache.putString(PreferenceKey.Token, token)
+    override suspend fun updateUserInfo(age: Int, gender: Gender) : Boolean = withContext(ioDispatcher) {
+        try {
+            userApi.updateUserInfo(UpdateUserInfoRequest(
+                age = age,
+                gender = when(gender) {
+                    Gender.FEMALE -> "FEMALE"
+                    Gender.MALE -> "MALE"
+                    Gender.OTHER -> "OTHER"
+                }
+            ))
+            true
+        } catch (ex: Exception) {
+            false
+        }
     }
 
 

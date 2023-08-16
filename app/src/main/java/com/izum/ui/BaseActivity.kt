@@ -38,15 +38,15 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
         router.attachHost(this)
 
         initLayout()
-        initView()
         initSubs()
+        initView()
     }
 
     @Throws(Exception::class)
     open fun initArgs(args: Bundle) {}
     open fun initLayout() {}
-    open fun initView() {}
     open fun initSubs() {}
+    open fun initView() {}
 
     override fun onDestroy() {
         super.onDestroy()

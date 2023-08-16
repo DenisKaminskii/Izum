@@ -10,6 +10,8 @@ import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+// Swipe to refresh
+// Gradient colors and распределение цветов по пакам
 @AndroidEntryPoint
 class PacksActivity : BaseActivity() {
 

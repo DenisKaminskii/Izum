@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/black"
     android:orientation="vertical">
 
@@ -104,12 +105,23 @@
         android:layout_weight="1" />
 
     <TextView
+        android:id="@+id/tvFinish"
         style="@style/Text.Button.White.Outline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="32dp"
         android:clickable="true"
-        android:text="Continue" />
+        android:enabled="false"
+        android:text="Finish" />
+
+    <ProgressBar
+        android:id="@+id/vProgress"
+        android:layout_width="48dp"
+        android:layout_gravity="end"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:layout_margin="32dp"
+        android:indeterminateTint="@color/white" />
 
 </LinearLayout>

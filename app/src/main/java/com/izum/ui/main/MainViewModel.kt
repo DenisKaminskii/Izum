@@ -28,21 +28,13 @@ class MainViewModel @Inject constructor(
 
     override fun onViewInitialized(args: Unit) {
         super.onViewInitialized(args)
-        authorize()
-    }
 
-    private fun authorize() = viewModelScope.launch {
-        try {
-            userRepository.fetchToken()
+        viewModelScope.launch {
             if (userRepository.isStatisticInfoProvided) {
                 route(Router.Route.Packs)
             } else {
                 route(Router.Route.ProvideUserInfo)
             }
-        } catch (ex: Exception) {
-            Log.e("Steve", ex.toString())
-            isLoading = false
-            updateView()
         }
     }
 
@@ -57,7 +49,6 @@ class MainViewModel @Inject constructor(
     fun onReloadClick() {
         isLoading = true
         updateView()
-        authorize()
     }
 
 }

@@ -1,10 +1,9 @@
 package com.izum.di
 
-import com.izum.data.DeviceIdProvider
-import com.izum.domain.core.PreferenceCache
-import com.izum.api.AuthApi
+import com.izum.api.UserApi
 import com.izum.data.repository.UserRepository
 import com.izum.data.repository.UserRepositoryImpl
+import com.izum.domain.core.PreferenceCache
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +19,12 @@ class UserModule {
     @Singleton
     fun provideUserRepository(
         preferenceCache: PreferenceCache,
-        authApi: AuthApi,
-        deviceIdProvider: DeviceIdProvider,
+        userApi: UserApi,
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ) : UserRepository {
         return UserRepositoryImpl(
             preferenceCache,
-            authApi,
-            deviceIdProvider,
+            userApi,
             ioDispatcher
         )
     }
