@@ -29,6 +29,7 @@ class PacksActivity : BaseActivity() {
 
     override fun initLayout() {
         super.initLayout()
+        // 1
         _binding = ActivityPacksBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
