@@ -40,7 +40,7 @@ class PollStatisticActivity : BaseActivity() {
             ),
             rightBottom = StatisticItem.TwoOptionsBar.Value(
                 text = poll.options[1].title,
-                 color = getColor(R.color.sand)
+                color = getColor(R.color.blue)
             ),
             barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
         )

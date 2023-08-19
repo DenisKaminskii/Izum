@@ -78,7 +78,7 @@ class PackHistoryViewModel @Inject constructor(
                             ),
                             rightTop = StatisticItem.TwoOptionsBar.Value(
                                 text = poll.options[1].title,
-                                color = context.getColor(R.color.sand)
+                                color = context.getColor(R.color.blue)
                             ),
                             rightBottom = StatisticItem.TwoOptionsBar.Value(
                                 text = if (isValueInPercent) {
@@ -86,7 +86,7 @@ class PackHistoryViewModel @Inject constructor(
                                 } else {
                                     poll.options[1].votesCount.toString()
                                 },
-                                color = context.getColor(R.color.sand)
+                                color = context.getColor(R.color.blue)
                             ),
                             barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
                         )

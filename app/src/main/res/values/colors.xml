@@ -26,7 +26,9 @@
     <color name="white">#E5E5E5</color>
     <color name="white_50">#80E5E5E5</color>
 
-    <color name="red">#EB315E</color>
+    <color name="red">#98283F</color>
+    <color name="blue">#2769A3</color>
+
     <color name="gender_female">#DA3CCA</color>
     <color name="gender_male">#27C0E2</color>
     <color name="gender_other">#DF9627</color>

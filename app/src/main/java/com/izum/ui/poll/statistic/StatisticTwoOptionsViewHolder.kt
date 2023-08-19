@@ -25,7 +25,7 @@ class StatisticTwoOptionsViewHolder(
         }
 
         binding.vRight.background = GradientDrawable().apply {
-            setColor(context.getColor(R.color.sand))
+            setColor(context.getColor(R.color.blue))
             cornerRadius = context.dpF(4)
         }
 
