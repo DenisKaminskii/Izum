@@ -1,6 +1,7 @@
 package com.izum.data
 
 import android.os.Parcelable
+import androidx.annotation.ColorInt
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,5 +12,13 @@ data class Pack(
     val isPaid: Boolean,
     val productId: String?,
     val pollsCount: Long,
-    val authorId: Long?
+    val authorId: Long?,
+    val colors: PackColors
+) : Parcelable
+
+@Parcelize
+data class PackColors(
+    @ColorInt val contentColor: Int,
+    @ColorInt val gradientStartColor: Int,
+    @ColorInt val gradientEndColor: Int
 ) : Parcelable

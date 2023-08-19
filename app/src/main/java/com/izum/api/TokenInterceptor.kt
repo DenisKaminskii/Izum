@@ -8,28 +8,42 @@ import com.izum.domain.core.PreferenceKey
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import okhttp3.Authenticator
-import okhttp3.Request
+import okhttp3.Interceptor
 import okhttp3.Response
-import okhttp3.Route
 import retrofit2.HttpException
+import java.io.IOException
 import javax.net.ssl.HttpsURLConnection
 
-class TokenAuthenticator(
+class TokenInterceptor(
     private val tokenApi: TokenApi,
     private val preferenceCache: PreferenceCache,
     private val deviceIdProvider: DeviceIdProvider
-) : Authenticator {
+) : Interceptor {
 
     private val mutex = Mutex()
 
-    override fun authenticate(route: Route?, response: Response): Request? {
-        val usedToken = response.request.header(HeadersInterceptor.KEY_HEADER_AUTHORIZATION) ?: return null
-        val newToken = runBlocking { getOrUpdateToken(usedToken) } ?: return null
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val currentToken = preferenceCache.getString(PreferenceKey.Token)
 
-        return response.request.newBuilder()
-            .header(HeadersInterceptor.KEY_HEADER_AUTHORIZATION, newToken)
+        val authenticatedRequest = request.newBuilder()
+            .header(HeadersInterceptor.KEY_HEADER_AUTHORIZATION, currentToken ?: "")
             .build()
+
+        val response = chain.proceed(authenticatedRequest)
+
+        if (response.code == HttpsURLConnection.HTTP_UNAUTHORIZED || response.code == HttpsURLConnection.HTTP_FORBIDDEN) {
+            val newToken = runBlocking { getOrUpdateToken(currentToken ?: "") }
+            if (newToken != null) {
+                val newRequest = request.newBuilder()
+                    .header(HeadersInterceptor.KEY_HEADER_AUTHORIZATION, newToken)
+                    .build()
+                return chain.proceed(newRequest)
+            }
+        }
+
+        return response
     }
 
     @WorkerThread
@@ -46,7 +60,7 @@ class TokenAuthenticator(
             preferenceCache.putString(PreferenceKey.Token, token)
 
             return token
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             val unauthorized = HttpsURLConnection.HTTP_UNAUTHORIZED
             val forbidden = HttpsURLConnection.HTTP_FORBIDDEN
             if (e is HttpException && (e.code() == unauthorized || e.code() == forbidden)) {
@@ -57,5 +71,4 @@ class TokenAuthenticator(
             return null
         }
     }
-
 }

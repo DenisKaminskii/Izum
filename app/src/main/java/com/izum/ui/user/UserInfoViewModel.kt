@@ -69,9 +69,9 @@ class UserInfoViewModel @Inject constructor(
         }
 
         updatingJob = viewModelScope.launch {
-            delay(2_000)
             val isUserInfoUpdated = userRepository.updateUserInfo(age, gender)
             if (isUserInfoUpdated) {
+                userRepository.isStatisticInfoProvided = true
                 route(Router.Route.Packs)
             } else {
                 emit(ViewAction.ShowToast("Some problems with server :c"))

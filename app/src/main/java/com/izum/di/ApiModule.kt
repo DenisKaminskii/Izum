@@ -8,7 +8,7 @@ import com.izum.api.UserApi
 import com.izum.api.PacksApi
 import com.izum.api.PollApi
 import com.izum.api.TokenApi
-import com.izum.api.TokenAuthenticator
+import com.izum.api.TokenInterceptor
 import com.izum.data.DeviceIdProvider
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -98,9 +98,7 @@ class ApiModule {
         val cache = Cache(cacheFolder, CACHE_SIZE)
 
         return OkHttpClient.Builder()
-            .authenticator(TokenAuthenticator(
-                tokenApi, preferenceCache, deviceIdProvider
-            ))
+            .addInterceptor(TokenInterceptor(tokenApi, preferenceCache, deviceIdProvider))
             .addInterceptor(HeadersInterceptor(preferenceCache))
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

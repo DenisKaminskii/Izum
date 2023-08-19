@@ -1,7 +1,8 @@
 package com.izum.ui.packs
 
-import android.os.Bundle
+import android.graphics.Color
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
 import com.izum.R
 import com.izum.data.repository.UserRepository
@@ -10,12 +11,11 @@ import com.izum.ui.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// Swipe to refresh
-// Gradient colors and распределение цветов по пакам
 @AndroidEntryPoint
 class PacksActivity : BaseActivity() {
 
-    @Inject lateinit var userRepository: UserRepository
+    @Inject
+    lateinit var userRepository: UserRepository
 
     private var _binding: ActivityPacksBinding? = null
     private val binding: ActivityPacksBinding
@@ -29,7 +29,6 @@ class PacksActivity : BaseActivity() {
 
     override fun initLayout() {
         super.initLayout()
-        // 1
         _binding = ActivityPacksBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
@@ -59,14 +58,15 @@ class PacksActivity : BaseActivity() {
     }
 
     private fun update(viewState: PacksViewState) {
-        when(viewState) {
+        when (viewState) {
             is PacksViewState.Loading -> {
                 // ignore
             }
+
             is PacksViewState.Packs -> {
                 val hasSubscription = viewState.hasSubscription
-                binding.tvSubscription.text = if (hasSubscription) "Subscribed" else "Not subscribed"
-                binding.ivSubscription.setImageResource(if (hasSubscription) R.drawable.ic_done_24 else R.drawable.ic_stars_24)
+                binding.tvSubscribe.isVisible = !hasSubscription
+                binding.tvSubscribed.isVisible = hasSubscription
             }
         }
     }

@@ -27,7 +27,12 @@
     <color name="white_50">#80E5E5E5</color>
 
     <color name="red">#EB315E</color>
-    <color name="blue">#27C0E2</color>
-    <color name="mustard">#BCE227</color>
+    <color name="gender_female">#DA3CCA</color>
+    <color name="gender_male">#27C0E2</color>
+    <color name="gender_other">#DF9627</color>
+
+    <color name="subscribe_gradient_start">#29C5BB</color>
+    <color name="subscribe_gradient_end">#815FE0</color>
+    <color name="subscribed">#389ECA</color>
 
 </resources>

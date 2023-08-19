@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
 import com.izum.ui.BaseActivity
-import com.izum.ui.getBackgroundGradient
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
@@ -41,8 +40,8 @@ class PollActivity : BaseActivity() {
         binding.ivNext.setOnClickListener { viewModel.onNextClick() }
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
 
-        binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
-        binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
+//         binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
+//         binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
 
         update(PollViewState.Loading)
 

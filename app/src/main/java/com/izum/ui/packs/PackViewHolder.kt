@@ -1,12 +1,12 @@
 package com.izum.ui.packs
 
+import android.graphics.drawable.GradientDrawable
 import androidx.annotation.ColorRes
 import androidx.core.view.isVisible
 import com.izum.data.Pack
 import com.izum.databinding.ItemPackBinding
 import com.izum.ui.BaseViewHolder
 import com.izum.ui.dpF
-import com.izum.ui.getBackgroundGradient
 
 class PackViewHolder(
     private val binding: ItemPackBinding,
@@ -16,16 +16,24 @@ class PackViewHolder(
 
     override fun bind(item: Pack) {
         super.bind(item)
+        val context = itemView.context
 
-        binding.vgRoot.background = getBackgroundGradient(
-            color = itemView.context.getColor(color)
+        val startGradient = item.colors.gradientStartColor
+        val endGradient = item.colors.gradientEndColor
+
+        binding.root.background = GradientDrawable(
+            GradientDrawable.Orientation.BL_TR,
+            intArrayOf(startGradient, endGradient)
         ).apply {
-            cornerRadius = itemView.context.dpF(16)
+            cornerRadius = context.dpF(20)
         }
 
+        binding.tvTitle.setTextColor(item.colors.contentColor)
+        binding.tvPollsCount.setTextColor(item.colors.contentColor)
+
         binding.vLock.isVisible = item.isPaid // && !hasSubscription
-        binding.vTitle.text = item.title
-        binding.vPollsCount.text = "${item.pollsCount} polls"
+        binding.tvTitle.text = item.title
+        binding.tvPollsCount.text = "${item.pollsCount} polls"
         binding.root.setOnClickListener {
             onClick(item)
         }

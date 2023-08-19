@@ -6,11 +6,11 @@
     android:layout_height="190dp"
     android:layout_margin="8dp"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:background="@color/blue">
+    android:padding="14dp"
+    tools:background="@drawable/rect_outline_white_14_stroke_2">
 
     <TextView
-        android:id="@+id/vTitle"
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Daily Life"
@@ -38,7 +38,7 @@
             android:src="@drawable/ic_lock_24" />
 
         <TextView
-            android:id="@+id/vPollsCount"
+            android:id="@+id/tvPollsCount"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -36,10 +36,10 @@
             android:id="@+id/rbFemale"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:buttonTint="@color/red"
+            android:buttonTint="@color/gender_female"
             android:paddingStart="8dp"
             android:text="@string/female"
-            android:textColor="@color/red"
+            android:textColor="@color/gender_female"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -47,11 +47,11 @@
             android:id="@+id/rbMale"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:buttonTint="@color/blue"
+            android:buttonTint="@color/gender_male"
             android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:text="@string/male"
-            android:textColor="@color/blue"
+            android:textColor="@color/gender_male"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -59,10 +59,10 @@
             android:id="@+id/rbOther"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:buttonTint="@color/mustard"
+            android:buttonTint="@color/gender_other"
             android:paddingStart="8dp"
             android:text="@string/other"
-            android:textColor="@color/mustard"
+            android:textColor="@color/gender_other"
             android:textSize="16sp"
             android:textStyle="bold" />
 

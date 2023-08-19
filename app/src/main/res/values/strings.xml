@@ -10,6 +10,12 @@
     <string name="male">Male</string>
     <string name="other">Other</string>
     <string name="age">Age</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="official">Official</string>
+    <string name="custom">Custom</string>
+    <string name="create_pack">Create</string>
+    <string name="suggest_poll">Suggest</string>
 
 
     <string name="button_reload">Reload</string>
