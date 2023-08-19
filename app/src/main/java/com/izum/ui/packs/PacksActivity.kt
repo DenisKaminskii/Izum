@@ -1,6 +1,8 @@
 package com.izum.ui.packs
 
 import android.graphics.Color
+import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
@@ -50,6 +52,12 @@ class PacksActivity : BaseActivity() {
         update(PacksViewState.Loading)
 
         viewModel.onViewInitialized(Unit)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Log.d("Steve", "Junk!")
+            }
+        })
     }
 
     override fun initSubs() {

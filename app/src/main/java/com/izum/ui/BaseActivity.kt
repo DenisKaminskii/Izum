@@ -35,8 +35,6 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
             finish()
         }
 
-        router.attachHost(this)
-
         initLayout()
         initSubs()
         initView()
@@ -48,8 +46,13 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     open fun initSubs() {}
     open fun initView() {}
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStart() {
+        super.onStart()
+        router.attachHost(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
         router.detachHost()
     }
 

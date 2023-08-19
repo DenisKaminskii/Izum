@@ -64,8 +64,8 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         while(routeQueue.isNotEmpty()) {
             routeQueue.poll()?.let { route ->
                 when(route) {
-                    Router.Route.Packs -> showPacksActivity()
-                    is Router.Route.Polls -> showPollActivity(route.pack)
+                    Router.Route.Packs -> showPacks()
+                    is Router.Route.Polls -> showPackPolls(route.pack)
                     Router.Route.CreatePoll -> showCreatePoll()
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
@@ -77,7 +77,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPacksActivity() {
+    private fun showPacks() {
         host?.let { activity ->
             val intent = Intent(activity, PacksActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -85,7 +85,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPollActivity(pack: Pack) {
+    private fun showPackPolls(pack: Pack) {
         host?.let { activity ->
             val intent = Intent(activity, PollActivity::class.java)
             intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, pack.id)

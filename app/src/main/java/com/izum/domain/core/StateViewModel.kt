@@ -4,11 +4,13 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.route.Router
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.suspendCoroutine
 
 abstract class StateViewModel<Arguments ,ViewState>(
     private val initialState: ViewState
@@ -22,9 +24,12 @@ abstract class StateViewModel<Arguments ,ViewState>(
     val viewActionsFlow: SharedFlow<ViewAction>
         get() = _viewActionsFlow
 
-    private val _routeFlow = MutableSharedFlow<Router.Route>(replay = 1)
+    private val _routeFlow = MutableSharedFlow<Router.Route>()
     val routeFlow: SharedFlow<Router.Route>
         get() = _routeFlow
+
+    private val hasRouteExecutors: Boolean
+        get() = _routeFlow.subscriptionCount.value > 0
 
     val viewState: ViewState
         get() = _viewStateFlow.replayCache.singleOrNull() ?: initialState
@@ -43,11 +48,22 @@ abstract class StateViewModel<Arguments ,ViewState>(
         }
     }
 
-    suspend fun route(route: Router.Route) {
-        _routeFlow.emit(route)
+    protected suspend fun route(route: Router.Route) {
+        if (hasRouteExecutors) {
+            _routeFlow.emit(route)
+        } else {
+            for (i in 1..10) {
+                delay(100)
+
+                if (hasRouteExecutors) {
+                    _routeFlow.emit(route)
+                    return
+                }
+            }
+        }
     }
 
-    suspend fun emit(viewAction: ViewAction) {
+    protected suspend fun emit(viewAction: ViewAction) {
         _viewActionsFlow.emit(viewAction)
     }
 

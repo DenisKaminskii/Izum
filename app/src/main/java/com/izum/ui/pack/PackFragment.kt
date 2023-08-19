@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -115,28 +116,6 @@ class PackFragment : BaseDialogFragment() {
         return binding.root
     }
 
-    private fun initPreviewList() {
-        with(binding.rvPreview) {
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this.layoutManager = layoutManager
-
-            val snapHelper = LinearSnapHelper()
-            snapHelper.attachToRecyclerView(this)
-
-            adapter = previewAdapter
-            addOnScrollListener(onPreviewScrollListener)
-            onFlingListener = object : RecyclerView.OnFlingListener() {
-                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                    val centerView = snapHelper.findSnapView(layoutManager) ?: return false
-                    val position = layoutManager.getPosition(centerView)
-                    linearSmoothScroller.targetPosition = position
-                    layoutManager.startSmoothScroll(linearSmoothScroller)
-                    return true
-                }
-            }
-        }
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -157,7 +136,11 @@ class PackFragment : BaseDialogFragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        binding.tvStart.setOnClickListener { viewModel.onStartClick(pack) }
+        binding.tvStart.setOnClickListener {
+            viewModel.onStartClick(pack)
+            dismissAllowingStateLoss()
+        }
+
         binding.tvSubscribe.setOnClickListener { /* */ }
         binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(pack) }
 
@@ -180,8 +163,29 @@ class PackFragment : BaseDialogFragment() {
             setStroke(requireContext().dpF(2).toInt(), pack.colors.contentColor)
         }
 
-
         initPreviewList()
+    }
+
+    private fun initPreviewList() {
+        with(binding.rvPreview) {
+            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            this.layoutManager = layoutManager
+
+            val snapHelper = LinearSnapHelper()
+            snapHelper.attachToRecyclerView(this)
+
+            adapter = previewAdapter
+            addOnScrollListener(onPreviewScrollListener)
+            onFlingListener = object : RecyclerView.OnFlingListener() {
+                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                    val centerView = snapHelper.findSnapView(layoutManager) ?: return false
+                    val position = layoutManager.getPosition(centerView)
+                    linearSmoothScroller.targetPosition = position
+                    layoutManager.startSmoothScroll(linearSmoothScroller)
+                    return true
+                }
+            }
+        }
     }
 
     override fun initSubs() {

@@ -62,11 +62,6 @@ class PacksViewModel @Inject constructor(
     fun onStartClick(pack: Pack) {
         viewModelScope.launch {
             route(Router.Route.Polls(pack))
-            if (hasSubscription) {
-                route(Router.Route.Polls(pack))
-            } else {
-                emit(ViewAction.ShowToast("This pack available only for subscribers"))
-            }
         }
     }
 

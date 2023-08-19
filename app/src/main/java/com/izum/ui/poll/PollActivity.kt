@@ -2,6 +2,7 @@ package com.izum.ui.poll
 
 import android.annotation.SuppressLint
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -51,6 +52,12 @@ class PollActivity : BaseActivity() {
                 packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: ""
             )
         )
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     override fun initSubs() {
