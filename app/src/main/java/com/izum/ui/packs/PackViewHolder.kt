@@ -10,16 +10,16 @@ import com.izum.ui.dpF
 
 class PackViewHolder(
     private val binding: ItemPackBinding,
-    @ColorRes private val color: Int,
     private val onClick: (Pack) -> Unit
-) : BaseViewHolder<Pack>(binding.root) {
+) : BaseViewHolder<PacksItem>(binding.root) {
 
-    override fun bind(item: Pack) {
+    override fun bind(item: PacksItem) {
         super.bind(item)
         val context = itemView.context
+        val pack = item.pack
 
-        val startGradient = item.colors.gradientStartColor
-        val endGradient = item.colors.gradientEndColor
+        val startGradient = pack.colors.gradientStartColor
+        val endGradient = pack.colors.gradientEndColor
 
         binding.root.background = GradientDrawable(
             GradientDrawable.Orientation.BL_TR,
@@ -28,14 +28,14 @@ class PackViewHolder(
             cornerRadius = context.dpF(20)
         }
 
-        binding.tvTitle.setTextColor(item.colors.contentColor)
-        binding.tvPollsCount.setTextColor(item.colors.contentColor)
+        binding.tvTitle.setTextColor(pack.colors.contentColor)
+        binding.tvPollsCount.setTextColor(pack.colors.contentColor)
 
-        binding.vLock.isVisible = item.isPaid // && !hasSubscription
-        binding.tvTitle.text = item.title
-        binding.tvPollsCount.text = "${item.pollsCount} polls"
+        binding.vLock.isVisible = pack.isPaid && !item.hasSubscription
+        binding.tvTitle.text = pack.title
+        binding.tvPollsCount.text = "${pack.pollsCount} polls"
         binding.root.setOnClickListener {
-            onClick(item)
+            onClick(pack)
         }
     }
 

@@ -1,10 +1,12 @@
 package com.izum.ui.pack
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +18,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.izum.R
 import com.izum.data.Pack
+import com.izum.data.PackColors
+import com.izum.data.repository.UserRepository
 import com.izum.databinding.DialogFragmentPackBinding
 import com.izum.ui.BaseDialogFragment
 import com.izum.ui.dpF
@@ -27,6 +32,8 @@ import com.izum.ui.packs.PacksViewModel
 import com.izum.ui.packs.PacksViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class PackFragment : BaseDialogFragment() {
@@ -46,6 +53,9 @@ class PackFragment : BaseDialogFragment() {
             }.show(fragmentManager, "PackFragment")
         }
     }
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     private var _binding: DialogFragmentPackBinding? = null
     private val binding: DialogFragmentPackBinding
@@ -74,6 +84,14 @@ class PackFragment : BaseDialogFragment() {
                         binding.ivThird.setImageResource(if (position == 2) checked else unchecked)
                     }
                 }
+            }
+        }
+    }
+
+    private val linearSmoothScroller: LinearSmoothScroller by lazy {
+        object : LinearSmoothScroller(requireContext()) {
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                return 100f / displayMetrics.densityDpi
             }
         }
     }
@@ -107,6 +125,15 @@ class PackFragment : BaseDialogFragment() {
 
             adapter = previewAdapter
             addOnScrollListener(onPreviewScrollListener)
+            onFlingListener = object : RecyclerView.OnFlingListener() {
+                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                    val centerView = snapHelper.findSnapView(layoutManager) ?: return false
+                    val position = layoutManager.getPosition(centerView)
+                    linearSmoothScroller.targetPosition = position
+                    layoutManager.startSmoothScroll(linearSmoothScroller)
+                    return true
+                }
+            }
         }
     }
 
@@ -115,10 +142,9 @@ class PackFragment : BaseDialogFragment() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawable(
             createInsetDrawable(
-                color = requireContext().getColor(R.color.purple),
-                cornerRadius = requireContext().dpF(24),
-                leftInset = requireContext().dpF(16),
-                rightInset = requireContext().dpF(16)
+                context = requireContext(),
+                horizontalOffset = requireContext().dpF(32),
+                colors = pack.colors
             )
         )
         return dialog
@@ -131,11 +157,29 @@ class PackFragment : BaseDialogFragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        binding.tvAction.setOnClickListener { viewModel.onPackActionClick(pack) }
+        binding.tvStart.setOnClickListener { viewModel.onStartClick(pack) }
+        binding.tvSubscribe.setOnClickListener { /* */ }
         binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(pack) }
 
         binding.tvPolls.text = "${pack.pollsCount} polls"
         binding.tvTitle.text = pack.title
+
+        binding.tvTitle.setTextColor(pack.colors.contentColor)
+        binding.ivHistory.setColorFilter(pack.colors.contentColor)
+        binding.ivFirst.setColorFilter(pack.colors.contentColor)
+        binding.ivSecond.setColorFilter(pack.colors.contentColor)
+        binding.ivThird.setColorFilter(pack.colors.contentColor)
+        binding.tvPolls.setTextColor(pack.colors.contentColor)
+        binding.tvStart.setTextColor(pack.colors.contentColor)
+
+        binding.tvStart.isVisible = !pack.isPaid || userRepository.hasSubscription
+        binding.tvSubscribe.isVisible = pack.isPaid && !userRepository.hasSubscription
+
+        binding.tvStart.background = GradientDrawable().apply {
+            cornerRadius = requireContext().dpF(14)
+            setStroke(requireContext().dpF(2).toInt(), pack.colors.contentColor)
+        }
+
 
         initPreviewList()
     }
@@ -153,36 +197,22 @@ class PackFragment : BaseDialogFragment() {
         when (viewState) {
             is PacksViewState.Loading -> {}
             is PacksViewState.Packs -> {
-                with(binding.tvAction) {
-                    val hasSubscription = viewState.hasSubscription
-
-                    text = if (hasSubscription) "Join" else "Subscribe"
-                    setTextColor(
-                        requireContext().getColor(
-                            if (hasSubscription) R.color.black_wet else R.color.white
-                        )
-                    )
-                    setBackgroundResource(
-                        if (hasSubscription) R.drawable.rect_filled_sand_14 else R.drawable.rect_filled_gradient_premium_14
-                    )
-                    if (hasSubscription) {
-                        setCompoundDrawables(null, null, null, null)
-                    }
-                }
-
                 previewAdapter.setItems(
                     listOf(
                         PackPreviewItem(
                             topText = "Что-то типо того",
-                            bottomText = "Или что-то типо этого"
+                            bottomText = "Или что-то типо этого",
+                            textColor = pack.colors.contentColor
                         ),
                         PackPreviewItem(
                             topText = "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                            bottomText = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+                            bottomText = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+                            textColor = pack.colors.contentColor
                         ),
                         PackPreviewItem(
                             topText = "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-                            bottomText = "Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable"
+                            bottomText = "Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable",
+                            textColor = pack.colors.contentColor
                         )
                     )
                 )
@@ -193,18 +223,18 @@ class PackFragment : BaseDialogFragment() {
     }
 
     private fun createInsetDrawable(
-        color: Int,
-        cornerRadius: Float,
-        leftInset: Float,
-        rightInset: Float
+        context: Context,
+        horizontalOffset: Float,
+        colors: PackColors
     ): Drawable {
-        val baseDrawable = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            setColor(color)
-            this.cornerRadius = cornerRadius
+        val baseDrawable = GradientDrawable(
+            GradientDrawable.Orientation.BL_TR,
+            intArrayOf(colors.gradientStartColor, colors.gradientEndColor)
+        ).apply {
+            cornerRadius = context.dpF(20)
         }
 
-        return InsetDrawable(baseDrawable, leftInset.toInt(), 0, rightInset.toInt(), 0)
+        return InsetDrawable(baseDrawable, horizontalOffset.toInt(), 0, horizontalOffset.toInt(), 0)
     }
 
 }

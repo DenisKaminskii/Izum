@@ -8,14 +8,18 @@ import com.izum.data.Pack
 import com.izum.databinding.ItemPackBinding
 import com.izum.ui.BaseViewHolder
 
+data class PacksItem(
+    val pack: Pack,
+    val hasSubscription: Boolean
+)
+
 class PacksAdapter(
-    val isOfficial: Boolean,
     val onPackClick: (Pack) -> Unit
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private val items = mutableListOf<Pack>()
+    private val items = mutableListOf<PacksItem>()
 
-    fun setItems(items: List<Pack>) {
+    fun setItems(items: List<PacksItem>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
@@ -44,18 +48,8 @@ class PacksAdapter(
                     parent,
                     false
                 )
-                // get random color from 4 variant
-                val color = if (isOfficial) {
-                    when((0..3).random()) {
-                        0 -> R.color.peach
-                        1 -> R.color.mint
-                        2 -> R.color.red
-                        3 -> R.color.purple
-                        else -> R.color.mint
-                    }
-                } else R.color.black_soft
 
-                PackViewHolder(binding, color) { pack ->
+                PackViewHolder(binding) { pack ->
                     onPackClick(pack)
                 }
             }

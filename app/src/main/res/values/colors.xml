@@ -31,8 +31,8 @@
     <color name="gender_male">#27C0E2</color>
     <color name="gender_other">#DF9627</color>
 
-    <color name="subscribe_gradient_start">#29C5BB</color>
-    <color name="subscribe_gradient_end">#815FE0</color>
+    <color name="subscribe_gradient_start">#4CBCB5</color>
+    <color name="subscribe_gradient_end">#4728A2</color>
     <color name="subscribed">#389ECA</color>
 
 </resources>

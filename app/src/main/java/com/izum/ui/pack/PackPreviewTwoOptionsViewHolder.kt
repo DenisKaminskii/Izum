@@ -12,6 +12,8 @@ class PackPreviewTwoOptionsViewHolder(
 
         binding.tvTop.text = item.topText
         binding.tvBottom.text = item.bottomText
+        binding.tvTop.setTextColor(item.textColor)
+        binding.tvBottom.setTextColor(item.textColor)
     }
 
 }

@@ -60,24 +60,24 @@ class PacksRepositoryImpl(
 
 }
 
-val colors = listOf<PackColors>(
+val colors = listOf(
     PackColors(
-        contentColor = Color.parseColor("#FFFFFF"),
+        contentColor = Color.parseColor("#E5E5E5"),
         gradientStartColor = Color.parseColor("#4D5297"),
         gradientEndColor = Color.parseColor("#49A0FA"),
     ),
     PackColors(
-        contentColor = Color.parseColor("#FFFFFF"),
-        gradientStartColor = Color.parseColor("#5C27FE"),
-        gradientEndColor = Color.parseColor("#C165DD"),
+        contentColor = Color.parseColor("#000000"),
+        gradientStartColor = Color.parseColor("#EB5C3A"),
+        gradientEndColor = Color.parseColor("#FEAA3F"),
     ),
     PackColors(
-        contentColor = Color.parseColor("#343434"),
-        gradientStartColor = Color.parseColor("#FF7B02"),
-        gradientEndColor = Color.parseColor("#FFCB52"),
+        contentColor = Color.parseColor("#E5E5E5"),
+        gradientStartColor = Color.parseColor("#961676"),
+        gradientEndColor = Color.parseColor("#F36265"),
     ),
     PackColors(
-        contentColor = Color.parseColor("#FFFFFF"),
+        contentColor = Color.parseColor("#E5E5E5"),
         gradientStartColor = Color.parseColor("#1B1B1B"),
         gradientEndColor = Color.parseColor("#353535"),
     )

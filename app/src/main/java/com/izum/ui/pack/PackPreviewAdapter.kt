@@ -2,14 +2,17 @@ package com.izum.ui.pack
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.izum.databinding.ItemPackPreviewTwoOptionsBinding
 import com.izum.ui.BaseViewHolder
 
 data class PackPreviewItem(
     val topText: String,
-    val bottomText: String
+    val bottomText: String,
+    @ColorInt val textColor: Int
 )
+
 class PackPreviewAdapter : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private val items = mutableListOf<PackPreviewItem>()

@@ -21,16 +21,8 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
     companion object {
 
-        private const val KEY_IS_OFFICIAL = "KEY_IS_OFFICIAL"
-
-        fun newInstance(
-            isOfficial: Boolean = true
-        ): PacksFragment {
-            val fragment = PacksFragment()
-            fragment.arguments = Bundle().apply {
-                putBoolean(KEY_IS_OFFICIAL, isOfficial)
-            }
-            return fragment
+        fun newInstance(): PacksFragment {
+            return PacksFragment()
         }
     }
 
@@ -41,17 +33,10 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         ViewModelProvider(requireActivity())[PacksViewModel::class.java]
     }
 
-    private var isOfficial: Boolean = true
-
     private val adapter by lazy {
-        PacksAdapter(isOfficial) { pack ->
+        PacksAdapter { pack ->
             viewModel.onPackClick(pack)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        isOfficial = arguments?.getBoolean(KEY_IS_OFFICIAL, true) ?: true
     }
 
     override fun onCreateView(
@@ -82,7 +67,14 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private fun update(state: PacksViewState) {
         when(state) {
             is PacksViewState.Packs -> {
-                adapter.setItems(state.packs)
+                adapter.setItems(
+                    items = state.packs.map {
+                        PacksItem(
+                            pack = it,
+                            hasSubscription = state.hasSubscription
+                        )
+                    }
+                )
             }
             is PacksViewState.Loading -> {
                 // show loading

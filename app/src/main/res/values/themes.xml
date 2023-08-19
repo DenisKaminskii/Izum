@@ -15,15 +15,23 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text.Button.Medium" parent="TextAppearance.MaterialComponents.Button">
+
+    <style name="Text.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:drawablePadding">4dp</item>
+    </style>
+
+    <style name="Text.Button.Medium" parent="Text.Button">
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:paddingVertical">12dp</item>
     </style>
 
-    <style name="Text.Button.Large" parent="TextAppearance.MaterialComponents.Button">
+    <style name="Text.Button.Large" parent="Text.Button">
         <item name="android:paddingHorizontal">24dp</item>
         <item name="android:paddingVertical">16dp</item>
     </style>
+
 
     <style name="Text.Button.White.Filled" parent="Text.Button.Large">
         <item name="android:textColor">@color/black_wet</item>
@@ -38,11 +46,13 @@
         <item name="android:background">@drawable/selector_shape_white_outline_14</item>
     </style>
 
+
     <style name="Text.Button.Subscribe" parent="Text.Button.Medium">
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint">@color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/selector_shape_subscribe_gradient_14</item>
+        <item name="android:drawableStart">@drawable/ic_unlock_24</item>
     </style>
 
     <style name="Text.Button.Subscribed" parent="Text.Button.Medium">
@@ -52,11 +62,6 @@
         <item name="android:drawableStart">@drawable/ic_stars_24</item>
     </style>
 
-    <style name="Dialog" parent="android:style/Theme.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
 
     <style name="Text.Body" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@color/white</item>
@@ -69,6 +74,13 @@
 
     <style name="Text.Header" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="Dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
 
 </resources>

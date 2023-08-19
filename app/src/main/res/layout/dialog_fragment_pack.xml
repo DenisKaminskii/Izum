@@ -50,7 +50,7 @@
         android:id="@+id/vgIndicators"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_horizontal">
 
         <ImageView
@@ -82,29 +82,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="42dp"
         android:gravity="center_horizontal"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         tools:text="101 polls" />
 
-    <TextView
-        android:id="@+id/tvAction"
-        style="@style/Text.Button.White.Filled"
+    <FrameLayout
+        android:id="@+id/vgSubscription"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginHorizontal="4dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_unlock_24"
-        android:drawableTint="@color/white"
+        android:clipChildren="false"
         android:minWidth="150dp"
-        android:text="Subscribe"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ivNext"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvSubscribe"
+            style="@style/Text.Button.Subscribe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|end"
+            android:elevation="6dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/subscribe"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvStart"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:minWidth="120dp"
+            android:text="Start"
+            android:visibility="visible" />
+
+    </FrameLayout>
 
 </LinearLayout>

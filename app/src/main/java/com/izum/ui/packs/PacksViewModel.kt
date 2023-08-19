@@ -59,8 +59,9 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onPackActionClick(pack: Pack) {
+    fun onStartClick(pack: Pack) {
         viewModelScope.launch {
+            route(Router.Route.Polls(pack))
             if (hasSubscription) {
                 route(Router.Route.Polls(pack))
             } else {

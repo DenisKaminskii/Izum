@@ -18,8 +18,8 @@ class PacksViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> PacksFragment.newInstance(isOfficial = true)
-            1 -> PacksFragment.newInstance(isOfficial = false)
+            0 -> PacksFragment.newInstance()
+            1 -> PacksFragment.newInstance()
             else -> throw IllegalArgumentException("Unknown position: $position")
         }
     }
