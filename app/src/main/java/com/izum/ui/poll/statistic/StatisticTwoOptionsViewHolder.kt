@@ -9,6 +9,7 @@ import com.izum.databinding.ItemStatisticTwoOptionsBinding
 import com.izum.ui.BaseViewHolder
 import com.izum.ui.dpF
 import kotlin.math.max
+import kotlin.math.min
 
 class StatisticTwoOptionsViewHolder(
     private val binding: ItemStatisticTwoOptionsBinding,
@@ -29,9 +30,8 @@ class StatisticTwoOptionsViewHolder(
             cornerRadius = context.dpF(4)
         }
 
-        binding.vMiddle.setGuidelinePercent(
-            max(0.05f, item.barPercent.toFloat() / 100)
-        )
+        val resultPercent = min(max(0.05f, item.barPercent.toFloat() / 100), 0.95f)
+        binding.vMiddle.setGuidelinePercent(resultPercent)
 
         setValue(binding.tvLeftTop, item.leftTop)
         setValue(binding.tvRightTop, item.rightTop)

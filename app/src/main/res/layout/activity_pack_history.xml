@@ -56,24 +56,26 @@
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/red"
-        tools:visibility="gone" />
+        android:indeterminateTint="@color/red" />
 
     <LinearLayout
         android:id="@+id/vgNoPolls"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
+            style="@style/Text.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
             android:gravity="center"
-            android:text="You dont have any voted polls in this pack yet"
+            android:text="@string/no_more_new_voted_polls"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvNoPolls"
@@ -83,7 +85,38 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="32dp"
             android:minWidth="150dp"
-            android:text="Join" />
+            android:text="@string/start" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/vgError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:gravity="center"
+            android:text="@string/polls_loading_error"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRetry"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="32dp"
+            android:minWidth="150dp"
+            android:text="@string/retry" />
 
     </LinearLayout>
 

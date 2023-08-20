@@ -94,7 +94,7 @@
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="1"
-            android:text="@string/suggest_poll"
+            android:text="@string/suggest"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />

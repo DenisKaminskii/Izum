@@ -59,6 +59,7 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     override fun accept(action: ViewAction) {
         when (action) {
             is ViewAction.ShowToast -> showToast(action.message)
+            else -> {}
         }
     }
 

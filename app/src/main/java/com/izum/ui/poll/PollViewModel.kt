@@ -1,5 +1,6 @@
 package com.izum.ui.poll
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.Poll
 import com.izum.data.PollOption
@@ -17,7 +18,11 @@ sealed interface PollViewState {
 
     object Loading : PollViewState
 
-    data class Poll(
+    object Empty : PollViewState
+
+    object Error : PollViewState
+
+    data class Content(
         val packTitle: String,
         val votesCount: Long,
         val top: OptionViewState,
@@ -50,7 +55,10 @@ class PollViewModel @Inject constructor(
     }
 
     private var packTitle = ""
+    private var packId = -1L
+
     private val polls = mutableListOf<Poll>()
+    private var isPollFetched = false
 
     private val poll: Poll
         get() = polls.first()
@@ -66,26 +74,36 @@ class PollViewModel @Inject constructor(
 
     override fun onViewInitialized(args: Arguments) {
         super.onViewInitialized(args)
-        val packId = args.packId
+        packId = args.packId
         packTitle = args.packTitle
 
-        fetchPolls(packId)
+        fetchPolls()
     }
 
-    private fun fetchPolls(packId: Long) = viewModelScope.launch {
-        val newPolls = pollsRepository.getPackPolls(packId)
-        polls.clear()
-        polls.addAll(newPolls)
-        updateView()
+    private fun fetchPolls() = viewModelScope.launch {
+        try {
+            val newPolls = pollsRepository.getPackUnvotedPolls(packId)
+            isPollFetched = true
+            polls.clear()
+            polls.addAll(newPolls)
+            updateView()
+        } catch (exception: Exception) {
+            Log.e("Steve", exception.toString())
+            isPollFetched = false
+            updateState { PollViewState.Error }
+        }
     }
 
     private fun updateView() {
         updateState {
+            if (!isPollFetched) return@updateState PollViewState.Loading
+            if (polls.isEmpty()) return@updateState PollViewState.Empty
+
             val topCount = optionTop.votesCount
             val bottomCount = optionBottom.votesCount
             val allCount = topCount + bottomCount
 
-            PollViewState.Poll(
+            PollViewState.Content(
                 packTitle = packTitle,
                 votesCount = poll.options.sumOf { option -> option.votesCount },
                 top = OptionViewState(
@@ -126,16 +144,9 @@ class PollViewModel @Inject constructor(
             return
         }
 
-        if (polls.size < 2) {
-            viewModelScope.launch {
-                route(Router.Route.Finish)
-            }
-
-        } else {
-            polls.removeFirstOrNull()
-            votedOptionId = null
-            updateView()
-        }
+        polls.removeFirstOrNull()
+        votedOptionId = null
+        updateView()
     }
 
     fun onTopVote() {
@@ -149,6 +160,18 @@ class PollViewModel @Inject constructor(
     fun onStatisticClick() {
         viewModelScope.launch {
             route(Router.Route.Statistic(poll))
+        }
+    }
+
+    fun onRetryClick() {
+        fetchPolls()
+        updateView()
+    }
+
+    fun onSuggestClick() {
+        viewModelScope.launch {
+            route(Router.Route.Finish)
+            route(Router.Route.SuggestPoll)
         }
     }
 

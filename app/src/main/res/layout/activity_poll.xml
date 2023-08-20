@@ -10,17 +10,89 @@
         android:id="@+id/vgContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="vgTop, vgBottom, vgToolbar" />
+        android:visibility="gone"
+        app:constraint_referenced_ids="vgTop, vgBottom, tvStatistic, tvNext" />
 
     <ProgressBar
         android:id="@+id/vProgress"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:indeterminateTint="@color/red"
+        android:indeterminateTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/vgToolbar"
+        tools:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/vgNoPolls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/vgToolbar"
+        tools:visibility="gone">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:text="@string/no_more_new_unvoted_polls"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSuggest"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/suggest_poll" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/vgError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/vgToolbar"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:text="@string/polls_loading_error"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRetry"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/retry" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/vgTop"
@@ -44,9 +116,9 @@
             android:gravity="center"
             android:maxLength="150"
             android:padding="24dp"
-            android:text="Option 1"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            tools:text="Option 1" />
 
         <TextView
             android:id="@+id/tvTopCount"
@@ -55,10 +127,10 @@
             android:layout_gravity="bottom"
             android:gravity="center_horizontal"
             android:paddingVertical="12dp"
-            android:text="36% (192)"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="36% (192)" />
 
     </FrameLayout>
 
@@ -83,9 +155,9 @@
             android:gravity="center"
             android:maxLength="150"
             android:padding="24dp"
-            android:text="Option 2"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            tools:text="Option 2" />
 
         <TextView
             android:id="@+id/tvBottomCount"
@@ -94,10 +166,10 @@
             android:layout_gravity="top"
             android:gravity="center_horizontal"
             android:paddingVertical="12dp"
-            android:text="64% (391)"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="64% (391)" />
 
     </FrameLayout>
 
@@ -129,9 +201,9 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="Pack name"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:text="Pack name" />
 
         <ImageView
             android:id="@+id/ivHistory"
@@ -154,7 +226,7 @@
         android:drawableStart="@drawable/ic_stats_24"
         android:paddingVertical="12dp"
         android:paddingStart="20dp"
-        android:text="STATISTIC"
+        android:text="@string/statistic"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvNext"

@@ -1,6 +1,7 @@
 package com.izum.ui.pack.history
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.R
 import com.izum.data.Pack
@@ -8,6 +9,7 @@ import com.izum.data.Poll
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.pack.history.PackHistoryViewModel.Companion.Arguments
+import com.izum.ui.poll.PollViewState
 import com.izum.ui.poll.statistic.StatisticItem
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +21,11 @@ sealed interface PackHistoryViewState {
 
     object Loading : PackHistoryViewState
 
-    data class Polls(
+    object Empty : PackHistoryViewState
+
+    object Error : PackHistoryViewState
+
+    data class Content(
         val polls: List<StatisticItem>
     ) : PackHistoryViewState
 
@@ -29,7 +35,6 @@ sealed interface PackHistoryViewState {
 class PackHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val pollsRepository: PollsRepository,
-
 ) : StateViewModel<Arguments, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
@@ -40,8 +45,10 @@ class PackHistoryViewModel @Inject constructor(
         )
     }
 
-    private val polls = mutableListOf<Poll>()
     private lateinit var pack: Pack
+
+    private val polls = mutableListOf<Poll>()
+    private var isPollFetched = false
     private var isValueInPercent = true
 
     override fun onViewInitialized(args: Arguments) {
@@ -52,15 +59,25 @@ class PackHistoryViewModel @Inject constructor(
     }
 
     private fun fetchPolls() = viewModelScope.launch {
-        val newPools = pollsRepository.getPackVotedPolls(pack.id)
-        polls.clear()
-        polls.addAll(newPools)
-        updateView()
+        try {
+            val newPools = pollsRepository.getPackVotedPolls(pack.id)
+            isPollFetched = true
+            polls.clear()
+            polls.addAll(newPools)
+            updateView()
+        } catch (exception: Exception) {
+            Log.e("Steve", exception.toString())
+            isPollFetched = false
+            updateState { PackHistoryViewState.Error }
+        }
     }
 
     private fun updateView() {
         updateState {
-            PackHistoryViewState.Polls(
+            if (!isPollFetched) return@updateState PackHistoryViewState.Loading
+            if (polls.isEmpty()) return@updateState PackHistoryViewState.Empty
+
+            PackHistoryViewState.Content(
                 polls
                     .map { poll ->
                         StatisticItem.TwoOptionsBar(
@@ -97,6 +114,7 @@ class PackHistoryViewModel @Inject constructor(
 
     fun onNoPollsClicked() {
         viewModelScope.launch {
+            route(Router.Route.Finish)
             route(Router.Route.Polls(pack))
         }
     }

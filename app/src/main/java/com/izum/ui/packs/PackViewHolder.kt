@@ -31,7 +31,8 @@ class PackViewHolder(
         binding.tvTitle.setTextColor(pack.contentColor)
         binding.tvPollsCount.setTextColor(pack.contentColor)
 
-        binding.vLock.isVisible = pack.isPaid && !item.hasSubscription
+        binding.ivLock.isVisible = pack.isPaid && !item.hasSubscription
+        binding.ivLock.setColorFilter(pack.contentColor)
         binding.tvTitle.text = pack.title
         binding.tvPollsCount.text = "${pack.pollsCount} polls"
         binding.root.setOnClickListener {

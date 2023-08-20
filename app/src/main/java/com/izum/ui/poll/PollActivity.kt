@@ -1,19 +1,12 @@
 package com.izum.ui.poll
 
 import android.annotation.SuppressLint
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import com.izum.R
 import com.izum.databinding.ActivityPollBinding
 import com.izum.ui.BaseActivity
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @SuppressLint("ClickableViewAccessibility")
 class PollActivity : BaseActivity() {
@@ -28,6 +21,7 @@ class PollActivity : BaseActivity() {
         get() = _binding!!
 
     private val viewModel: PollViewModel by viewModels()
+
     override fun initLayout() {
         super.initLayout()
         _binding = ActivityPollBinding.inflate(layoutInflater)
@@ -40,6 +34,8 @@ class PollActivity : BaseActivity() {
         binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
         binding.tvNext.setOnClickListener { viewModel.onNextClick() }
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
+        binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
+        binding.tvSuggest.setOnClickListener { viewModel.onSuggestClick() }
 
         binding.tvStatistic.isVisible = true
         binding.tvNext.isVisible = true
@@ -67,9 +63,11 @@ class PollActivity : BaseActivity() {
 
     private fun update(state: PollViewState) {
         binding.vProgress.isVisible = state is PollViewState.Loading
-        binding.vgContent.isVisible = state !is PollViewState.Loading
+        binding.vgContent.isVisible = state is PollViewState.Content
+        binding.vgError.isVisible = state is PollViewState.Error
+        binding.vgNoPolls.isVisible = state is PollViewState.Empty
 
-        if (state !is PollViewState.Poll) return
+        if (state !is PollViewState.Content) return
 
         val isTopVoted = state.votedOptionId == state.top.id
         val isBottomVoted = state.votedOptionId == state.bottom.id

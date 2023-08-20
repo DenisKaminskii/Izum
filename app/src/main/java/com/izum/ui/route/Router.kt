@@ -22,7 +22,7 @@ interface Router {
     sealed interface Route {
         object Packs : Route
         data class Polls(val pack: com.izum.data.Pack) : Route
-        object CreatePoll : Route
+        object SuggestPoll : Route
         object CreatePack : Route
         data class Statistic(val poll: Poll) : Route
         data class Pack(val pack: com.izum.data.Pack) : Route
@@ -67,7 +67,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                 when(route) {
                     Router.Route.Packs -> showPacks()
                     is Router.Route.Polls -> showPackPolls(route.pack)
-                    Router.Route.CreatePoll -> showCreatePoll()
+                    Router.Route.SuggestPoll -> showSuggestPoll()
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
                     is Router.Route.Pack -> showPackDialog(route.pack)
@@ -96,7 +96,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showCreatePoll() {
+    private fun showSuggestPoll() {
         host?.let { activity ->
             val intent = Intent(activity, SuggestPollActivity::class.java)
             activity.startActivity(intent)

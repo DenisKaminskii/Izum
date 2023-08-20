@@ -1,23 +1,16 @@
 package com.izum.ui.pack.history
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.izum.data.Pack
 import com.izum.data.Poll
 import com.izum.data.repository.PacksRepository
 import com.izum.databinding.ActivityPackHistoryBinding
 import com.izum.ui.BaseActivity
-import com.izum.ui.ViewAction
 import com.izum.ui.poll.statistic.PollStatisticAdapter
-import com.izum.ui.poll.statistic.StatisticItem
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,7 +31,6 @@ class PackHistoryActivity : BaseActivity() {
         viewModel.onPollClick()
     }
 
-    private var polls = mutableListOf<Poll>()
     private lateinit var pack: Pack
 
     private val viewModel: PackHistoryViewModel by viewModels()
@@ -74,11 +66,11 @@ class PackHistoryActivity : BaseActivity() {
 
     private fun update(viewState: PackHistoryViewState) {
         binding.vProgress.isVisible = viewState is PackHistoryViewState.Loading
+        binding.vgError.isVisible = viewState is PackHistoryViewState.Error
+        binding.vgNoPolls.isVisible = viewState is PackHistoryViewState.Empty
 
-        if (viewState !is PackHistoryViewState.Polls) return
+        if (viewState !is PackHistoryViewState.Content) return
         binding.rvPolls.isVisible = viewState.polls.isNotEmpty()
-        binding.vgNoPolls.isVisible = viewState.polls.isEmpty()
-
         adapter.setItems(viewState.polls)
     }
 

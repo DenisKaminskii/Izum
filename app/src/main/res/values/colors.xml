@@ -31,7 +31,7 @@
 
     <color name="subscribe_gradient_start">#4CBCB5</color>
     <color name="subscribe_gradient_end">#4728A2</color>
-    <color name="subscribed">#389ECA</color>
+    <color name="subscribed">#6EE5FF</color>
 
     <color name="red_gradient_start">#961676</color>
     <color name="red_gradient_end">#F36265</color>

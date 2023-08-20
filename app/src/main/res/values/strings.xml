@@ -11,13 +11,20 @@
     <string name="other">Other</string>
     <string name="age">Age</string>
     <string name="subscribe">Subscribe</string>
+    <string name="statistic">Statistic</string>
     <string name="subscribed">Subscribed</string>
     <string name="official">Official</string>
     <string name="custom">Custom</string>
     <string name="create_pack">Create</string>
-    <string name="suggest_poll">Suggest</string>
+    <string name="suggest">Suggest</string>
+    <string name="suggest_poll">Suggest poll</string>
+    <string name="polls_loading_error">Polls loading error :(</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
+    <string name="retry">Retry</string>
+    <string name="start">Start</string>
+    <string name="no_more_new_unvoted_polls">No more new polls yet.\nCome back later :)</string>
+    <string name="no_more_new_voted_polls">You did not answer any of polls.\nDo that!</string>
 
 
     <string name="button_reload">Reload</string>

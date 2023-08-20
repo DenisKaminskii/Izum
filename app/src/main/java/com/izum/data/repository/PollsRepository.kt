@@ -8,19 +8,13 @@ import com.izum.api.VoteRequestJson
 import com.izum.data.Poll
 import com.izum.data.PollOption
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
 interface PollsRepository {
 
     @WorkerThread
-    suspend fun getPackPolls(packId: Long): List<Poll>
+    suspend fun getPackUnvotedPolls(packId: Long): List<Poll>
 
     @WorkerThread
     suspend fun getPackVotedPolls(packId: Long): List<Poll>
@@ -32,28 +26,32 @@ interface PollsRepository {
 }
 
 class PollsRepositoryImpl(
-    private val pollsApi: PollApi, private val ioDispatcher: CoroutineDispatcher
+    private val pollsApi: PollApi,
+    private val ioDispatcher: CoroutineDispatcher
 ) : PollsRepository {
 
     private val polls = hashMapOf<Long, List<Poll>>()
 
-    override suspend fun getPackPolls(packId: Long): List<Poll> = withContext(ioDispatcher) {
-        if (polls.containsKey(packId)) {
-            polls[packId]!!
-        } else {
-            val newPolls = pollsApi.getPackPolls(packId).map(::mapFromJson)
-            polls[packId] = newPolls
-            newPolls
-        }
-    }
+    override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
+        getPackPolls(packId)
+            .filter { poll -> poll.votedOptionId == null }
 
-    override suspend fun getPackVotedPolls(packId: Long): List<Poll> {
-        return getPackPolls(packId)
+    override suspend fun getPackVotedPolls(packId: Long): List<Poll> =
+        getPackPolls(packId)
             .filter { poll -> poll.votedOptionId != null }
+
+    private suspend fun getPackPolls(packId: Long): List<Poll> = withContext(ioDispatcher) {
+        val newPolls = polls[packId] ?: pollsApi
+            .getPackPolls(packId)
+            .map(::mapFromJson)
+
+        polls[packId] = newPolls
+        newPolls
     }
 
     override suspend fun vote(pollId: Long, optionId: Long) = withContext(ioDispatcher) {
         try {
+            // Записывать результат в polls
             val request = VoteRequestJson(optionId)
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
