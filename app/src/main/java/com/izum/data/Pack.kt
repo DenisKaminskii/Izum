@@ -13,12 +13,14 @@ data class Pack(
     val productId: String?,
     val pollsCount: Long,
     val authorId: Long?,
-    val colors: PackColors
+    @ColorInt val contentColor: Int,
+    @ColorInt val gradientStartColor: Int,
+    @ColorInt val gradientEndColor: Int,
+    val preview: List<PackPreview>
 ) : Parcelable
 
 @Parcelize
-data class PackColors(
-    @ColorInt val contentColor: Int,
-    @ColorInt val gradientStartColor: Int,
-    @ColorInt val gradientEndColor: Int
+data class PackPreview(
+    val option1: String,
+    val option2: String
 ) : Parcelable

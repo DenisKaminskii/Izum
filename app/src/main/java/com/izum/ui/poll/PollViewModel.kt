@@ -22,7 +22,8 @@ sealed interface PollViewState {
         val votesCount: Long,
         val top: OptionViewState,
         val bottom: OptionViewState,
-        val votedOptionId: Long? = null
+        val votedOptionId: Long? = null,
+        val isFinishVisible: Boolean = false
     ) : PollViewState
 
 }
@@ -30,7 +31,8 @@ sealed interface PollViewState {
 data class OptionViewState(
     val id: Long,
     val title: String,
-    val votesCount: Long
+    val votesCount: Long,
+    val votesText: String
 )
 
 @HiltViewModel
@@ -67,33 +69,51 @@ class PollViewModel @Inject constructor(
         val packId = args.packId
         packTitle = args.packTitle
 
-        viewModelScope.launch {
-            pollsRepository.getPackPolls(packId)
-                .collect {
-                    polls.clear()
-                    polls.addAll(it)
+        fetchPolls(packId)
+    }
 
-                    updateView()
-                }
-        }
+    private fun fetchPolls(packId: Long) = viewModelScope.launch {
+        val newPolls = pollsRepository.getPackPolls(packId)
+        polls.clear()
+        polls.addAll(newPolls)
+        updateView()
     }
 
     private fun updateView() {
         updateState {
+            val topCount = optionTop.votesCount
+            val bottomCount = optionBottom.votesCount
+            val allCount = topCount + bottomCount
+
             PollViewState.Poll(
                 packTitle = packTitle,
                 votesCount = poll.options.sumOf { option -> option.votesCount },
                 top = OptionViewState(
                     id = optionTop.id,
                     title = optionTop.title,
-                    votesCount = optionTop.votesCount
+                    votesCount = topCount.let {
+                        if (votedOptionId == optionTop.id) it + 1 else it
+                    },
+                    votesText = try {
+                        "${(topCount.toFloat() / allCount * 100).toInt()}% ($topCount)"
+                    } catch (e: Exception) {
+                        "0% ($topCount)"
+                    }
                 ),
                 bottom = OptionViewState(
                     id = optionBottom.id,
                     title = optionBottom.title,
-                    votesCount = optionBottom.votesCount
+                    votesCount = optionBottom.votesCount.let {
+                        if (votedOptionId == optionBottom.id) it + 1 else it
+                    },
+                    votesText = try {
+                        "${(bottomCount.toFloat() / allCount * 100).toInt()}% ($bottomCount)"
+                    } catch (e: Exception) {
+                        "0% ($bottomCount)"
+                    }
                 ),
-                votedOptionId = votedOptionId
+                votedOptionId = votedOptionId,
+                isFinishVisible = polls.size < 2
             )
         }
     }
@@ -105,9 +125,17 @@ class PollViewModel @Inject constructor(
             }
             return
         }
-        polls.removeFirstOrNull()
-        votedOptionId = null
-        updateView()
+
+        if (polls.size < 2) {
+            viewModelScope.launch {
+                route(Router.Route.Finish)
+            }
+
+        } else {
+            polls.removeFirstOrNull()
+            votedOptionId = null
+            updateView()
+        }
     }
 
     fun onTopVote() {

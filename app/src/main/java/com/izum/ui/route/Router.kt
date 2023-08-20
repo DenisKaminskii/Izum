@@ -28,6 +28,7 @@ interface Router {
         data class Pack(val pack: com.izum.data.Pack) : Route
         data class PackHistory(val pack: com.izum.data.Pack) : Route
         object ProvideUserInfo : Route
+        object Finish : Route
     }
 
     fun route(route: Route)
@@ -72,6 +73,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Pack -> showPackDialog(route.pack)
                     is Router.Route.PackHistory -> showPackHistory(route.pack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
+                    is Router.Route.Finish -> finish()
                 }
             }
         }
@@ -139,6 +141,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             activity.startActivity(intent)
         }
+    }
+
+    private fun finish() {
+        host?.finish()
     }
 
 }

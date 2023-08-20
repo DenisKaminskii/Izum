@@ -15,19 +15,15 @@
     <color name="white_25">#40EFEFEF</color>
     <color name="purple">#AF30DC</color>
     <color name="sand">#DFB45F</color>
-    <color name="mint">#1ECF9A</color>
-    <color name="peach">#EA8261</color>
-    <color name="grey">#818181</color>
-    <color name="premium_gradient_start">#FF51B9</color>
-    <color name="premium_gradient_end">#F3BC7D</color>
 
+    <color name="grey">#494949</color>
 
     <color name="black">#000000</color>
     <color name="white">#E5E5E5</color>
     <color name="white_50">#80E5E5E5</color>
 
-    <color name="red">#98283F</color>
-    <color name="blue">#2769A3</color>
+    <color name="red">#F36265</color>
+    <color name="blue">#3296B8</color>
 
     <color name="gender_female">#DA3CCA</color>
     <color name="gender_male">#27C0E2</color>
@@ -36,5 +32,10 @@
     <color name="subscribe_gradient_start">#4CBCB5</color>
     <color name="subscribe_gradient_end">#4728A2</color>
     <color name="subscribed">#389ECA</color>
+
+    <color name="red_gradient_start">#961676</color>
+    <color name="red_gradient_end">#F36265</color>
+    <color name="blue_gradient_start">#8420CA</color>
+    <color name="blue_gradient_end">#46CEFC</color>
 
 </resources>

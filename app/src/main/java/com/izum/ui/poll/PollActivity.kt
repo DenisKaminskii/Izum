@@ -38,11 +38,11 @@ class PollActivity : BaseActivity() {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvTop.setOnClickListener { viewModel.onTopVote() }
         binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
-        binding.ivNext.setOnClickListener { viewModel.onNextClick() }
+        binding.tvNext.setOnClickListener { viewModel.onNextClick() }
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
 
-//         binding.tvTop.background = getBackgroundGradient(color = getColor(R.color.red))
-//         binding.tvBottom.background = getBackgroundGradient(color = getColor(R.color.sand))
+        binding.tvStatistic.isVisible = true
+        binding.tvNext.isVisible = true
 
         update(PollViewState.Loading)
 
@@ -65,29 +65,6 @@ class PollActivity : BaseActivity() {
         subscribe(viewModel) { viewState -> update(viewState) }
     }
 
-    private fun View.animateShow() = lifecycleScope.launch {
-        this@animateShow.alpha = 0f
-        this@animateShow.isVisible = true
-        this@animateShow.animate()
-            .alpha(1f)
-            .setDuration(350)
-            .start()
-    }
-
-    private fun View.animateHide() = lifecycleScope.launch {
-        animate()
-            .alpha(0f)
-            .setDuration(350)
-            .start()
-
-        withContext(IO) {
-            delay(350)
-            withContext(Main) {
-                isVisible = false
-            }
-        }
-    }
-
     private fun update(state: PollViewState) {
         binding.vProgress.isVisible = state is PollViewState.Loading
         binding.vgContent.isVisible = state !is PollViewState.Loading
@@ -97,9 +74,6 @@ class PollActivity : BaseActivity() {
         val isTopVoted = state.votedOptionId == state.top.id
         val isBottomVoted = state.votedOptionId == state.bottom.id
         val isVoted = isTopVoted || isBottomVoted
-        val topCount = state.top.votesCount + (if (isTopVoted) 1 else 0)
-        val bottomCount = state.bottom.votesCount + (if (isBottomVoted) 1 else 0)
-        val allCount = topCount + bottomCount
 
         binding.tvPackTitle.text = state.packTitle
 
@@ -110,11 +84,7 @@ class PollActivity : BaseActivity() {
         }
         binding.tvTop.text = state.top.title
         binding.tvTopCount.isVisible = isVoted
-        binding.tvTopCount.text = try {
-            "${(topCount.toFloat() / allCount * 100).toInt()}% ($topCount)"
-        } catch (e: Exception) {
-            "0% ($topCount)"
-        }
+        binding.tvTopCount.text = state.top.votesText
 
         binding.vgBottom.alpha = when (state.votedOptionId) {
             state.top.id -> 0.69f
@@ -123,22 +93,14 @@ class PollActivity : BaseActivity() {
         }
         binding.tvBottom.text = state.bottom.title
         binding.tvBottomCount.isVisible = isVoted
-        binding.tvBottomCount.text = try {
-            "${(bottomCount.toFloat() / allCount * 100).toInt()}% ($bottomCount)"
-        } catch (e: Exception) {
-            "0% ($bottomCount)"
-        }
+        binding.tvBottomCount.text = state.bottom.votesText
 
-        if (isVoted) {
-            if (!binding.tvStatistic.isVisible) {
-                binding.tvStatistic.animateShow()
-                binding.ivNext.animateShow()
-            }
-        } else {
-            if (binding.tvStatistic.isVisible) {
-                binding.tvStatistic.animateHide()
-                binding.ivNext.animateHide()
-            }
+        binding.tvStatistic.isEnabled = isVoted
+        binding.tvNext.isEnabled = isVoted
+
+        if (state.isFinishVisible) {
+            binding.tvNext.setCompoundDrawables(null, null, null, null)
+            binding.tvNext.text = getString(R.string.finish)
         }
     }
 

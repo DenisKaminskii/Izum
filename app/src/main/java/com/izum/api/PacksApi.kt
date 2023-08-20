@@ -3,7 +3,6 @@ package com.izum.api
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.http.GET
-import retrofit2.http.Path
 
 interface PacksApi {
 
@@ -27,7 +26,15 @@ data class PackJson(
     @Json(name="pollsCount")
     val pollsCount: Long,
     @Json(name="author")
-    val author: AuthorJson? = null
+    val author: AuthorJson? = null,
+    @Json(name="contentColor")
+    val contentColor: String,
+    @Json(name="gradientStartColor")
+    val gradientStartColor: String,
+    @Json(name="gradientEndColor")
+    val gradientEndColor: String,
+    @Json(name="preview")
+    val preview: List<PackPreviewJson>
 )
 
 @JsonClass(generateAdapter = true)
@@ -42,4 +49,12 @@ data class VoteJson(
     val date: String,
     @Json(name="optionId")
     val optionId: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class PackPreviewJson(
+    @Json(name="option1")
+    val option1: String,
+    @Json(name="option2")
+    val option2: String
 )

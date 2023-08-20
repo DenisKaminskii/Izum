@@ -48,14 +48,14 @@ class PackHistoryViewModel @Inject constructor(
         super.onViewInitialized(args)
         pack = args.pack
 
-        viewModelScope.launch {
-            pollsRepository.getPackVotedPolls(args.pack.id)
-                .collect { polls ->
-                    this@PackHistoryViewModel.polls.clear()
-                    this@PackHistoryViewModel.polls.addAll(polls)
-                    updateView()
-                }
-        }
+        fetchPolls()
+    }
+
+    private fun fetchPolls() = viewModelScope.launch {
+        val newPools = pollsRepository.getPackVotedPolls(pack.id)
+        polls.clear()
+        polls.addAll(newPools)
+        updateView()
     }
 
     private fun updateView() {
@@ -72,7 +72,7 @@ class PackHistoryViewModel @Inject constructor(
                                 text = if (isValueInPercent) {
                                     "${poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())}%"
                                 } else {
-                                    poll.options[0].votesCount.toString()
+                                     poll.options[0].votesCount.toString()
                                 },
                                 color = context.getColor(R.color.red)
                             ),

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.activity.addCallback
+import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -23,8 +24,8 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.izum.R
+import com.izum.data.Mock
 import com.izum.data.Pack
-import com.izum.data.PackColors
 import com.izum.data.repository.UserRepository
 import com.izum.databinding.DialogFragmentPackBinding
 import com.izum.ui.BaseDialogFragment
@@ -123,7 +124,8 @@ class PackFragment : BaseDialogFragment() {
             createInsetDrawable(
                 context = requireContext(),
                 horizontalOffset = requireContext().dpF(32),
-                colors = pack.colors
+                gradientStart = pack.gradientStartColor,
+                gradientEnd = pack.gradientEndColor
             )
         )
         return dialog
@@ -147,20 +149,20 @@ class PackFragment : BaseDialogFragment() {
         binding.tvPolls.text = "${pack.pollsCount} polls"
         binding.tvTitle.text = pack.title
 
-        binding.tvTitle.setTextColor(pack.colors.contentColor)
-        binding.ivHistory.setColorFilter(pack.colors.contentColor)
-        binding.ivFirst.setColorFilter(pack.colors.contentColor)
-        binding.ivSecond.setColorFilter(pack.colors.contentColor)
-        binding.ivThird.setColorFilter(pack.colors.contentColor)
-        binding.tvPolls.setTextColor(pack.colors.contentColor)
-        binding.tvStart.setTextColor(pack.colors.contentColor)
+        binding.tvTitle.setTextColor(pack.contentColor)
+        binding.ivHistory.setColorFilter(pack.contentColor)
+        binding.ivFirst.setColorFilter(pack.contentColor)
+        binding.ivSecond.setColorFilter(pack.contentColor)
+        binding.ivThird.setColorFilter(pack.contentColor)
+        binding.tvPolls.setTextColor(pack.contentColor)
+        binding.tvStart.setTextColor(pack.contentColor)
 
         binding.tvStart.isVisible = !pack.isPaid || userRepository.hasSubscription
         binding.tvSubscribe.isVisible = pack.isPaid && !userRepository.hasSubscription
 
         binding.tvStart.background = GradientDrawable().apply {
             cornerRadius = requireContext().dpF(14)
-            setStroke(requireContext().dpF(2).toInt(), pack.colors.contentColor)
+            setStroke(requireContext().dpF(2).toInt(), pack.contentColor)
         }
 
         initPreviewList()
@@ -185,6 +187,11 @@ class PackFragment : BaseDialogFragment() {
                     return true
                 }
             }
+
+//            previewAdapter.setItems(pack.preview.map {
+//                PackPreviewItem(it.option1, it.option2, pack.contentColor)
+//            })
+            previewAdapter.setItems(Mock.getPreviewItems(pack))
         }
     }
 
@@ -192,36 +199,7 @@ class PackFragment : BaseDialogFragment() {
         super.initSubs()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewStateFlow.collect { viewState -> update(viewState) }
-            }
-        }
-    }
-
-    private fun update(viewState: PacksViewState) {
-        when (viewState) {
-            is PacksViewState.Loading -> {}
-            is PacksViewState.Packs -> {
-                previewAdapter.setItems(
-                    listOf(
-                        PackPreviewItem(
-                            topText = "Что-то типо того",
-                            bottomText = "Или что-то типо этого",
-                            textColor = pack.colors.contentColor
-                        ),
-                        PackPreviewItem(
-                            topText = "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                            bottomText = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-                            textColor = pack.colors.contentColor
-                        ),
-                        PackPreviewItem(
-                            topText = "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-                            bottomText = "Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable",
-                            textColor = pack.colors.contentColor
-                        )
-                    )
-                )
-
-                binding.vgIndicators.isVisible = visibleItemPosition != null
+                viewModel.viewStateFlow.collect { viewState ->  }
             }
         }
     }
@@ -229,11 +207,12 @@ class PackFragment : BaseDialogFragment() {
     private fun createInsetDrawable(
         context: Context,
         horizontalOffset: Float,
-        colors: PackColors
+        @ColorInt gradientStart: Int,
+        @ColorInt gradientEnd: Int
     ): Drawable {
         val baseDrawable = GradientDrawable(
             GradientDrawable.Orientation.BL_TR,
-            intArrayOf(colors.gradientStartColor, colors.gradientEndColor)
+            intArrayOf(gradientStart, gradientEnd)
         ).apply {
             cornerRadius = context.dpF(20)
         }

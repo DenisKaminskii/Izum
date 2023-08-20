@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/Text.Title"
+        style="@style/Text.Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -18,7 +18,7 @@
         android:textColor="@color/white" />
 
     <TextView
-        style="@style/Text.Header"
+        style="@style/Text.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -69,7 +69,7 @@
     </RadioGroup>
 
     <TextView
-        style="@style/Text.Header"
+        style="@style/Text.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.izum.data.CreatePoll
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
+import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -65,7 +66,7 @@ class CreatePackViewModel @Inject constructor(
 
     fun onBackClick() {
         viewModelScope.launch {
-            emit(ViewAction.Finish)
+            route(Router.Route.Finish)
         }
     }
 

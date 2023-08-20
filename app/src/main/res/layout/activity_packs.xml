@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabMode="fixed"
+        app:tabRippleColor="@color/white"
+        app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white"
         app:tabTextAppearance="@style/PacksTabTextAppearance"
         app:tabTextColor="@color/grey">

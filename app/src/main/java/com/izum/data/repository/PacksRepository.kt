@@ -5,7 +5,7 @@ import androidx.annotation.WorkerThread
 import com.izum.api.PackJson
 import com.izum.api.PacksApi
 import com.izum.data.Pack
-import com.izum.data.PackColors
+import com.izum.data.PackPreview
 import com.izum.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -41,10 +41,8 @@ class PacksRepositoryImpl(
         ).flowOn(ioDispatcher)
     }
 
-    var counter = 0
-
-    private fun mapFromJson(packJson: PackJson) : Pack {
-        val pack = Pack(
+    private fun mapFromJson(packJson: PackJson) : Pack =
+        Pack(
             id = packJson.id,
             title = packJson.title,
             description = packJson.description,
@@ -52,33 +50,15 @@ class PacksRepositoryImpl(
             productId = packJson.productId,
             pollsCount = packJson.pollsCount,
             authorId = packJson.author?.id,
-            colors = colors[counter]
+            gradientStartColor = Color.parseColor(packJson.gradientStartColor),
+            gradientEndColor = Color.parseColor(packJson.gradientEndColor),
+            contentColor = Color.parseColor(packJson.contentColor),
+            preview = packJson.preview.map { preview ->
+                PackPreview(
+                    option1 = preview.option1,
+                    option2 = preview.option2
+                )
+            }
         )
-        counter++
-        return pack
-    }
 
 }
-
-val colors = listOf(
-    PackColors(
-        contentColor = Color.parseColor("#E5E5E5"),
-        gradientStartColor = Color.parseColor("#4D5297"),
-        gradientEndColor = Color.parseColor("#49A0FA"),
-    ),
-    PackColors(
-        contentColor = Color.parseColor("#000000"),
-        gradientStartColor = Color.parseColor("#EB5C3A"),
-        gradientEndColor = Color.parseColor("#FEAA3F"),
-    ),
-    PackColors(
-        contentColor = Color.parseColor("#E5E5E5"),
-        gradientStartColor = Color.parseColor("#961676"),
-        gradientEndColor = Color.parseColor("#F36265"),
-    ),
-    PackColors(
-        contentColor = Color.parseColor("#E5E5E5"),
-        gradientStartColor = Color.parseColor("#1B1B1B"),
-        gradientEndColor = Color.parseColor("#353535"),
-    )
-)

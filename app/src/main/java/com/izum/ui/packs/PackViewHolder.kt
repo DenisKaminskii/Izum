@@ -18,8 +18,8 @@ class PackViewHolder(
         val context = itemView.context
         val pack = item.pack
 
-        val startGradient = pack.colors.gradientStartColor
-        val endGradient = pack.colors.gradientEndColor
+        val startGradient = pack.gradientStartColor
+        val endGradient = pack.gradientEndColor
 
         binding.root.background = GradientDrawable(
             GradientDrawable.Orientation.BL_TR,
@@ -28,8 +28,8 @@ class PackViewHolder(
             cornerRadius = context.dpF(20)
         }
 
-        binding.tvTitle.setTextColor(pack.colors.contentColor)
-        binding.tvPollsCount.setTextColor(pack.colors.contentColor)
+        binding.tvTitle.setTextColor(pack.contentColor)
+        binding.tvPollsCount.setTextColor(pack.contentColor)
 
         binding.vLock.isVisible = pack.isPaid && !item.hasSubscription
         binding.tvTitle.text = pack.title

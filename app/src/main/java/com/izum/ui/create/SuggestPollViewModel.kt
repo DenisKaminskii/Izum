@@ -6,6 +6,7 @@ import com.izum.data.CreatePoll
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
+import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +39,7 @@ class SuggestPollViewModel @Inject constructor(
 
     fun onBackClick() {
         viewModelScope.launch {
-            emit(ViewAction.Finish)
+            route(Router.Route.Finish)
         }
     }
 
@@ -47,7 +48,7 @@ class SuggestPollViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 ///pollsRepository.suggest()
-                emit(ViewAction.Finish)
+                route(Router.Route.Finish)
             } catch (exception: Exception) {
                 Log.e("Steve", "CreatePollViewModel: $exception")
                 emit(ViewAction.ShowToast("Sorry. Try Again"))

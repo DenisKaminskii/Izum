@@ -20,10 +20,10 @@ import java.io.IOException
 interface PollsRepository {
 
     @WorkerThread
-    suspend fun getPackPolls(packId: Long): Flow<List<Poll>>
+    suspend fun getPackPolls(packId: Long): List<Poll>
 
     @WorkerThread
-    suspend fun getPackVotedPolls(packId: Long): Flow<List<Poll>>
+    suspend fun getPackVotedPolls(packId: Long): List<Poll>
 
     @WorkerThread
     @Throws(IOException::class)
@@ -32,27 +32,24 @@ interface PollsRepository {
 }
 
 class PollsRepositoryImpl(
-    private val pollsApi: PollApi,
-    private val ioDispatcher: CoroutineDispatcher
+    private val pollsApi: PollApi, private val ioDispatcher: CoroutineDispatcher
 ) : PollsRepository {
 
     private val polls = hashMapOf<Long, List<Poll>>()
 
-    override suspend fun getPackPolls(packId: Long): Flow<List<Poll>> =
+    override suspend fun getPackPolls(packId: Long): List<Poll> = withContext(ioDispatcher) {
         if (polls.containsKey(packId)) {
-            flowOf(polls[packId]!!)
+            polls[packId]!!
         } else {
-            flowOf(
-                PacksMocks.getPackMocks(packId)
-            ).onEach {
-                polls[packId] = it
-            }
+            val newPolls = pollsApi.getPackPolls(packId).map(::mapFromJson)
+            polls[packId] = newPolls
+            newPolls
         }
-            .flowOn(ioDispatcher)
+    }
 
-    override suspend fun getPackVotedPolls(packId: Long): Flow<List<Poll>> {
+    override suspend fun getPackVotedPolls(packId: Long): List<Poll> {
         return getPackPolls(packId)
-            .map { it.filter { poll -> poll.votedOptionId != null } }
+            .filter { poll -> poll.votedOptionId != null }
     }
 
     override suspend fun vote(pollId: Long, optionId: Long) = withContext(ioDispatcher) {
