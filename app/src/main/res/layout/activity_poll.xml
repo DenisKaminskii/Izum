@@ -193,16 +193,12 @@
 
         <TextView
             android:id="@+id/tvPackTitle"
+            style="@style/Text.Toolbar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="20sp"
             tools:text="Pack name" />
 
         <ImageView

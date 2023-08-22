@@ -27,18 +27,14 @@
 
         <TextView
             android:id="@+id/tvPackTitle"
+            style="@style/Text.Toolbar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:maxLines="1"
             android:text="Adult pack (18+)"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -63,8 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             style="@style/Text.Body"
@@ -94,8 +90,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             style="@style/Text.Body"

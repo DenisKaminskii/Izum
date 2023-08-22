@@ -91,7 +91,7 @@ class SuggestPollFragment : Fragment(), CoroutineScope by MainScope() {
     }
 
     private fun initInputCard(vgOption: ViewGroup) {
-        vgOption.background = inputCardBackground
+        // vgOption.background = inputCardBackground
         vgOption.elevation = requireContext().dpF(6)
 
         val inputView = vgOption.getChildAt(0)

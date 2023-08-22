@@ -47,6 +47,7 @@ class SuggestPollActivity : BaseActivity() {
 
             is SuggestPollViewState.Input -> {
                 binding.vDone.isEnabled = state.isDoneEnabled
+                binding.vDone.alpha = if (state.isDoneEnabled) 1f else 0.5f
             }
         }
     }

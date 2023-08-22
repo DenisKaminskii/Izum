@@ -6,7 +6,10 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
-    <color name="colorAccent">#FF5454</color>
+    <color name="colorAccent">#E5E5E5</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorSecondary">#000000</color>
+
     <color name="disabledText">#B6B6B6</color>
     <color name="disabledIcon">#9E9E9E</color>
 

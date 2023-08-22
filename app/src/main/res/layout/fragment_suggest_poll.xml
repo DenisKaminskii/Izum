@@ -23,6 +23,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
+                android:background="@drawable/selector_shape_red_25"
                 android:minHeight="150dp"
                 android:padding="16dp">
 
@@ -34,8 +35,10 @@
                     android:layout_marginHorizontal="16dp"
                     android:background="@null"
                     android:gravity="center"
+                    android:hint="Input Option 1"
                     android:maxLength="150"
                     android:minWidth="100dp"
+                    android:textColorHint="@color/white_50"
                     android:textSize="18sp"
                     app:layout_constraintVertical_chainStyle="spread" />
 
@@ -49,6 +52,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:layout_weight="1"
+                android:background="@drawable/selector_shape_blue_25"
                 android:clickable="true"
                 android:minHeight="150dp"
                 android:padding="16dp">
@@ -60,8 +64,10 @@
                     android:layout_gravity="center"
                     android:background="@null"
                     android:gravity="center"
+                    android:hint="Input Option 2"
                     android:maxLength="150"
                     android:minWidth="100dp"
+                    android:textColorHint="@color/white_50"
                     android:textSize="18sp" />
 
 

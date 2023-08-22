@@ -38,16 +38,20 @@
 
     <!-- region Text.Button -->
 
-    <style name="Text.Toolbar" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="Text.Toolbar" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:gravity">center</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:drawablePadding">4dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="Text.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
         <item name="android:drawablePadding">4dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="Text.Button.Medium" parent="Text.Button">

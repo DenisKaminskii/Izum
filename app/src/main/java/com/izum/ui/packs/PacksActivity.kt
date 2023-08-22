@@ -37,9 +37,9 @@ class PacksActivity : BaseActivity() {
 
     override fun initView() {
         binding.vgPager.adapter = viewPagerAdapter
-        binding.vgSubscription.setOnClickListener {
-            viewModel.onSubscribeClick()
-        }
+
+        binding.vgSubscription.setOnClickListener { viewModel.onSubscribeClick() }
+        binding.vSuggest.setOnClickListener { viewModel.onSuggestPollClick() }
 
         TabLayoutMediator(binding.vgTabs, binding.vgPager) { tab, position ->
             tab.text = when (position) {

@@ -36,6 +36,7 @@ class PollActivity : BaseActivity() {
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
         binding.tvSuggest.setOnClickListener { viewModel.onSuggestClick() }
+        binding.ivHistory.setOnClickListener { viewModel.onHistoryClick() }
 
         binding.tvStatistic.isVisible = true
         binding.tvNext.isVisible = true

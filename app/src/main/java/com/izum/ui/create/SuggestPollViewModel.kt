@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface SuggestPollViewState {
+
     object Loading : SuggestPollViewState
+
     data class Input(
         val isDoneEnabled: Boolean
     ) : SuggestPollViewState

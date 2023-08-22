@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/vTopBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="72dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,18 +24,24 @@
             android:padding="16dp"
             android:src="@drawable/ic_arrow_back_24" />
 
-        <Space
+        <TextView
+            style="@style/Text.Toolbar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Suggest poll" />
 
         <ImageView
             android:id="@+id/vDone"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:alpha="0.5"
             android:foreground="?attr/selectableItemBackground"
             android:padding="16dp"
-            android:src="@drawable/ic_done_24" />
+            android:src="@drawable/ic_done_24"
+            app:tint="@color/white" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/vLoading"
@@ -42,11 +49,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="16dp"
-            app:indicatorColor="@color/colorAccent"
             android:indeterminate="true"
             android:visibility="gone"
-            app:trackThickness="2dp"
+            app:indicatorColor="@color/colorAccent"
             app:indicatorSize="24dp"
+            app:trackThickness="2dp"
             tools:visibility="visible" />
 
     </LinearLayout>

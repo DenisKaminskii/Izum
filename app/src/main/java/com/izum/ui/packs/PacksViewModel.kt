@@ -77,7 +77,7 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onCreatePollClick() {
+    fun onSuggestPollClick() {
         viewModelScope.launch {
             route(Router.Route.SuggestPoll)
         }
