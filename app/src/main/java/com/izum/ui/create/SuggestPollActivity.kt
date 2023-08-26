@@ -24,7 +24,7 @@ class SuggestPollActivity : BaseActivity() {
         super.initView()
 
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
-        binding.vDone.setOnClickListener { viewModel.onDoneClick() }
+        binding.tvSend.setOnClickListener { viewModel.onSendClick() }
 
         update(viewModel.viewState)
 
@@ -37,19 +37,12 @@ class SuggestPollActivity : BaseActivity() {
     }
 
     private fun update(state: SuggestPollViewState) {
-        binding.vDone.isVisible = state is SuggestPollViewState.Input
         binding.vLoading.isVisible = state is SuggestPollViewState.Loading
+        binding.tvSend.isVisible = state is SuggestPollViewState.Input
 
-        when (state) {
-            is SuggestPollViewState.Loading -> {
-                // nothing
-            }
+        if (state !is SuggestPollViewState.Input) return
 
-            is SuggestPollViewState.Input -> {
-                binding.vDone.isEnabled = state.isDoneEnabled
-                binding.vDone.alpha = if (state.isDoneEnabled) 1f else 0.5f
-            }
-        }
+        binding.tvSend.isEnabled = state.isDoneEnabled
     }
 
 }

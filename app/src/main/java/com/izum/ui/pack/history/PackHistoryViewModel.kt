@@ -99,7 +99,7 @@ class PackHistoryViewModel @Inject constructor(
                             ),
                             rightBottom = StatisticItem.TwoOptionsBar.Value(
                                 text = if (isValueInPercent) {
-                                    "${poll.options[1].votesCount.toInt() * 100 / (poll.options[1].votesCount.toInt() + poll.options[0].votesCount.toInt())}%"
+                                    "${poll.options[1].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())}%"
                                 } else {
                                     poll.options[1].votesCount.toString()
                                 },

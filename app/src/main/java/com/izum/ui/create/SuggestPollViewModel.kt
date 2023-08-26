@@ -2,12 +2,13 @@ package com.izum.ui.create
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.izum.data.CreatePoll
+import com.izum.data.SuggestPoll
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class SuggestPollViewModel @Inject constructor(
     )
 ) {
 
-    private var createPoll = CreatePoll(
+    private var suggestPoll = SuggestPoll(
         topText = "",
         bottomText = ""
     )
@@ -45,11 +46,12 @@ class SuggestPollViewModel @Inject constructor(
         }
     }
 
-    fun onDoneClick() {
+    fun onSendClick() {
         updateState { SuggestPollViewState.Loading }
         viewModelScope.launch {
             try {
-                ///pollsRepository.suggest()
+                // pollsRepository.suggest()
+                emit(ViewAction.ShowToast("Thanks! We will check your poll soon :3"))
                 route(Router.Route.Finish)
             } catch (exception: Exception) {
                 Log.e("Steve", "CreatePollViewModel: $exception")
@@ -60,19 +62,19 @@ class SuggestPollViewModel @Inject constructor(
     }
 
     fun onTopTextChanged(text: String) {
-        createPoll = createPoll.copy(topText = text)
+        suggestPoll = suggestPoll.copy(topText = text)
         updateState {
             SuggestPollViewState.Input(
-                isDoneEnabled = createPoll.topText.isNotBlank() && createPoll.bottomText.isNotBlank()
+                isDoneEnabled = suggestPoll.topText.isNotBlank() && suggestPoll.bottomText.isNotBlank()
             )
         }
     }
 
     fun onBottomTextChanged(text: String) {
-        createPoll = createPoll.copy(bottomText = text)
+        suggestPoll = suggestPoll.copy(bottomText = text)
         updateState {
             SuggestPollViewState.Input(
-                isDoneEnabled = createPoll.topText.isNotBlank() && createPoll.bottomText.isNotBlank()
+                isDoneEnabled = suggestPoll.topText.isNotBlank() && suggestPoll.bottomText.isNotBlank()
             )
         }
     }

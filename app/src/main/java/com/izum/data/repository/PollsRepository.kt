@@ -7,6 +7,10 @@ import com.izum.api.PollJson
 import com.izum.api.VoteRequestJson
 import com.izum.data.Poll
 import com.izum.data.PollOption
+import com.izum.data.PollStatistic
+import com.izum.data.PollStatisticCategory
+import com.izum.data.PollStatisticSection
+import com.izum.ui.poll.statistic.StatisticItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -23,6 +27,9 @@ interface PollsRepository {
     @Throws(IOException::class)
     suspend fun vote(pollId: Long, optionId: Long)
 
+    @WorkerThread
+    suspend fun getPollStatistic(pollId: Long): PollStatistic
+
 }
 
 class PollsRepositoryImpl(
@@ -34,7 +41,7 @@ class PollsRepositoryImpl(
 
     override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
         getPackPolls(packId)
-            .filter { poll -> poll.votedOptionId == null }
+            //.filter { poll -> poll.votedOptionId == null } §
 
     override suspend fun getPackVotedPolls(packId: Long): List<Poll> =
         getPackPolls(packId)
@@ -58,6 +65,36 @@ class PollsRepositoryImpl(
             Log.e("Steve", exception.toString())
             throw exception
         }
+    }
+
+    override suspend fun getPollStatistic(pollId: Long): PollStatistic {
+        val poll = pollsApi.getPollStatistic(pollId)
+        return PollStatistic(
+            options = poll.options.map { option ->
+                PollOption(
+                    id = option.id,
+                    title = option.title,
+                    votesCount = option.votesCount
+                )
+            },
+            sections = poll.sections.map { section ->
+                PollStatisticSection(
+                    title = section.title,
+                    categories = section.categories.map { category ->
+                        PollStatisticCategory(
+                            title = category.title,
+                            options = category.options.map { option ->
+                                PollOption(
+                                    id = option.id,
+                                    title = "",
+                                    votesCount = option.votesCount
+                                )
+                            }
+                        )
+                    }
+                )
+            }
+        )
     }
 
     private fun mapFromJson(poll: PollJson) = Poll(

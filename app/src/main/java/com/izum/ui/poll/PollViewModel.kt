@@ -163,13 +163,6 @@ class PollViewModel @Inject constructor(
         }
     }
 
-    fun onHistoryClick() {
-        viewModelScope.launch {
-            // TODO: передавать весь pack
-            // route(Router.Route.PackHistory(pack)))
-        }
-    }
-
     fun onRetryClick() {
         fetchPolls()
         updateView()

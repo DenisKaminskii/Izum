@@ -33,29 +33,6 @@
             android:gravity="center_vertical"
             android:text="Suggest poll" />
 
-        <ImageView
-            android:id="@+id/vDone"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:alpha="0.5"
-            android:foreground="?attr/selectableItemBackground"
-            android:padding="16dp"
-            android:src="@drawable/ic_done_24"
-            app:tint="@color/white" />
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/vLoading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="16dp"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorColor="@color/colorAccent"
-            app:indicatorSize="24dp"
-            app:trackThickness="2dp"
-            tools:visibility="visible" />
-
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -64,5 +41,48 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:text="If your poll seems interesting to us, we will definitely publish it in the Community pack!"
+            android:textColor="@color/white_50" />
+
+        <TextView
+            android:id="@+id/tvSend"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="24dp"
+            android:drawableEnd="@drawable/ic_send_16"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/send" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/vLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="24dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/white"
+            app:indicatorSize="42dp"
+            app:trackCornerRadius="32dp"
+            app:trackThickness="4dp" />
+
+    </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

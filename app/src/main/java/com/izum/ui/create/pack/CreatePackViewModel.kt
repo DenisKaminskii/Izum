@@ -1,7 +1,7 @@
 package com.izum.ui.create.pack
 
 import androidx.lifecycle.viewModelScope
-import com.izum.data.CreatePoll
+import com.izum.data.SuggestPoll
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.route.Router
@@ -46,13 +46,13 @@ class CreatePackViewModel @Inject constructor(
     }
 
     private val polls = mutableListOf(
-        CreatePoll("", "")
+        SuggestPoll("", "")
     )
 
     private var title: String = ""
     private var index = 0
 
-    private val poll: CreatePoll
+    private val poll: SuggestPoll
         get() = polls[index]
 
     private val topText: String
@@ -159,7 +159,7 @@ class CreatePackViewModel @Inject constructor(
                 updateView()
             }
             CreatePackViewState.Button.CREATE_NEW -> {
-                polls.add(CreatePoll("", ""))
+                polls.add(SuggestPoll("", ""))
                 index = polls.lastIndex
                 updateView()
             }

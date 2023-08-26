@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/vgToolbar"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:orientation="horizontal"
@@ -21,11 +20,12 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center_vertical"
-            android:padding="20dp"
+            android:padding="24dp"
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/white" />
 
         <TextView
+            style="@style/Text.Toolbar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -36,8 +36,7 @@
             android:includeFontPadding="false"
             android:maxLines="1"
             android:text="Statistic"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -54,6 +53,38 @@
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/white" />
+        android:indeterminateTint="@color/white"
+        tools:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/vgError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:gravity="center"
+            android:text="Poll statistic loading error :("
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRetry"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="32dp"
+            android:minWidth="120dp"
+            android:text="@string/retry" />
+
+    </LinearLayout>
 
 </LinearLayout>

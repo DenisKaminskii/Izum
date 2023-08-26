@@ -40,7 +40,7 @@
         <activity
             android:name=".ui.create.SuggestPollActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustNothing"/>
 
         <activity
             android:name=".ui.create.pack.CreatePackActivity"

@@ -52,7 +52,7 @@
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/red" />
+        android:indeterminateTint="@color/white" />
 
     <LinearLayout
         android:id="@+id/vgNoPolls"
@@ -111,7 +111,7 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="32dp"
-            android:minWidth="150dp"
+            android:minWidth="120dp"
             android:text="@string/retry" />
 
     </LinearLayout>

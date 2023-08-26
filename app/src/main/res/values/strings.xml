@@ -22,6 +22,7 @@
     <string name="next">Next</string>
     <string name="finish">Finish</string>
     <string name="retry">Retry</string>
+    <string name="send">Send</string>
     <string name="start">Start</string>
     <string name="no_more_new_unvoted_polls">No more new polls yet.\nCome back later :)</string>
     <string name="no_more_new_voted_polls">You did not answer any of polls.\nDo that!</string>

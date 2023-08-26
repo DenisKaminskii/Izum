@@ -31,12 +31,6 @@ class SuggestPollFragment : Fragment(), CoroutineScope by MainScope() {
         ViewModelProvider(requireActivity())[SuggestPollViewModel::class.java]
     }
 
-    private val inputCardBackground: GradientDrawable
-        get() = GradientDrawable().apply {
-            cornerRadius = requireContext().dpF(16)
-            setColor(requireContext().getColor(R.color.white))
-        }
-
     private val topTextWatcher = object : SimpleTextWatcher() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             viewModel.onTopTextChanged(s.toString())
@@ -76,7 +70,7 @@ class SuggestPollFragment : Fragment(), CoroutineScope by MainScope() {
         }
 
         binding.vTop.addTextChangedListener(topTextWatcher)
-        binding.vTop.removeTextChangedListener(bottomTextWatcher)
+        binding.vBottom.addTextChangedListener(bottomTextWatcher)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

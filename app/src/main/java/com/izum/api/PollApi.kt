@@ -12,13 +12,18 @@ interface PollApi {
     @GET("packs/{packId}/polls")
     suspend fun getPackPolls(
         @Path("packId") packId: Long
-    ) : List<PollJson>
+    ): List<PollJson>
 
-   @POST("polls/{pollId}/vote")
+    @POST("polls/{pollId}/vote")
     suspend fun vote(
-       @Path("pollId") pollId: Long,
-       @Body request: VoteRequestJson
+        @Path("pollId") pollId: Long,
+        @Body request: VoteRequestJson
     )
+
+    @GET("polls/{pollId}/stats")
+    suspend fun getPollStatistic(
+        @Path("pollId") pollId: Long
+    ): PollStatisticJson
 
 }
 
@@ -48,4 +53,36 @@ data class PollOptionJson(
     val title: String,
     @Json(name="votesCount")
     val votesCount: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class PollStatisticOptionJson(
+    @Json(name="id")
+    val id: Long,
+    @Json(name="votesCount")
+    val votesCount: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class PollStatisticJson(
+    @Json(name = "options")
+    val options: List<PollOptionJson>,
+    @Json(name = "sections")
+    val sections: List<PollStatisticSectionJson>
+)
+
+@JsonClass(generateAdapter = true)
+data class PollStatisticSectionJson(
+    @Json(name = "title")
+    val title: String,
+    @Json(name = "categories")
+    val categories: List<PollStatisticCategoryJson>
+)
+
+@JsonClass(generateAdapter = true)
+data class PollStatisticCategoryJson(
+    @Json(name = "title")
+    val title: String,
+    @Json(name = "options")
+    val options: List<PollStatisticOptionJson>
 )

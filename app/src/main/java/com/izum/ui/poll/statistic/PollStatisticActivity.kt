@@ -2,6 +2,7 @@ package com.izum.ui.poll.statistic
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.annotation.WorkerThread
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -27,33 +28,11 @@ class PollStatisticActivity : BaseActivity() {
     private val binding: ActivityPollStatisticBinding
         get() = _binding!!
 
-    private val adapter = PollStatisticAdapter { /* ignore */ }
-
-    private val pollOptions: StatisticItem
-        get() = StatisticItem.TwoOptionsBar(
-            leftTop = null,
-            rightTop = null,
-            leftBottom = StatisticItem.TwoOptionsBar.Value(
-                text = poll.options[0].title,
-                color = getColor(R.color.red)
-            ),
-            rightBottom = StatisticItem.TwoOptionsBar.Value(
-                text = poll.options[1].title,
-                color = getColor(R.color.blue)
-            ),
-            barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
-        )
-
-    private val statistic = mutableListOf<StatisticItem>()
-
+    private val viewModel: PollStatisticViewModel by viewModels()
     private lateinit var poll: Poll
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            fetchStatistic()
-        }
+    private val adapter = PollStatisticAdapter {
+        viewModel.onStatisticClick()
     }
 
     override fun initLayout() {
@@ -69,23 +48,27 @@ class PollStatisticActivity : BaseActivity() {
 
     override fun initView() {
         binding.ivBack.setOnClickListener { finish() }
+        binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
+
         binding.rvStatistic.adapter = adapter
         binding.rvStatistic.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        updateView()
+
+        viewModel.onViewInitialized(poll)
     }
 
-    private fun updateView() = lifecycleScope.launch {
-        binding.vProgress.isVisible = statistic.isEmpty()
-        binding.rvStatistic.isVisible = statistic.isNotEmpty()
-        adapter.setItems(
-            listOf(pollOptions) + statistic
-        )
+    override fun initSubs() {
+        super.initSubs()
+        subscribe(viewModel, ::update)
     }
 
-    private suspend fun fetchStatistic() = withContext(ioDispatcher) {
-        delay(1_000)
-        updateView()
+    private fun update(state: PollStatisticViewState) {
+        binding.vProgress.isVisible = state is PollStatisticViewState.Loading
+        binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats
+        binding.vgError.isVisible = state is PollStatisticViewState.Error
+
+        if (state !is PollStatisticViewState.Stats) return
+        adapter.setItems(state.stats)
     }
 
 }

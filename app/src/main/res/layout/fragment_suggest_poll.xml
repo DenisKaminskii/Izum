@@ -29,13 +29,14 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/vTop"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="16dp"
                     android:background="@null"
                     android:gravity="center"
                     android:hint="Input Option 1"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="150"
                     android:minWidth="100dp"
                     android:textColorHint="@color/white_50"
@@ -59,12 +60,13 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/vBottom"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@null"
                     android:gravity="center"
                     android:hint="Input Option 2"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="150"
                     android:minWidth="100dp"
                     android:textColorHint="@color/white_50"
