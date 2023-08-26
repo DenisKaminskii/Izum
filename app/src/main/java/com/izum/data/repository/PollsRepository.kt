@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.izum.api.PollApi
 import com.izum.api.PollJson
+import com.izum.api.SuggestPollRequestJson
 import com.izum.api.VoteRequestJson
 import com.izum.data.Poll
 import com.izum.data.PollOption
@@ -29,6 +30,9 @@ interface PollsRepository {
 
     @WorkerThread
     suspend fun getPollStatistic(pollId: Long): PollStatistic
+
+    @WorkerThread
+    suspend fun suggestPoll(topText: String, bottomText: String)
 
 }
 
@@ -95,6 +99,12 @@ class PollsRepositoryImpl(
                 )
             }
         )
+    }
+
+    override suspend fun suggestPoll(topText: String, bottomText: String) {
+        pollsApi.suggestPoll(SuggestPollRequestJson(
+            options = listOf(topText, bottomText)
+        ))
     }
 
     private fun mapFromJson(poll: PollJson) = Poll(

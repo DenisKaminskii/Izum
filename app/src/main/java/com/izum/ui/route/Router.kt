@@ -4,7 +4,8 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.izum.data.Pack
 import com.izum.data.Poll
-import com.izum.ui.create.SuggestPollActivity
+import com.izum.ui.create.EditPollActivity
+import com.izum.ui.create.EditPollVariant
 import com.izum.ui.create.pack.CreatePackActivity
 import com.izum.ui.pack.PackFragment
 import com.izum.ui.pack.history.PackHistoryActivity
@@ -22,7 +23,7 @@ interface Router {
     sealed interface Route {
         object Packs : Route
         data class Polls(val pack: com.izum.data.Pack) : Route
-        object SuggestPoll : Route
+        data class EditPoll(val variant: EditPollVariant) : Route
         object CreatePack : Route
         data class Statistic(val poll: Poll) : Route
         data class Pack(val pack: com.izum.data.Pack) : Route
@@ -67,7 +68,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                 when(route) {
                     Router.Route.Packs -> showPacks()
                     is Router.Route.Polls -> showPackPolls(route.pack)
-                    Router.Route.SuggestPoll -> showSuggestPoll()
+                    is Router.Route.EditPoll -> showEditPoll(route.variant)
                     Router.Route.CreatePack -> showCreatePack()
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
                     is Router.Route.Pack -> showPackDialog(route.pack)
@@ -96,9 +97,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showSuggestPoll() {
+    private fun showEditPoll(variant: EditPollVariant) {
         host?.let { activity ->
-            val intent = Intent(activity, SuggestPollActivity::class.java)
+            val intent = Intent(activity, EditPollActivity::class.java)
+            intent.putExtra(EditPollActivity.KEY_ARGS_EDIT_POLL_VARIANT, variant)
             activity.startActivity(intent)
         }
     }

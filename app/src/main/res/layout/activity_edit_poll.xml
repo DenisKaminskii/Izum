@@ -58,7 +58,7 @@
             android:textColor="@color/white_50" />
 
         <TextView
-            android:id="@+id/tvSend"
+            android:id="@+id/tvAction"
             style="@style/Text.Button.White.Outline"
             android:layout_width="wrap_content"
             android:layout_height="52dp"

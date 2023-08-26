@@ -1,6 +1,5 @@
 package com.izum.ui.create
 
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.izum.R
 import com.izum.databinding.FragmentSuggestPollBinding
 import com.izum.ui.SimpleTextWatcher
 import com.izum.ui.dpF
@@ -27,8 +25,8 @@ class SuggestPollFragment : Fragment(), CoroutineScope by MainScope() {
     private var _binding: FragmentSuggestPollBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: SuggestPollViewModel by lazy {
-        ViewModelProvider(requireActivity())[SuggestPollViewModel::class.java]
+    private val viewModel: EditPollViewModel by lazy {
+        ViewModelProvider(requireActivity())[EditPollViewModel::class.java]
     }
 
     private val topTextWatcher = object : SimpleTextWatcher() {
@@ -79,9 +77,9 @@ class SuggestPollFragment : Fragment(), CoroutineScope by MainScope() {
         }
     }
 
-    private fun update(state: SuggestPollViewState) {
-        binding.vTop.isEnabled = state is SuggestPollViewState.Input
-        binding.vBottom.isEnabled = state is SuggestPollViewState.Input
+    private fun update(state: EditPollViewState) {
+        binding.vTop.isEnabled = state is EditPollViewState.Input
+        binding.vBottom.isEnabled = state is EditPollViewState.Input
     }
 
     private fun initInputCard(vgOption: ViewGroup) {

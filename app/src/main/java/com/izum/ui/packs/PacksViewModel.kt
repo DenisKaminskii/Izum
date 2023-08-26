@@ -5,6 +5,7 @@ import com.izum.data.Pack
 import com.izum.data.repository.PacksRepository
 import com.izum.data.repository.UserRepository
 import com.izum.domain.core.StateViewModel
+import com.izum.ui.create.EditPollVariant
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -79,7 +80,7 @@ class PacksViewModel @Inject constructor(
 
     fun onSuggestPollClick() {
         viewModelScope.launch {
-            route(Router.Route.SuggestPoll)
+            route(Router.Route.EditPoll(EditPollVariant.Suggest))
         }
     }
 

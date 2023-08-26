@@ -25,6 +25,11 @@ interface PollApi {
         @Path("pollId") pollId: Long
     ): PollStatisticJson
 
+    @POST("polls/suggest")
+    suspend fun suggestPoll(
+        @Body request: SuggestPollRequestJson
+    )
+
 }
 
 @JsonClass(generateAdapter = true)
@@ -85,4 +90,10 @@ data class PollStatisticCategoryJson(
     val title: String,
     @Json(name = "options")
     val options: List<PollStatisticOptionJson>
+)
+
+@JsonClass(generateAdapter = true)
+data class SuggestPollRequestJson(
+    @Json(name = "options")
+    val options: List<String>
 )

@@ -38,7 +38,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.create.SuggestPollActivity"
+            android:name=".ui.create.EditPollActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
 
