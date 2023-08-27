@@ -1,21 +1,13 @@
 package com.izum.ui.poll.statistic
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
-import androidx.annotation.WorkerThread
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.izum.R
-import com.izum.data.Poll
 import com.izum.databinding.ActivityPollStatisticBinding
 import com.izum.ui.BaseActivity
+import com.izum.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PollStatisticActivity : BaseActivity() {
@@ -29,9 +21,8 @@ class PollStatisticActivity : BaseActivity() {
         get() = _binding!!
 
     private val viewModel: PollStatisticViewModel by viewModels()
-    private lateinit var poll: Poll
 
-    private val adapter = PollStatisticAdapter {
+    private val adapter = PollsAdapter {
         viewModel.onStatisticClick()
     }
 
@@ -41,12 +32,7 @@ class PollStatisticActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initArgs(args: Bundle) {
-        super.initArgs(args)
-        poll = intent.getParcelableExtra(KEY_ARGS_POLL)!!
-    }
-
-    override fun initView() {
+    override fun initView(args: Bundle) {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
 
@@ -54,7 +40,9 @@ class PollStatisticActivity : BaseActivity() {
         binding.rvStatistic.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        viewModel.onViewInitialized(poll)
+        viewModel.onViewInitialized(
+            input = intent.getParcelableExtra(KEY_ARGS_POLL)!!
+        )
     }
 
     override fun initSubs() {

@@ -31,29 +31,12 @@ abstract class BaseDialogFragment : DialogFragment(), CoroutineScope by MainScop
         cancel()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        try {
-            arguments?.let(::initArgs)
-        } catch (ex: Exception) {
-            Log.e("Steve", "BaseDialogFragment: onCreate: ${ex.message}")
-            dismiss()
-        }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(args = arguments ?: Bundle.EMPTY)
         initSubs()
     }
 
-    @Throws(Exception::class)
-    open fun initArgs(args: Bundle) {}
-    open fun initView() {}
+    open fun initView(args: Bundle) {}
     open fun initSubs() {}
 }

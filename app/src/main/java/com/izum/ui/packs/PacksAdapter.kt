@@ -2,19 +2,25 @@ package com.izum.ui.packs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
-import com.izum.R
 import com.izum.data.Pack
 import com.izum.databinding.ItemPackBinding
 import com.izum.ui.BaseViewHolder
 
 data class PacksItem(
-    val pack: Pack,
-    val hasSubscription: Boolean
+    val title: String,
+    @ColorInt val gradientStartColor: Int,
+    @ColorInt val gradientEndColor: Int,
+    @ColorInt val contentColor: Int,
+    val pollsCount: Long,
+    val isPaid: Boolean,
+    val hasSubscription: Boolean,
+    val pack: Pack
 )
 
 class PacksAdapter(
-    val onPackClick: (Pack) -> Unit
+    val onClick: (Pack) -> Unit = {}
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private val items = mutableListOf<PacksItem>()
@@ -50,7 +56,7 @@ class PacksAdapter(
                 )
 
                 PackViewHolder(binding) { pack ->
-                    onPackClick(pack)
+                    onClick(pack)
                 }
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")

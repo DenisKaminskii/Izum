@@ -8,7 +8,7 @@ import com.izum.data.PollStatistic
 import com.izum.data.repository.PollsRepository
 import com.izum.di.IoDispatcher
 import com.izum.domain.core.StateViewModel
-import com.izum.ui.pack.history.PackHistoryViewState
+import com.izum.ui.poll.list.PollsItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +23,7 @@ sealed interface PollStatisticViewState {
     object Error : PollStatisticViewState
 
     data class Stats(
-        val stats: List<StatisticItem>
+        val stats: List<PollsItem>
     ) : PollStatisticViewState
 }
 
@@ -40,9 +40,9 @@ class PollStatisticViewModel @Inject constructor(
     private lateinit var poll: Poll
     private var isValueInPercent = true
 
-    override fun onViewInitialized(args: Poll) {
-        super.onViewInitialized(args)
-        poll = args
+    override fun onViewInitialized(input: Poll) {
+        super.onViewInitialized(input)
+        poll = input
 
         viewModelScope.launch {
             fetchStatistic()
@@ -71,14 +71,14 @@ class PollStatisticViewModel @Inject constructor(
 
                 updateState { currentViewState ->
                     val optionsItem = listOf(
-                        StatisticItem.TwoOptionsBar(
+                        PollsItem.TwoOptionsBar(
                             leftTop = null,
                             rightTop = null,
-                            leftBottom = StatisticItem.TwoOptionsBar.Value(
+                            leftBottom = PollsItem.TwoOptionsBar.Value(
                                 text = pollStatistic.options[0].title,
                                 color = context.getColor(R.color.red)
                             ),
-                            rightBottom = StatisticItem.TwoOptionsBar.Value(
+                            rightBottom = PollsItem.TwoOptionsBar.Value(
                                 text = pollStatistic.options[1].title,
                                 color = context.getColor(R.color.blue)
                             ),
@@ -88,7 +88,7 @@ class PollStatisticViewModel @Inject constructor(
 
                     val statsItems = pollStatistic.sections.flatMap { section ->
                         listOf(
-                            StatisticItem.Header(section.title)
+                            PollsItem.Header(section.title)
                         ) + section.categories.map { category ->
                             val categoryLeftCount = category.options[0].votesCount.toFloat()
                             val categoryRightCount = category.options[1].votesCount.toFloat()
@@ -102,13 +102,13 @@ class PollStatisticViewModel @Inject constructor(
                                 (categoryRightCount * 100 / categorySumCount).toInt()
                             } catch (ex: Exception) { 0 }
 
-                            StatisticItem.TwoOptionsBar(
-                                leftTop = StatisticItem.TwoOptionsBar.Value(
+                            PollsItem.TwoOptionsBar(
+                                leftTop = PollsItem.TwoOptionsBar.Value(
                                     text = category.title,
                                     color = context.getColor(R.color.white)
                                 ),
                                 rightTop = null,
-                                leftBottom = StatisticItem.TwoOptionsBar.Value(
+                                leftBottom = PollsItem.TwoOptionsBar.Value(
                                     text = if (isValueInPercent) {
                                         "$categoryLeftPercent%"
                                     } else {
@@ -116,7 +116,7 @@ class PollStatisticViewModel @Inject constructor(
                                     },
                                     color = context.getColor(R.color.red)
                                 ),
-                                rightBottom = StatisticItem.TwoOptionsBar.Value(
+                                rightBottom = PollsItem.TwoOptionsBar.Value(
                                     text = if (isValueInPercent) {
                                         "$categoryRightPercent%"
                                     } else {

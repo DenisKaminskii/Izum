@@ -1,5 +1,6 @@
 package com.izum.ui.main
 
+import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.izum.databinding.ActivityMainBinding
@@ -21,8 +22,8 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initView() {
-        super.initView()
+    override fun initView(args: Bundle) {
+        super.initView(args)
 
         binding.tvReload.setOnClickListener { viewModel.onReloadClick() }
 

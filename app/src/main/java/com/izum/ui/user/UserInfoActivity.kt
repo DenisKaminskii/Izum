@@ -1,5 +1,6 @@
 package com.izum.ui.user
 
+import android.os.Bundle
 import android.text.Editable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -24,8 +25,8 @@ class UserInfoActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initView() {
-        super.initView()
+    override fun initView(args: Bundle) {
+        super.initView(args)
         binding.root.setOnClickListener {
             Keyboard.hideSoftKeyboard(binding.tieAge)
             binding.tieAge.clearFocus()

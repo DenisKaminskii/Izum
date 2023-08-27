@@ -1,6 +1,6 @@
 package com.izum.data
 
-data class SuggestPoll(
+data class EditPoll(
     val topText: String,
     val bottomText: String
 )

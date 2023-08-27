@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import androidx.activity.addCallback
 import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
@@ -27,18 +26,16 @@ import com.izum.R
 import com.izum.data.Mock
 import com.izum.data.Pack
 import com.izum.data.repository.UserRepository
-import com.izum.databinding.DialogFragmentPackBinding
+import com.izum.databinding.DialogPackBinding
 import com.izum.ui.BaseDialogFragment
 import com.izum.ui.dpF
 import com.izum.ui.packs.PacksViewModel
-import com.izum.ui.packs.PacksViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
-class PackFragment : BaseDialogFragment() {
+class PackDialog : BaseDialogFragment() {
 
     companion object {
 
@@ -46,11 +43,11 @@ class PackFragment : BaseDialogFragment() {
 
         fun show(
             fragmentManager: FragmentManager,
-            pack: Pack
+            publicPack: Pack.Public
         ) {
-            PackFragment().apply {
+            PackDialog().apply {
                 arguments = Bundle().apply {
-                    putParcelable(KEY_ARGS_PACK, pack)
+                    putParcelable(KEY_ARGS_PACK, publicPack)
                 }
             }.show(fragmentManager, "PackFragment")
         }
@@ -59,15 +56,14 @@ class PackFragment : BaseDialogFragment() {
     @Inject
     lateinit var userRepository: UserRepository
 
-    private var _binding: DialogFragmentPackBinding? = null
-    private val binding: DialogFragmentPackBinding
-        get() = _binding!!
+    private var _binding: DialogPackBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: PacksViewModel by lazy {
         ViewModelProvider(requireActivity())[PacksViewModel::class.java]
     }
 
-    private lateinit var pack: Pack
+    private lateinit var publicPack: Pack.Public
 
     private val previewAdapter by lazy { PackPreviewAdapter() }
 
@@ -101,11 +97,9 @@ class PackFragment : BaseDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)
-    }
-
-    override fun initArgs(args: Bundle) {
-        super.initArgs(args)
-        pack = args.getParcelable(KEY_ARGS_PACK)!!
+        arguments?.let {
+            publicPack = it.getParcelable(KEY_ARGS_PACK)!!
+        }
     }
 
     override fun onCreateView(
@@ -113,7 +107,7 @@ class PackFragment : BaseDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogFragmentPackBinding.inflate(inflater, container, false)
+        _binding = DialogPackBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -124,45 +118,46 @@ class PackFragment : BaseDialogFragment() {
             createInsetDrawable(
                 context = requireContext(),
                 horizontalOffset = requireContext().dpF(32),
-                gradientStart = pack.gradientStartColor,
-                gradientEnd = pack.gradientEndColor
+                gradientStart = publicPack.gradientStartColor,
+                gradientEnd = publicPack.gradientEndColor
             )
         )
         return dialog
     }
 
-    override fun initView() {
-        super.initView()
+    override fun initView(args: Bundle) {
+        super.initView(args)
+
         dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
         binding.tvStart.setOnClickListener {
-            viewModel.onStartClick(pack)
+            viewModel.onStartClick(publicPack)
             dismissAllowingStateLoss()
         }
 
         binding.tvSubscribe.setOnClickListener { /* */ }
-        binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(pack) }
+        binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(publicPack) }
 
-        binding.tvPolls.text = "${pack.pollsCount} polls"
-        binding.tvTitle.text = pack.title
+        binding.tvPolls.text = "${publicPack.pollsCount} polls"
+        binding.tvTitle.text = publicPack.title
 
-        binding.tvTitle.setTextColor(pack.contentColor)
-        binding.ivHistory.setColorFilter(pack.contentColor)
-        binding.ivFirst.setColorFilter(pack.contentColor)
-        binding.ivSecond.setColorFilter(pack.contentColor)
-        binding.ivThird.setColorFilter(pack.contentColor)
-        binding.tvPolls.setTextColor(pack.contentColor)
-        binding.tvStart.setTextColor(pack.contentColor)
+        binding.tvTitle.setTextColor(publicPack.contentColor)
+        binding.ivHistory.setColorFilter(publicPack.contentColor)
+        binding.ivFirst.setColorFilter(publicPack.contentColor)
+        binding.ivSecond.setColorFilter(publicPack.contentColor)
+        binding.ivThird.setColorFilter(publicPack.contentColor)
+        binding.tvPolls.setTextColor(publicPack.contentColor)
+        binding.tvStart.setTextColor(publicPack.contentColor)
 
-        binding.tvStart.isVisible = !pack.isPaid || userRepository.hasSubscription
-        binding.tvSubscribe.isVisible = pack.isPaid && !userRepository.hasSubscription
+        binding.tvStart.isVisible = !publicPack.isPaid || userRepository.hasSubscription
+        binding.tvSubscribe.isVisible = publicPack.isPaid && !userRepository.hasSubscription
 
         binding.tvStart.background = GradientDrawable().apply {
             cornerRadius = requireContext().dpF(14)
-            setStroke(requireContext().dpF(2).toInt(), pack.contentColor)
+            setStroke(requireContext().dpF(2).toInt(), publicPack.contentColor)
         }
 
         initPreviewList()
@@ -191,7 +186,7 @@ class PackFragment : BaseDialogFragment() {
 //            previewAdapter.setItems(pack.preview.map {
 //                PackPreviewItem(it.option1, it.option2, pack.contentColor)
 //            })
-            previewAdapter.setItems(Mock.getPreviewItems(pack))
+            previewAdapter.setItems(Mock.getPreviewItems(publicPack))
         }
     }
 

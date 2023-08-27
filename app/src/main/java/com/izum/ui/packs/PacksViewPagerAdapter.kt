@@ -1,10 +1,8 @@
 package com.izum.ui.packs
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class PacksViewPagerAdapter(
@@ -18,8 +16,8 @@ class PacksViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> PacksFragment.newInstance()
-            1 -> PacksFragment.newInstance()
+            0 -> PacksFragment.newInstance(PacksInput(isCustom = false))
+            1 -> PacksFragment.newInstance(PacksInput(isCustom = true))
             else -> throw IllegalArgumentException("Unknown position: $position")
         }
     }

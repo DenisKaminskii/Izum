@@ -1,14 +1,11 @@
 package com.izum.ui.main
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.repository.UserRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 data class MainViewState(
@@ -26,8 +23,8 @@ class MainViewModel @Inject constructor(
 
     private var isLoading = true
 
-    override fun onViewInitialized(args: Unit) {
-        super.onViewInitialized(args)
+    override fun onViewInitialized(input: Unit) {
+        super.onViewInitialized(input)
 
         viewModelScope.launch {
             if (userRepository.isStatisticInfoProvided) {

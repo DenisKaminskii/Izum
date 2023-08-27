@@ -7,7 +7,7 @@ import com.izum.data.PollOption
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
-import com.izum.ui.create.EditPollVariant
+import com.izum.ui.edit.EditPollVariant
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,10 +73,10 @@ class PollViewModel @Inject constructor(
     private var votedOptionId: Long? = null
     private var jobVoting: Job? = null
 
-    override fun onViewInitialized(args: Arguments) {
-        super.onViewInitialized(args)
-        packId = args.packId
-        packTitle = args.packTitle
+    override fun onViewInitialized(input: Arguments) {
+        super.onViewInitialized(input)
+        packId = input.packId
+        packTitle = input.packTitle
 
         fetchPolls()
     }

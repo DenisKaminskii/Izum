@@ -1,6 +1,7 @@
 package com.izum.ui.poll
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -28,7 +29,7 @@ class PollActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initView() {
+    override fun initView(args: Bundle) {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvTop.setOnClickListener { viewModel.onTopVote() }
         binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
@@ -43,7 +44,7 @@ class PollActivity : BaseActivity() {
         update(PollViewState.Loading)
 
         viewModel.onViewInitialized(
-            args = PollViewModel.Companion.Arguments(
+            input = PollViewModel.Companion.Arguments(
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
                 packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: ""
             )

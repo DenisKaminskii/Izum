@@ -1,22 +1,21 @@
-package com.izum.ui.poll.statistic
+package com.izum.ui.poll.list
 
 import android.graphics.drawable.GradientDrawable
 import android.widget.TextView
-import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
 import com.izum.R
-import com.izum.databinding.ItemStatisticTwoOptionsBinding
+import com.izum.databinding.ItemPollsTwoOptionsBarBinding
 import com.izum.ui.BaseViewHolder
 import com.izum.ui.dpF
 import kotlin.math.max
 import kotlin.math.min
 
-class StatisticTwoOptionsViewHolder(
-    private val binding: ItemStatisticTwoOptionsBinding,
+class PollsTwoOptionsBarViewHolder(
+    private val binding: ItemPollsTwoOptionsBarBinding,
     val onClick: () -> Unit
-) : BaseViewHolder<StatisticItem.TwoOptionsBar>(binding.root) {
+) : BaseViewHolder<PollsItem.TwoOptionsBar>(binding.root) {
 
-    override fun bind(item: StatisticItem.TwoOptionsBar) {
+    override fun bind(item: PollsItem.TwoOptionsBar) {
         super.bind(item)
         val context = binding.root.context
 
@@ -44,7 +43,7 @@ class StatisticTwoOptionsViewHolder(
 
     private fun setValue(
         textView: TextView,
-        value: StatisticItem.TwoOptionsBar.Value?
+        value: PollsItem.TwoOptionsBar.Value?
     ) {
         textView.isVisible = value != null
         if (value == null) return

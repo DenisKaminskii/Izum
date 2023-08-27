@@ -2,6 +2,7 @@ package com.izum.di
 
 import android.content.Context
 import com.izum.R
+import com.izum.api.CustomPacksApi
 import com.izum.domain.core.PreferenceCache
 import com.izum.api.HeadersInterceptor
 import com.izum.api.UserApi
@@ -47,6 +48,13 @@ class ApiModule {
         retrofit: Retrofit
     ): PacksApi {
         return retrofit.create(PacksApi::class.java)
+    }
+
+    @Provides
+    fun provideCustomPacksApi(
+        retrofit: Retrofit
+    ): CustomPacksApi {
+        return retrofit.create(CustomPacksApi::class.java)
     }
 
     @Provides

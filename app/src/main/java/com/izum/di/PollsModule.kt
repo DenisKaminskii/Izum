@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -17,10 +16,9 @@ class PollsModule {
     @Provides
     @Singleton
     fun providePollsRepository(
-        pollsApi: PollApi,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher
+        pollsApi: PollApi
     ): PollsRepository {
-        return PollsRepositoryImpl(pollsApi, ioDispatcher)
+        return PollsRepositoryImpl(pollsApi)
     }
 
 }

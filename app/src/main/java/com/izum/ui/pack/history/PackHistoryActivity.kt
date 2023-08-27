@@ -4,13 +4,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.izum.data.Pack
-import com.izum.data.Poll
-import com.izum.data.repository.PacksRepository
+import com.izum.data.repository.PublicPacksRepository
 import com.izum.databinding.ActivityPackHistoryBinding
 import com.izum.ui.BaseActivity
-import com.izum.ui.poll.statistic.PollStatisticAdapter
+import com.izum.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,24 +20,16 @@ class PackHistoryActivity : BaseActivity() {
     }
 
     @Inject
-    lateinit var packsRepository: PacksRepository
+    lateinit var publicPacksRepository: PublicPacksRepository
 
     private var _binding: ActivityPackHistoryBinding? = null
-    private val binding: ActivityPackHistoryBinding
-        get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val adapter = PollStatisticAdapter {
+    private val adapter = PollsAdapter {
         viewModel.onPollClick()
     }
 
-    private lateinit var pack: Pack
-
     private val viewModel: PackHistoryViewModel by viewModels()
-
-    override fun initArgs(args: Bundle) {
-        super.initArgs(args)
-        pack = args.getParcelable(KEY_ARGS_PACK)!!
-    }
 
     override fun initLayout() {
         super.initLayout()
@@ -47,17 +37,17 @@ class PackHistoryActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initView() {
+    override fun initView(args: Bundle) {
+        val publicPack: Pack.Public = args.getParcelable(KEY_ARGS_PACK)!!
+
         binding.ivBack.setOnClickListener { finish() }
         binding.tvNoPolls.setOnClickListener { viewModel.onNoPollsClicked() }
 
-        binding.tvPackTitle.text = pack.title
+        binding.tvPackTitle.text = publicPack.title
         binding.rvPolls.adapter = adapter
         binding.rvPolls.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        update(PackHistoryViewState.Loading)
-
-        viewModel.onViewInitialized(PackHistoryViewModel.Companion.Arguments(pack))
+        viewModel.onViewInitialized(PackHistoryViewModel.Args(publicPack))
     }
 
     override fun initSubs() {

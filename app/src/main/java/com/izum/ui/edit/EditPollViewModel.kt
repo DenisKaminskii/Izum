@@ -1,9 +1,9 @@
-package com.izum.ui.create
+package com.izum.ui.edit
 
 import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.izum.data.SuggestPoll
+import com.izum.data.EditPoll
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
@@ -46,16 +46,16 @@ class EditPollViewModel @Inject constructor(
     )
 ) {
 
-    private var suggestPoll = SuggestPoll(
+    private var editPoll = EditPoll(
         topText = "",
         bottomText = ""
     )
 
     private var inputArgs: EditPollVariant = EditPollVariant.Suggest
 
-    override fun onViewInitialized(args: EditPollVariant) {
-        super.onViewInitialized(args)
-        inputArgs = args
+    override fun onViewInitialized(input: EditPollVariant) {
+        super.onViewInitialized(input)
+        inputArgs = input
     }
 
     fun onBackClick() {
@@ -70,7 +70,7 @@ class EditPollViewModel @Inject constructor(
         when(inputArgs) {
             EditPollVariant.Suggest -> viewModelScope.launch {
                 try {
-                    pollsRepository.suggestPoll(suggestPoll.topText, suggestPoll.bottomText)
+                    pollsRepository.suggestPoll(editPoll.topText, editPoll.bottomText)
                     emit(ViewAction.ShowToast("Thanks! We will check your poll soon :3"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
@@ -84,19 +84,19 @@ class EditPollViewModel @Inject constructor(
     }
 
     fun onTopTextChanged(text: String) {
-        suggestPoll = suggestPoll.copy(topText = text)
+        editPoll = editPoll.copy(topText = text)
         updateState {
             EditPollViewState.Input(
-                isDoneEnabled = suggestPoll.topText.isNotBlank() && suggestPoll.bottomText.isNotBlank()
+                isDoneEnabled = editPoll.topText.isNotBlank() && editPoll.bottomText.isNotBlank()
             )
         }
     }
 
     fun onBottomTextChanged(text: String) {
-        suggestPoll = suggestPoll.copy(bottomText = text)
+        editPoll = editPoll.copy(bottomText = text)
         updateState {
             EditPollViewState.Input(
-                isDoneEnabled = suggestPoll.topText.isNotBlank() && suggestPoll.bottomText.isNotBlank()
+                isDoneEnabled = editPoll.topText.isNotBlank() && editPoll.bottomText.isNotBlank()
             )
         }
     }

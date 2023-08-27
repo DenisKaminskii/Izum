@@ -4,10 +4,12 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.izum.data.Pack
 import com.izum.data.Poll
-import com.izum.ui.create.EditPollActivity
-import com.izum.ui.create.EditPollVariant
-import com.izum.ui.create.pack.CreatePackActivity
-import com.izum.ui.pack.PackFragment
+import com.izum.ui.KEY_ARGS_INPUT
+import com.izum.ui.create.EditPackActivity
+import com.izum.ui.create.EditPackInput
+import com.izum.ui.edit.EditPollActivity
+import com.izum.ui.edit.EditPollVariant
+import com.izum.ui.pack.PackDialog
 import com.izum.ui.pack.history.PackHistoryActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
@@ -24,10 +26,10 @@ interface Router {
         object Packs : Route
         data class Polls(val pack: com.izum.data.Pack) : Route
         data class EditPoll(val variant: EditPollVariant) : Route
-        object CreatePack : Route
+        data class EditPack(val input: EditPackInput) : Route
         data class Statistic(val poll: Poll) : Route
-        data class Pack(val pack: com.izum.data.Pack) : Route
-        data class PackHistory(val pack: com.izum.data.Pack) : Route
+        data class Pack(val pack: com.izum.data.Pack.Public) : Route
+        data class PackHistory(val publicPack: com.izum.data.Pack.Public) : Route
         object ProvideUserInfo : Route
         object Finish : Route
     }
@@ -69,10 +71,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     Router.Route.Packs -> showPacks()
                     is Router.Route.Polls -> showPackPolls(route.pack)
                     is Router.Route.EditPoll -> showEditPoll(route.variant)
-                    Router.Route.CreatePack -> showCreatePack()
+                    is Router.Route.EditPack -> showEditPack(route.input)
                     is Router.Route.Statistic -> showPollStatistic(route.poll)
                     is Router.Route.Pack -> showPackDialog(route.pack)
-                    is Router.Route.PackHistory -> showPackHistory(route.pack)
+                    is Router.Route.PackHistory -> showPackHistory(route.publicPack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
                 }
@@ -105,9 +107,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showCreatePack() {
+    private fun showEditPack(input: EditPackInput) {
         host?.let { activity ->
-            val intent = Intent(activity, CreatePackActivity::class.java)
+            val intent = Intent(activity, EditPackActivity::class.java)
+            intent.putExtra(KEY_ARGS_INPUT, input)
             activity.startActivity(intent)
         }
     }
@@ -120,19 +123,19 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPackDialog(pack: Pack) {
+    private fun showPackDialog(publicPack: Pack.Public) {
         host?.let { activity ->
-            PackFragment.show(
+            PackDialog.show(
                 activity.supportFragmentManager,
-                pack
+                publicPack
             )
         }
     }
 
-    private fun showPackHistory(pack: Pack) {
+    private fun showPackHistory(publicPack: Pack.Public) {
         host?.let { activity ->
             val intent = Intent(activity, PackHistoryActivity::class.java)
-            intent.putExtra(PackHistoryActivity.KEY_ARGS_PACK, pack)
+            intent.putExtra(PackHistoryActivity.KEY_ARGS_PACK, publicPack)
             activity.startActivity(intent)
         }
     }

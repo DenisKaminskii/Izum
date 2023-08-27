@@ -1,15 +1,15 @@
 package com.izum.ui.packs
 
-import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
-import com.izum.R
 import com.izum.data.repository.UserRepository
 import com.izum.databinding.ActivityPacksBinding
 import com.izum.ui.BaseActivity
+import com.izum.ui.create.PackTitleEditDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,16 +35,17 @@ class PacksActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
-    override fun initView() {
+    override fun initView(args: Bundle) {
         binding.vgPager.adapter = viewPagerAdapter
 
         binding.vgSubscription.setOnClickListener { viewModel.onSubscribeClick() }
+        binding.vCreatePack.setOnClickListener { onCreatePackClick() }
         binding.vSuggest.setOnClickListener { viewModel.onSuggestPollClick() }
 
         TabLayoutMediator(binding.vgTabs, binding.vgPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Official"
-                1 -> "Custom"
+                0 -> "Public"
+                1 -> "My Packs"
                 else -> ""
             }
         }.attach()
@@ -66,17 +67,28 @@ class PacksActivity : BaseActivity() {
     }
 
     private fun update(viewState: PacksViewState) {
-        when (viewState) {
-            is PacksViewState.Loading -> {
-                // ignore
-            }
+        if (viewState !is PacksViewState.Packs) return
 
-            is PacksViewState.Packs -> {
-                val hasSubscription = viewState.hasSubscription
-                binding.tvSubscribe.isVisible = !hasSubscription
-                binding.tvSubscribed.isVisible = hasSubscription
+        val hasSubscription = viewState.hasSubscription
+        binding.tvSubscribe.isVisible = !hasSubscription
+        binding.tvSubscribed.isVisible = hasSubscription
+    }
+
+    private var createPackDialog: PackTitleEditDialog? = null
+
+    private fun onCreatePackClick() {
+        createPackDialog?.dismissAllowingStateLoss()
+        createPackDialog = null
+        createPackDialog = PackTitleEditDialog.getInstance(
+            title = "",
+            onApply = { title ->
+                viewModel.onCreatePack(title)
+            },
+            onCancel = {
+                createPackDialog = null
             }
-        }
+        )
+        createPackDialog?.show(supportFragmentManager, "PackTitleEditDialog")
     }
 
 }

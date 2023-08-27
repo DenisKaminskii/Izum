@@ -1,4 +1,4 @@
-package com.izum.ui.create
+package com.izum.ui.edit
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -19,28 +19,23 @@ class EditPollActivity : BaseActivity() {
 
     private val viewModel: EditPollViewModel by viewModels()
 
-    private lateinit var variant: EditPollVariant
-
     override fun initLayout() {
         super.initLayout()
         _binding = ActivityEditPollBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 
-    override fun initArgs(args: Bundle) {
-        super.initArgs(args)
-        variant = args.getParcelable(KEY_ARGS_EDIT_POLL_VARIANT)!!
-    }
-
-    override fun initView() {
-        super.initView()
+    override fun initView(args: Bundle) {
+        super.initView(args)
 
         binding.vBack.setOnClickListener { viewModel.onBackClick() }
         binding.tvAction.setOnClickListener { viewModel.onActionClick() }
 
         update(viewModel.viewState)
 
-        viewModel.onViewInitialized(variant)
+        viewModel.onViewInitialized(
+            input = args.getParcelable(KEY_ARGS_EDIT_POLL_VARIANT)!!
+        )
     }
 
     override fun initSubs() {

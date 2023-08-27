@@ -8,9 +8,7 @@ import com.izum.data.Pack
 import com.izum.data.Poll
 import com.izum.data.repository.PollsRepository
 import com.izum.domain.core.StateViewModel
-import com.izum.ui.pack.history.PackHistoryViewModel.Companion.Arguments
-import com.izum.ui.poll.PollViewState
-import com.izum.ui.poll.statistic.StatisticItem
+import com.izum.ui.poll.list.PollsItem
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,7 +24,7 @@ sealed interface PackHistoryViewState {
     object Error : PackHistoryViewState
 
     data class Content(
-        val polls: List<StatisticItem>
+        val polls: List<PollsItem>
     ) : PackHistoryViewState
 
 }
@@ -35,32 +33,30 @@ sealed interface PackHistoryViewState {
 class PackHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val pollsRepository: PollsRepository,
-) : StateViewModel<Arguments, PackHistoryViewState>(
+) : StateViewModel<PackHistoryViewModel.Args, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
 
-    companion object {
-        data class Arguments(
-            val pack: Pack
-        )
-    }
+    data class Args(
+        val publicPack: Pack.Public
+    )
 
-    private lateinit var pack: Pack
+    private lateinit var publicPack: Pack.Public
 
     private val polls = mutableListOf<Poll>()
     private var isPollFetched = false
     private var isValueInPercent = true
 
-    override fun onViewInitialized(args: Arguments) {
-        super.onViewInitialized(args)
-        pack = args.pack
+    override fun onViewInitialized(input: Args) {
+        super.onViewInitialized(input)
+        publicPack = input.publicPack
 
         fetchPolls()
     }
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPools = pollsRepository.getPackVotedPolls(pack.id)
+            val newPools = pollsRepository.getPackVotedPolls(publicPack.id)
             isPollFetched = true
             polls.clear()
             polls.addAll(newPools)
@@ -80,12 +76,12 @@ class PackHistoryViewModel @Inject constructor(
             PackHistoryViewState.Content(
                 polls
                     .map { poll ->
-                        StatisticItem.TwoOptionsBar(
-                            leftTop = StatisticItem.TwoOptionsBar.Value(
+                        PollsItem.TwoOptionsBar(
+                            leftTop = PollsItem.TwoOptionsBar.Value(
                                 text = poll.options[0].title,
                                 color = context.getColor(R.color.red)
                             ),
-                            leftBottom = StatisticItem.TwoOptionsBar.Value(
+                            leftBottom = PollsItem.TwoOptionsBar.Value(
                                 text = if (isValueInPercent) {
                                     "${poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())}%"
                                 } else {
@@ -93,11 +89,11 @@ class PackHistoryViewModel @Inject constructor(
                                 },
                                 color = context.getColor(R.color.red)
                             ),
-                            rightTop = StatisticItem.TwoOptionsBar.Value(
+                            rightTop = PollsItem.TwoOptionsBar.Value(
                                 text = poll.options[1].title,
                                 color = context.getColor(R.color.blue)
                             ),
-                            rightBottom = StatisticItem.TwoOptionsBar.Value(
+                            rightBottom = PollsItem.TwoOptionsBar.Value(
                                 text = if (isValueInPercent) {
                                     "${poll.options[1].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())}%"
                                 } else {
@@ -115,7 +111,7 @@ class PackHistoryViewModel @Inject constructor(
     fun onNoPollsClicked() {
         viewModelScope.launch {
             route(Router.Route.Finish)
-            route(Router.Route.Polls(pack))
+            route(Router.Route.Polls(publicPack))
         }
     }
 

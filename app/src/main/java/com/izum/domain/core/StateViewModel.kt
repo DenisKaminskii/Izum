@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.suspendCoroutine
 
 abstract class StateViewModel<Arguments ,ViewState>(
     private val initialState: ViewState
@@ -36,7 +35,7 @@ abstract class StateViewModel<Arguments ,ViewState>(
 
     private val updateMutex = Mutex()
 
-    open fun onViewInitialized(args: Arguments) {
+    open fun onViewInitialized(input: Arguments) {
         updateState { initialState }
     }
 

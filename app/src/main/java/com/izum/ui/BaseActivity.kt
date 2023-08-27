@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 import java.util.function.Consumer
 import javax.inject.Inject
 
+const val KEY_ARGS_INPUT = "KEY_ARGS_INPUT"
+
 @AndroidEntryPoint
 abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
@@ -28,23 +30,15 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try {
-            intent.extras?.let(::initArgs)
-        } catch (ex: Exception) {
-            Log.e("Steve", "BaseActivity: onCreate: ${ex.message}")
-            finish()
-        }
-
         initLayout()
         initSubs()
-        initView()
+        initView(args = intent.extras ?: Bundle.EMPTY)
     }
 
-    @Throws(Exception::class)
-    open fun initArgs(args: Bundle) {}
     open fun initLayout() {}
     open fun initSubs() {}
-    open fun initView() {}
+    @Throws(Exception::class)
+    open fun initView(args: Bundle) {}
 
     override fun onStart() {
         super.onStart()

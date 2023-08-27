@@ -1,19 +1,17 @@
-package com.izum.ui.create.pack
+package com.izum.ui.edit
 
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.izum.R
-import com.izum.databinding.FragmentCreatePackPollBinding
+import com.izum.databinding.FragmentEditPollBinding
 import com.izum.ui.SimpleTextWatcher
 import com.izum.ui.dpF
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,20 +20,14 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
+class EditPollFragment : Fragment(), CoroutineScope by MainScope() {
 
-    private var _binding: FragmentCreatePackPollBinding? = null
+    private var _binding: FragmentEditPollBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: CreatePackViewModel by lazy {
-        ViewModelProvider(requireActivity())[CreatePackViewModel::class.java]
+    private val viewModel: EditPollViewModel by lazy {
+        ViewModelProvider(requireActivity())[EditPollViewModel::class.java]
     }
-
-    private val inputCardBackground: GradientDrawable
-        get() = GradientDrawable().apply {
-            cornerRadius = requireContext().dpF(16)
-            setColor(requireContext().getColor(R.color.white))
-        }
 
     private val topTextWatcher = object : SimpleTextWatcher() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -54,7 +46,7 @@ class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCreatePackPollBinding.inflate(inflater, container, false)
+        _binding = FragmentEditPollBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -85,27 +77,13 @@ class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
         }
     }
 
-    private fun update(state: CreatePackViewState) {
-        binding.vTop.isEnabled = state is CreatePackViewState.Input
-        binding.vBottom.isEnabled = state is CreatePackViewState.Input
-
-        when (state) {
-            is CreatePackViewState.Input -> {
-                if (binding.vTop.text.toString() != state.topText) {
-                    binding.vTop.setText(state.topText)
-                }
-                if (binding.vBottom.text.toString() != state.bottomText) {
-                    binding.vBottom.setText(state.bottomText)
-                }
-            }
-            is CreatePackViewState.Loading -> {
-                // nothing
-            }
-        }
+    private fun update(state: EditPollViewState) {
+        binding.vTop.isEnabled = state is EditPollViewState.Input
+        binding.vBottom.isEnabled = state is EditPollViewState.Input
     }
 
     private fun initInputCard(vgOption: ViewGroup) {
-        vgOption.background = inputCardBackground
+        // vgOption.background = inputCardBackground
         vgOption.elevation = requireContext().dpF(6)
 
         val inputView = vgOption.getChildAt(0)
@@ -116,14 +94,13 @@ class CreatePackPollFragment : Fragment(), CoroutineScope by MainScope() {
 
     private fun showSoftKeyboard(view: View) {
         if (view.requestFocus()) {
-            val imm =
-                ContextCompat.getSystemService(requireContext(), InputMethodManager::class.java)
+            val imm = getSystemService(requireContext(), InputMethodManager::class.java)
             imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
     private fun hideSoftKeyboard(view: View) {
-        val imm = ContextCompat.getSystemService(requireContext(), InputMethodManager::class.java)
+        val imm = getSystemService(requireContext(), InputMethodManager::class.java)
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 

@@ -31,32 +31,40 @@
 
         <activity
             android:name=".ui.packs.PacksActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
             android:name=".ui.poll.PollActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.create.EditPollActivity"
+            android:name=".ui.edit.EditPollActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:windowSoftInputMode="adjustNothing" />
 
         <activity
-            android:name=".ui.create.pack.CreatePackActivity"
+            android:name=".ui.edit.pack.CreatePackActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".ui.poll.statistic.PollStatisticActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.poll.statistic.PollStatisticActivity"
+            android:screenOrientation="portrait" />
 
 
-        <activity android:name=".ui.pack.history.PackHistoryActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.pack.history.PackHistoryActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.user.UserInfoActivity"
+        <activity
+            android:name=".ui.user.UserInfoActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.create.EditPackActivity"
+            android:screenOrientation="portrait" />
 
 
     </application>

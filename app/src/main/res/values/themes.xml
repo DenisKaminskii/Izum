@@ -60,8 +60,8 @@
     </style>
 
     <style name="Text.Button.Large" parent="Text.Button">
-        <item name="android:paddingHorizontal">24dp</item>
-        <item name="android:paddingVertical">16dp</item>
+        <item name="android:paddingHorizontal">18dp</item>
+        <item name="android:paddingVertical">14dp</item>
     </style>
 
     <style name="Text.Button.White.Filled" parent="Text.Button.Large">

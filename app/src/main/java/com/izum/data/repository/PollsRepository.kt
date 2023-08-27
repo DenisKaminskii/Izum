@@ -11,12 +11,14 @@ import com.izum.data.PollOption
 import com.izum.data.PollStatistic
 import com.izum.data.PollStatisticCategory
 import com.izum.data.PollStatisticSection
-import com.izum.ui.poll.statistic.StatisticItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
 interface PollsRepository {
+
+    @WorkerThread
+    suspend fun getPackPolls(packId: Long): List<Poll>
 
     @WorkerThread
     suspend fun getPackUnvotedPolls(packId: Long): List<Poll>
@@ -37,30 +39,29 @@ interface PollsRepository {
 }
 
 class PollsRepositoryImpl(
-    private val pollsApi: PollApi,
-    private val ioDispatcher: CoroutineDispatcher
+    private val pollsApi: PollApi
 ) : PollsRepository {
 
     private val polls = hashMapOf<Long, List<Poll>>()
 
-    override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
-        getPackPolls(packId)
-            //.filter { poll -> poll.votedOptionId == null } §
-
-    override suspend fun getPackVotedPolls(packId: Long): List<Poll> =
-        getPackPolls(packId)
-            .filter { poll -> poll.votedOptionId != null }
-
-    private suspend fun getPackPolls(packId: Long): List<Poll> = withContext(ioDispatcher) {
+    override suspend fun getPackPolls(packId: Long): List<Poll> {
         val newPolls = polls[packId] ?: pollsApi
             .getPackPolls(packId)
             .map(::mapFromJson)
 
         polls[packId] = newPolls
-        newPolls
+        return newPolls
     }
 
-    override suspend fun vote(pollId: Long, optionId: Long) = withContext(ioDispatcher) {
+    override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
+        getPackPolls(packId)
+            .filter { poll -> poll.votedOptionId == null }
+
+    override suspend fun getPackVotedPolls(packId: Long): List<Poll> =
+        getPackPolls(packId)
+            .filter { poll -> poll.votedOptionId != null }
+
+    override suspend fun vote(pollId: Long, optionId: Long) {
         try {
             // Записывать результат в polls
             val request = VoteRequestJson(optionId)
