@@ -31,8 +31,12 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
     companion object {
 
-        fun newInstance(input: PacksInput): PacksFragment {
+        fun newInstance(
+            input: PacksInput,
+            onCreatePackClick: (() -> Unit)? = null
+        ): PacksFragment {
             val fragment = PacksFragment()
+            fragment.onCreatePackClick = onCreatePackClick
             fragment.arguments = Bundle().apply {
                 putParcelable(KEY_ARGS_INPUT, input)
             }
@@ -43,6 +47,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private var _binding: FragmentPacksBinding? = null
     private val binding get() = _binding!!
 
+    private var onCreatePackClick: (() -> Unit)? = null
     private var isCustom: Boolean = false
 
     private val viewModel: PacksViewModel by lazy {
@@ -88,9 +93,11 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private fun initView() {
         binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvPacks.adapter = adapter
+        binding.tvCreatePack.setOnClickListener { onCreatePackClick?.invoke() }
     }
 
     private fun update(state: PacksViewState) {
+        binding.vProgress.isVisible = state is PacksViewState.Loading
 
         if (state !is PacksViewState.Packs) return
 

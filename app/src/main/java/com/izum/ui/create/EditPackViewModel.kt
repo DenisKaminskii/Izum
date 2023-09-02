@@ -136,8 +136,16 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onTitleChanged(title: String) {
-        this.title = title
-        updateView()
+        viewModelScope.launch(ioDispatcher) {
+            try {
+                customPacksRepository.updatePack(packId, title)
+                this@EditPackViewModel.title = title
+                updateView()
+            } catch (ex: Exception) {
+                emit(ViewAction.ShowToast("Title update failed :( Try again."))
+                Log.e("Steve", ex.toString())
+            }
+        }
     }
 
     fun onShareClick(clipBoard: ClipboardManager) {
@@ -167,7 +175,7 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onAddPollClick() {
-        // Chapter 4: Add a new poll
+
     }
 
     fun onSaveClick() {

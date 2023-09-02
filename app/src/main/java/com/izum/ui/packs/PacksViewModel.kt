@@ -17,7 +17,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface PacksViewState {
+
     object Loading : PacksViewState
+
     data class Packs(
         val publicPacks: List<Pack.Public>,
         val customPacks: List<Pack.Custom>,
@@ -47,7 +49,7 @@ class PacksViewModel @Inject constructor(
         fetchPacks()
     }
 
-    private fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
+    fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
         val packs = publicPacksRepository.getPacks()
         this@PacksViewModel.publicPacks.clear()
         this@PacksViewModel.publicPacks.addAll(packs)
@@ -81,7 +83,14 @@ class PacksViewModel @Inject constructor(
         if (pack !is Pack.Custom) return
 
         viewModelScope.launch {
-            route(Router.Route.Polls(pack))
+            route(Router.Route.EditPack(
+                input = EditPackInput(
+                    packId = pack.id,
+                    packTitle = pack.title,
+                    isNew = false,
+                    shareLink = (pack as? Pack.Custom)?.link ?: ""
+                )
+            ))
         }
     }
 

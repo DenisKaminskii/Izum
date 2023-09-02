@@ -7,7 +7,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class PacksViewPagerAdapter(
     fragmentManager: FragmentManager,
-    lifecycle: Lifecycle
+    lifecycle: Lifecycle,
+    private val onCreatePackClick: () -> Unit
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int {
@@ -17,7 +18,7 @@ class PacksViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> PacksFragment.newInstance(PacksInput(isCustom = false))
-            1 -> PacksFragment.newInstance(PacksInput(isCustom = true))
+            1 -> PacksFragment.newInstance(PacksInput(isCustom = true), onCreatePackClick = onCreatePackClick)
             else -> throw IllegalArgumentException("Unknown position: $position")
         }
     }

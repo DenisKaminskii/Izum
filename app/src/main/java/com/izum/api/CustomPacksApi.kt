@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -19,10 +20,19 @@ interface CustomPacksApi {
     @POST("custom-packs")
     suspend fun createPack(@Body request: CreatePackRequestJson) : CustomPackJson
 
+    @PATCH("custom-packs/{id}")
+    suspend fun updatePack(@Path("id") id: Long, @Body request: UpdatePackRequestJson) : CustomPackJson
+
 }
 
 @JsonClass(generateAdapter = true)
 data class CreatePackRequestJson(
+    @Json(name = "title")
+    val title: String
+)
+
+@JsonClass(generateAdapter = true)
+data class UpdatePackRequestJson(
     @Json(name = "title")
     val title: String
 )

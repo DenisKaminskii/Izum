@@ -50,6 +50,7 @@ class PackTitleEditDialog : BaseDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)
+        prevTitle = arguments?.getString(KEY_ARGS_TITLE)
     }
 
     override fun onCreateView(
@@ -92,9 +93,11 @@ class PackTitleEditDialog : BaseDialogFragment() {
 
         binding.tvApply.isEnabled = prevTitle?.isNotBlank() == true
         binding.tvApply.alpha = if (prevTitle?.isNotBlank() == true) 1f else 0.5f
-        prevTitle?.let(binding.etTitle::setText)
 
-        // viewModel onInit prevTitle = args.getString(KEY_ARGS_TITLE)
+        prevTitle?.let {
+            binding.etTitle.setText(it)
+            binding.etTitle.setSelection(it.length)
+        }
     }
 
 }

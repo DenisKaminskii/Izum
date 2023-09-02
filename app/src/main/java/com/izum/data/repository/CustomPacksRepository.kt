@@ -3,6 +3,7 @@ package com.izum.data.repository
 import androidx.annotation.WorkerThread
 import com.izum.api.CreatePackRequestJson
 import com.izum.api.CustomPacksApi
+import com.izum.api.UpdatePackRequestJson
 import com.izum.data.Pack
 import javax.inject.Inject
 
@@ -17,13 +18,16 @@ interface CustomPacksRepository {
     @WorkerThread
     suspend fun createPack(title: String): Pair<Long, String>
 
+    @WorkerThread
+    suspend fun updatePack(id: Long, title: String)
+
 }
 
 class CustomPacksRepositoryImpl @Inject constructor(
     private val customPacksApi: CustomPacksApi
 ) : CustomPacksRepository {
 
-    private val customPacks = mutableListOf<Pack.Custom>() // § SharedFlow
+    private val customPacks = linkedSetOf<Pack.Custom>() // § SharedFlow
 
     override suspend fun getCustomPacks(): List<Pack.Custom> {
         val newPacks = customPacksApi.getPacks()
@@ -45,6 +49,17 @@ class CustomPacksRepositoryImpl @Inject constructor(
         )
 
         return response.id to response.link
+    }
+
+    override suspend fun updatePack(id: Long, title: String) {
+        val updatedPack = Pack.Custom.fromJson(
+            json = customPacksApi.updatePack(
+                id = id,
+                request = UpdatePackRequestJson(title)
+            )
+        )
+
+        customPacks.add(updatedPack)
     }
 
 }

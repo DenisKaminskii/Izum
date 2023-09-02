@@ -26,7 +26,7 @@ class PacksActivity : BaseActivity() {
     private val viewModel: PacksViewModel by viewModels()
 
     private val viewPagerAdapter: PacksViewPagerAdapter by lazy {
-        PacksViewPagerAdapter(supportFragmentManager, lifecycle)
+        PacksViewPagerAdapter(supportFragmentManager, lifecycle, ::onCreatePackClick)
     }
 
     override fun initLayout() {
@@ -59,6 +59,11 @@ class PacksActivity : BaseActivity() {
                 Log.d("Steve", "Junk!")
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchPacks()
     }
 
     override fun initSubs() {

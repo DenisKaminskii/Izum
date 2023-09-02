@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,7 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:overScrollMode="never"
-        android:paddingHorizontal="16dp" />
+        android:paddingHorizontal="16dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/vgNoPacks"
@@ -18,7 +20,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             style="@style/Text.Body"
@@ -28,8 +30,7 @@
             android:gravity="center"
             android:text="Create your own pack and share it with your friends!"
             android:textColor="@color/white_50"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tvCreatePack"
@@ -42,6 +43,13 @@
             android:text="Create pack" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/vProgress"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/white" />
 
 </FrameLayout>
 

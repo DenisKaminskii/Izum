@@ -29,12 +29,14 @@ class EditPackActivity : BaseActivity() {
     private var _binding: ActivityEditPackBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = PollsAdapter(
-        onPollClick = {  },
-        onButtonClick = {  }
-    )
-
     private val viewModel: EditPackViewModel by viewModels()
+
+    private val adapter by lazy {
+        PollsAdapter(
+            onPollClick = {  },
+            onButtonClick = viewModel::onAddPollClick
+        )
+    }
 
     private var titleEditDialog: PackTitleEditDialog? = null
     private var removeDialog: AlertDialog? = null
@@ -92,9 +94,13 @@ class EditPackActivity : BaseActivity() {
         titleEditDialog = null
         titleEditDialog = PackTitleEditDialog.getInstance(
             title = binding.tvPackTitle.text.toString(),
-            onApply = { viewModel.onTitleChanged(it) },
-            onCancel = {  }
+            onApply = {
+                viewModel.onTitleChanged(it)
+                titleEditDialog?.dismissAllowingStateLoss()
+            },
+            onCancel = { }
         )
+        titleEditDialog?.show(supportFragmentManager, PackTitleEditDialog::class.java.simpleName)
     }
 
     private fun onRemoveClick() {
