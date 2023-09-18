@@ -1,7 +1,7 @@
 package com.izum.di
 
-import com.izum.api.CustomPacksApi
-import com.izum.api.PacksApi
+import com.izum.api.custom.CustomPackApi
+import com.izum.api.PackApi
 import com.izum.data.repository.CustomPacksRepository
 import com.izum.data.repository.CustomPacksRepositoryImpl
 import com.izum.data.repository.PublicPacksRepository
@@ -19,7 +19,7 @@ class PacksModule {
     @Provides
     @Singleton
     fun providePacksRepository(
-        packsApi: PacksApi
+        packsApi: PackApi
     ) : PublicPacksRepository {
         return PublicPacksRepositoryImpl(packsApi)
     }
@@ -27,7 +27,7 @@ class PacksModule {
     @Provides
     @Singleton
     fun provideCustomPacksRepository(
-        customPacksApi: CustomPacksApi,
+        customPacksApi: CustomPackApi,
     ) : CustomPacksRepository {
         return CustomPacksRepositoryImpl(customPacksApi)
     }

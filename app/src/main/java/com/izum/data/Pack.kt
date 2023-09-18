@@ -3,7 +3,7 @@ package com.izum.data
 import android.graphics.Color
 import android.os.Parcelable
 import androidx.annotation.ColorInt
-import com.izum.api.CustomPackJson
+import com.izum.api.custom.CustomPackJson
 import com.izum.api.PackJson
 import kotlinx.parcelize.Parcelize
 

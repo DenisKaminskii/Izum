@@ -49,7 +49,12 @@ class EditPollActivity : BaseActivity() {
 
         if (state !is EditPollViewState.Input) return
 
+        binding.tvToolbar.text = state.title
         binding.tvAction.isEnabled = state.isDoneEnabled
+        binding.tvAction.text = state.actionText
+        binding.tvSuggestDescription.text = state.suggestText
+
+        binding.tvAction.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(state.actionDrawableId), null)
     }
 
 }

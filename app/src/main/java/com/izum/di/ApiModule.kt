@@ -2,14 +2,14 @@ package com.izum.di
 
 import android.content.Context
 import com.izum.R
-import com.izum.api.CustomPacksApi
+import com.izum.api.custom.CustomPackApi
 import com.izum.domain.core.PreferenceCache
-import com.izum.api.HeadersInterceptor
+import com.izum.network.HeadersInterceptor
 import com.izum.api.UserApi
-import com.izum.api.PacksApi
+import com.izum.api.PackApi
 import com.izum.api.PollApi
 import com.izum.api.TokenApi
-import com.izum.api.TokenInterceptor
+import com.izum.network.TokenInterceptor
 import com.izum.data.DeviceIdProvider
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -46,15 +46,15 @@ class ApiModule {
     @Provides
     fun providePacksApi(
         retrofit: Retrofit
-    ): PacksApi {
-        return retrofit.create(PacksApi::class.java)
+    ): PackApi {
+        return retrofit.create(PackApi::class.java)
     }
 
     @Provides
     fun provideCustomPacksApi(
         retrofit: Retrofit
-    ): CustomPacksApi {
-        return retrofit.create(CustomPacksApi::class.java)
+    ): CustomPackApi {
+        return retrofit.create(CustomPackApi::class.java)
     }
 
     @Provides

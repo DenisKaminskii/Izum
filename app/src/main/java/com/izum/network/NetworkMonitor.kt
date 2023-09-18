@@ -1,4 +1,4 @@
-package com.izum.api
+package com.izum.network
 
 import kotlinx.coroutines.flow.Flow
 

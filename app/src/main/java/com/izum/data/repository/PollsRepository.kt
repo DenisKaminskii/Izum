@@ -6,11 +6,14 @@ import com.izum.api.PollApi
 import com.izum.api.PollJson
 import com.izum.api.SuggestPollRequestJson
 import com.izum.api.VoteRequestJson
+import com.izum.data.Author
+import com.izum.data.EditPoll
 import com.izum.data.Poll
 import com.izum.data.PollOption
 import com.izum.data.PollStatistic
 import com.izum.data.PollStatisticCategory
 import com.izum.data.PollStatisticSection
+import com.izum.data.Vote
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -34,7 +37,7 @@ interface PollsRepository {
     suspend fun getPollStatistic(pollId: Long): PollStatistic
 
     @WorkerThread
-    suspend fun suggestPoll(topText: String, bottomText: String)
+    suspend fun suggestPoll(edit: EditPoll)
 
 }
 
@@ -55,15 +58,15 @@ class PollsRepositoryImpl(
 
     override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
         getPackPolls(packId)
-            .filter { poll -> poll.votedOptionId == null }
+            .filter { poll -> poll.voted?.optionId == null }
 
     override suspend fun getPackVotedPolls(packId: Long): List<Poll> =
         getPackPolls(packId)
-            .filter { poll -> poll.votedOptionId != null }
+            .filter { poll -> poll.voted?.optionId != null }
 
     override suspend fun vote(pollId: Long, optionId: Long) {
         try {
-            // Записывать результат в polls
+            // § Записывать результат в polls
             val request = VoteRequestJson(optionId)
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
@@ -102,9 +105,9 @@ class PollsRepositoryImpl(
         )
     }
 
-    override suspend fun suggestPoll(topText: String, bottomText: String) {
+    override suspend fun suggestPoll(edit: EditPoll) {
         pollsApi.suggestPoll(SuggestPollRequestJson(
-            options = listOf(topText, bottomText)
+            options = listOf(edit.topText, edit.bottomText)
         ))
     }
 
@@ -118,7 +121,17 @@ class PollsRepositoryImpl(
                 votesCount = option.votesCount
             )
         },
-        votedOptionId = poll.vote?.optionId
+        author = poll.author?.let { author ->
+            Author(author.id)
+        },
+        totalVotesCount = poll.totalVotesCount,
+        voted = poll.voted?.let {
+            Vote(
+                optionId = it.optionId,
+                date = it.date
+            )
+        },
+        createdAt = poll.createdAt
     )
 
 }

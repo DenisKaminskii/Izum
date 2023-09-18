@@ -1,4 +1,4 @@
-package com.izum.api
+package com.izum.network
 
 import android.content.Context
 import android.net.ConnectivityManager

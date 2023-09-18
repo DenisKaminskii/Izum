@@ -46,19 +46,36 @@ class PacksViewModel @Inject constructor(
 
     override fun onViewInitialized(input: Unit) {
         super.onViewInitialized(input)
+
+        viewModelScope.launch {
+            publicPacksRepository.packs
+                .collect { publicPacks ->
+                    this@PacksViewModel.publicPacks.clear()
+                    this@PacksViewModel.publicPacks.addAll(publicPacks)
+                    updateView()
+                }
+        }
+
+        viewModelScope.launch {
+            customPacksRepository.packs
+                .collect { customPacks ->
+                    this@PacksViewModel.customPacks.clear()
+                    this@PacksViewModel.customPacks.addAll(customPacks)
+                    updateView()
+                }
+        }
+
         fetchPacks()
     }
 
-    fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
-        val packs = publicPacksRepository.getPacks()
-        this@PacksViewModel.publicPacks.clear()
-        this@PacksViewModel.publicPacks.addAll(packs)
+    fun onStart() {
+        viewModelScope.launch { publicPacksRepository.fetch() }
+        viewModelScope.launch { customPacksRepository.fetch() }
+    }
 
-        val customPacks = customPacksRepository.getCustomPacks()
-        this@PacksViewModel.customPacks.clear()
-        this@PacksViewModel.customPacks.addAll(customPacks)
-
-        updateView()
+    private fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
+        publicPacksRepository.fetch()
+        customPacksRepository.fetch()
     }
 
     private fun updateView() {
@@ -87,7 +104,6 @@ class PacksViewModel @Inject constructor(
                 input = EditPackInput(
                     packId = pack.id,
                     packTitle = pack.title,
-                    isNew = false,
                     shareLink = (pack as? Pack.Custom)?.link ?: ""
                 )
             ))
@@ -123,7 +139,6 @@ class PacksViewModel @Inject constructor(
                 route(Router.Route.EditPack(EditPackInput(
                     packId = newPackId,
                     packTitle = title,
-                    isNew = true,
                     shareLink = newPackLink
                 )))
             } catch (ex: Exception) {

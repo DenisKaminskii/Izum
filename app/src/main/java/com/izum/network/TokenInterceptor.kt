@@ -1,7 +1,9 @@
-package com.izum.api
+package com.izum.network
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.izum.api.GetTokenRequest
+import com.izum.api.TokenApi
 import com.izum.data.DeviceIdProvider
 import com.izum.domain.core.PreferenceCache
 import com.izum.domain.core.PreferenceKey

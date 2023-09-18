@@ -2,22 +2,22 @@ package com.izum.ui.create
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.EditPoll
 import com.izum.data.repository.CustomPacksRepository
-import com.izum.data.repository.PollsRepository
 import com.izum.data.repository.UserRepository
 import com.izum.di.IoDispatcher
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.create.EditPackViewModel.Companion.POLLS_MAXIMUM_UNSUBSCRIBED
+import com.izum.ui.edit.EditPollVariant
 import com.izum.ui.poll.list.PollsItem
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,9 +39,7 @@ sealed interface EditPackViewState {
 
 @HiltViewModel
 class EditPackViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
-    private val pollsRepository: PollsRepository,
     private val customPacksRepository: CustomPacksRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : StateViewModel<EditPackInput, EditPackViewState>(
@@ -49,7 +47,7 @@ class EditPackViewModel @Inject constructor(
 ) {
 
     companion object {
-        const val POLLS_MAXIMUM_UNSUBSCRIBED = 10
+        const val POLLS_MAXIMUM_UNSUBSCRIBED = 5
         const val POLLS_MAXIMUM_SUBSCRIBED = 100
     }
 
@@ -66,30 +64,32 @@ class EditPackViewModel @Inject constructor(
         title = input.packTitle ?: ""
         shareLink = input.shareLink
 
-        if (input.isNew) {
-            isPackFetched = true
-            updateView()
-        } else {
-            fetchPolls()
-        }
+        subscribePolls()
     }
 
-    private fun fetchPolls() = viewModelScope.launch(ioDispatcher) {
-        try {
-            val polls = pollsRepository.getPackPolls(packId = packId)
-            this@EditPackViewModel.polls.clear()
-            this@EditPackViewModel.polls.addAll(polls.map {
-                EditPoll(
-                    topText = it.options[0].title,
-                    bottomText = it.options[1].title
-                )
-            })
-            isPackFetched = true
-            updateView()
-        } catch (ex: Exception) {
-            isPackFetched = false
-            updateState { EditPackViewState.Error }
-            Log.e("Steve", ex.toString())
+    private var pollsSubscription: Job? = null
+    private fun subscribePolls() {
+        pollsSubscription?.cancel()
+        pollsSubscription = null
+        pollsSubscription = viewModelScope.launch(ioDispatcher) {
+            try {
+                customPacksRepository.getPolls(packId = packId)
+                    .collect { polls ->
+                        isPackFetched = true
+                        this@EditPackViewModel.polls.clear()
+                        this@EditPackViewModel.polls.addAll(polls.map {
+                            EditPoll(
+                                topText = it.options[0].title,
+                                bottomText = it.options[1].title
+                            )
+                        })
+                        updateView()
+                    }
+            } catch (ex: Exception) {
+                isPackFetched = false
+                updateState { EditPackViewState.Error }
+                Log.e("Steve", ex.toString())
+            }
         }
     }
 
@@ -157,7 +157,7 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onRetryClick() {
-        fetchPolls()
+        subscribePolls()
         updateState { EditPackViewState.Loading }
     }
 
@@ -175,10 +175,9 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onAddPollClick() {
-
+        viewModelScope.launch {
+            route(Router.Route.EditPoll(EditPollVariant.CustomPackAdd(packId)))
+        }
     }
 
-    fun onSaveClick() {
-
-    }
 }

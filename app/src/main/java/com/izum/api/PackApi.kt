@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.http.GET
 
-interface PacksApi {
+interface PackApi {
 
     @GET("packs")
     suspend fun getPacks() : List<PackJson>
@@ -35,26 +35,4 @@ data class PackJson(
     val gradientEndColor: String,
     @Json(name="preview")
     val preview: List<PackPreviewJson>
-)
-
-@JsonClass(generateAdapter = true)
-data class AuthorJson(
-    @Json(name="id")
-    val id: Long
-)
-
-@JsonClass(generateAdapter = true)
-data class VoteJson(
-    @Json(name="date")
-    val date: String,
-    @Json(name="optionId")
-    val optionId: Long
-)
-
-@JsonClass(generateAdapter = true)
-data class PackPreviewJson(
-    @Json(name="option1")
-    val option1: String,
-    @Json(name="option2")
-    val option2: String
 )

@@ -63,7 +63,7 @@ class PacksActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.fetchPacks()
+        viewModel.onStart()
     }
 
     override fun initSubs() {

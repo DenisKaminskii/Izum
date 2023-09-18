@@ -1,4 +1,4 @@
-package com.izum.api
+package com.izum.network
 
 import com.izum.domain.core.PreferenceCache
 import com.izum.domain.core.PreferenceKey

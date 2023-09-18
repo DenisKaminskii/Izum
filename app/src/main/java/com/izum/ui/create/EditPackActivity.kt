@@ -19,7 +19,6 @@ import kotlinx.parcelize.Parcelize
 data class EditPackInput(
     val packId: Long,
     val packTitle: String? = null,
-    val isNew: Boolean,
     val shareLink: String
 ) : Parcelable
 
@@ -57,7 +56,6 @@ class EditPackActivity : BaseActivity() {
         )}
         tvRetry.setOnClickListener { viewModel.onRetryClick() }
         tvRemove.setOnClickListener { onRemoveClick() }
-        tvSave.setOnClickListener { viewModel.onSaveClick() }
 
         rvPolls.adapter = adapter
         rvPolls.layoutManager = LinearLayoutManager(this@EditPackActivity, LinearLayoutManager.VERTICAL, false)

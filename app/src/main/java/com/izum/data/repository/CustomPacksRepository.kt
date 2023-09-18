@@ -1,16 +1,26 @@
 package com.izum.data.repository
 
 import androidx.annotation.WorkerThread
-import com.izum.api.CreatePackRequestJson
-import com.izum.api.CustomPacksApi
-import com.izum.api.UpdatePackRequestJson
+import com.izum.api.custom.CustomPackAddPollRequestJson
+import com.izum.api.custom.CustomPackApi
+import com.izum.api.TitleJson
+import com.izum.data.EditPoll
 import com.izum.data.Pack
+import com.izum.data.Poll
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
 interface CustomPacksRepository {
 
+    val packs: SharedFlow<List<Pack.Custom>>
+
     @WorkerThread
-    suspend fun getCustomPacks(): List<Pack.Custom>
+    suspend fun fetch()
+
+    @WorkerThread
+    suspend fun getPolls(packId: Long): Flow<List<Poll>>
 
     @WorkerThread
     suspend fun removePack(id: Long)
@@ -21,45 +31,73 @@ interface CustomPacksRepository {
     @WorkerThread
     suspend fun updatePack(id: Long, title: String)
 
+    @WorkerThread
+    suspend fun addPoll(packId: Long, edit: EditPoll)
+
 }
 
 class CustomPacksRepositoryImpl @Inject constructor(
-    private val customPacksApi: CustomPacksApi
+    private val customPacksApi: CustomPackApi
 ) : CustomPacksRepository {
 
-    private val customPacks = linkedSetOf<Pack.Custom>() // § SharedFlow
+    private val _packs = MutableSharedFlow<List<Pack.Custom>>(replay = 1)
+    override val packs: SharedFlow<List<Pack.Custom>>
+        get() = _packs
 
-    override suspend fun getCustomPacks(): List<Pack.Custom> {
+    private val polls: HashMap<Long, MutableSharedFlow<List<Poll>>> = hashMapOf()
+
+    override suspend fun fetch() {
         val newPacks = customPacksApi.getPacks()
             .map(Pack.Custom::fromJson)
 
-        customPacks.clear()
-        customPacks.addAll(newPacks)
-        return newPacks
+        _packs.emit(newPacks)
+    }
+
+    override suspend fun getPolls(packId: Long): Flow<List<Poll>> {
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableSharedFlow(replay = 1)
+        }
+
+        val pollsFlow = polls[packId]!!
+        val newPolls = customPacksApi.getCustomPackPolls(packId)
+            .map(Poll::fromJson)
+
+        pollsFlow.emit(newPolls)
+        return pollsFlow
     }
 
     override suspend fun removePack(id: Long) {
         customPacksApi.deletePack(id)
-        customPacks.removeIf { pack -> pack.id == id }
+        val current = _packs.replayCache.first()
+        _packs.emit(current.filter { it.id != id })
     }
 
     override suspend fun createPack(title: String): Pair<Long, String> {
-        val response = customPacksApi.createPack(
-            CreatePackRequestJson(title)
-        )
-
+        val response = customPacksApi.createPack(TitleJson(title))
         return response.id to response.link
     }
 
     override suspend fun updatePack(id: Long, title: String) {
         val updatedPack = Pack.Custom.fromJson(
-            json = customPacksApi.updatePack(
-                id = id,
-                request = UpdatePackRequestJson(title)
-            )
+            json = customPacksApi.updatePack(id, TitleJson(title))
         )
 
-        customPacks.add(updatedPack)
+        val current = _packs.replayCache.first()
+        _packs.emit(current.map { if (it.id == id) updatedPack else it })
+    }
+
+    override suspend fun addPoll(packId: Long, edit: EditPoll){
+        val polls =  customPacksApi.addPoll(
+            id = packId,
+            request = CustomPackAddPollRequestJson(
+                options = listOf(
+                    TitleJson(edit.topText),
+                    TitleJson(edit.bottomText)
+                )
+            )
+        ).map(Poll::fromJson)
+
+        this.polls[packId]?.emit(polls)
     }
 
 }
