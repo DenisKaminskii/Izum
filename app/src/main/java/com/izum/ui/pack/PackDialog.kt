@@ -2,6 +2,7 @@ package com.izum.ui.pack
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
@@ -151,6 +152,19 @@ class PackDialog : BaseDialogFragment() {
         binding.ivThird.setColorFilter(publicPack.contentColor)
         binding.tvPolls.setTextColor(publicPack.contentColor)
         binding.tvStart.setTextColor(publicPack.contentColor)
+        binding.tvStart.compoundDrawableTintList = ColorStateList(
+            arrayOf(intArrayOf(android.R.attr.state_enabled)),
+            intArrayOf(publicPack.contentColor)
+        )
+        binding.tvSubscribe.setTextColor(publicPack.contentColor)
+        binding.tvSubscribe.compoundDrawableTintList = ColorStateList(
+            arrayOf(intArrayOf(android.R.attr.state_enabled)),
+            intArrayOf(publicPack.contentColor)
+        )
+        binding.tvSubscribe.backgroundTintList = ColorStateList(
+            arrayOf(intArrayOf(android.R.attr.state_enabled)),
+            intArrayOf(publicPack.contentColor)
+        )
 
         binding.tvStart.isVisible = !publicPack.isPaid || userRepository.hasSubscription
         binding.tvSubscribe.isVisible = publicPack.isPaid && !userRepository.hasSubscription
@@ -183,10 +197,15 @@ class PackDialog : BaseDialogFragment() {
                 }
             }
 
-//            previewAdapter.setItems(pack.preview.map {
-//                PackPreviewItem(it.option1, it.option2, pack.contentColor)
-//            })
-            previewAdapter.setItems(Mock.getPreviewItems(publicPack))
+            previewAdapter.setItems(publicPack.preview
+                .take(3)
+                .map {
+                    PackPreviewItem(
+                        topText = it.option1,
+                        bottomText = it.option2,
+                        textColor = publicPack.contentColor
+                    )
+                })
         }
     }
 

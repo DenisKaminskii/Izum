@@ -105,6 +105,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             items = if (!isCustom) state.publicPacks.map {
                 PacksItem(
                     pack = it,
+                    description = it.description ?: "",
                     hasSubscription = state.hasSubscription,
                     title = it.title,
                     gradientStartColor = it.gradientStartColor,
@@ -116,6 +117,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             } else state.customPacks.map {
                 PacksItem(
                     pack = it,
+                    description = it.description ?: "",
                     hasSubscription = state.hasSubscription,
                     title = it.title,
                     gradientStartColor = requireContext().getColor(R.color.black_gradient_start),

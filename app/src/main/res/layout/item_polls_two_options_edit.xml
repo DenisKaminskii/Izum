@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:gravity="center_vertical"
-    android:paddingVertical="4dp"
+    android:paddingVertical="8dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -33,7 +33,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:padding="8dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_delete_circle_24"
-        app:tint="@color/gender_other" />
+        app:tint="@color/delete_red" />
 
 </LinearLayout>

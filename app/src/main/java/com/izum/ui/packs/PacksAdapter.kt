@@ -10,6 +10,7 @@ import com.izum.ui.BaseViewHolder
 
 data class PacksItem(
     val title: String,
+    val description: String,
     @ColorInt val gradientStartColor: Int,
     @ColorInt val gradientEndColor: Int,
     @ColorInt val contentColor: Int,

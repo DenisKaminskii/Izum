@@ -26,12 +26,14 @@ class PackViewHolder(
             cornerRadius = context.dpF(20)
         }
 
+        binding.tvTitle.text = item.title
         binding.tvTitle.setTextColor(item.contentColor)
+        binding.tvDescription.text = item.description
+        binding.tvDescription.setTextColor(item.contentColor)
         binding.tvPollsCount.setTextColor(item.contentColor)
 
         binding.ivLock.isVisible = item.isPaid && !item.hasSubscription
         binding.ivLock.setColorFilter(item.contentColor)
-        binding.tvTitle.text = item.title
         binding.tvPollsCount.text = "${item.pollsCount} polls"
         binding.root.setOnClickListener {
             onClick(item.pack)

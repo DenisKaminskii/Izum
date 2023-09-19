@@ -28,7 +28,7 @@ class PackHistoryActivity : BaseActivity() {
     private val viewModel: PackHistoryViewModel by viewModels()
 
     private val adapter = PollsAdapter(
-        onStatisticClick = viewModel::onPollClick
+        onStatisticClick = { viewModel.onPollClick() }
     )
 
     override fun initLayout() {

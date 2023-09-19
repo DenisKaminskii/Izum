@@ -8,6 +8,7 @@ import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.izum.databinding.ActivityEditPackBinding
 import com.izum.ui.BaseActivity
 import com.izum.ui.KEY_ARGS_INPUT

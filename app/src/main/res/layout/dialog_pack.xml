@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="24dp"
         android:gravity="center_horizontal"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -95,7 +95,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="8dp"
         android:clipChildren="false"
         android:minWidth="120dp"
@@ -127,8 +127,19 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:minWidth="120dp"
             android:text="@string/start"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvHistory"
+            style="@style/Text.Button.White.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Statistics"
             android:visibility="visible" />
 
     </FrameLayout>
