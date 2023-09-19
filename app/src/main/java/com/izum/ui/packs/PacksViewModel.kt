@@ -64,13 +64,10 @@ class PacksViewModel @Inject constructor(
                     updateView()
                 }
         }
-
-        fetchPacks()
     }
 
     fun onStart() {
-        viewModelScope.launch { publicPacksRepository.fetch() }
-        viewModelScope.launch { customPacksRepository.fetch() }
+        fetchPacks()
     }
 
     private fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
