@@ -27,6 +27,6 @@ interface CustomPackApi {
     suspend fun getCustomPackPolls(@Path("id") id: Long) : List<PollJson>
 
     @POST("custom-packs/{id}/polls")
-    suspend fun addPoll(@Path("id") id: Long, @Body request: CustomPackAddPollRequestJson) : List<PollJson>
+    suspend fun addPoll(@Path("id") id: Long, @Body request: CustomPackAddPollRequestJson) : PollJson
 
 }

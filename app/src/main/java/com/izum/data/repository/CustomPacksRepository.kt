@@ -87,7 +87,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addPoll(packId: Long, edit: EditPoll){
-        val polls =  customPacksApi.addPoll(
+        val addedPoll = customPacksApi.addPoll(
             id = packId,
             request = CustomPackAddPollRequestJson(
                 options = listOf(
@@ -95,9 +95,15 @@ class CustomPacksRepositoryImpl @Inject constructor(
                     TitleJson(edit.bottomText)
                 )
             )
-        ).map(Poll::fromJson)
+        ).let(Poll::fromJson)
 
-        this.polls[packId]?.emit(polls)
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableSharedFlow(replay = 1)
+        }
+
+        val pollsFlow = polls[packId]!!
+        val currentPolls = pollsFlow.replayCache.first()
+        this.polls[packId]?.emit(currentPolls + addedPoll)
     }
 
 }

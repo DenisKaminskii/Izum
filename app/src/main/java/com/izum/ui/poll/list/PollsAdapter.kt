@@ -33,6 +33,7 @@ sealed class PollsItem {
     }
 
     data class TwoOptionsEdit(
+        val id: Long,
         val left: String,
         val right: String
     ) : PollsItem()
@@ -45,8 +46,10 @@ sealed class PollsItem {
 }
 
 class PollsAdapter(
-    private val onPollClick: () -> Unit = {},
-    private val onButtonClick: () -> Unit = {}
+    private val onCustomPackPollClick: (Long) -> Unit = {},
+    private val onStatisticClick: () -> Unit = {},
+    private val onItemButtonClick: () -> Unit = {},
+    private val onCustomPackPollRemove: (Long) -> Unit = {}
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     enum class ViewType {
@@ -103,15 +106,15 @@ class PollsAdapter(
             }
             ViewType.TWO_OPTIONS_BAR.ordinal -> {
                 val binding = ItemPollsTwoOptionsBarBinding.inflate(inflater, parent, false)
-                PollsTwoOptionsBarViewHolder(binding, onPollClick)
+                PollsTwoOptionsBarViewHolder(binding, onStatisticClick)
             }
             ViewType.TWO_OPTIONS_EDIT.ordinal -> {
                 val binding = ItemPollsTwoOptionsEditBinding.inflate(inflater, parent, false)
-                PollsTwoOptionsEditViewView(binding, onPollClick)
+                PollsTwoOptionsEditViewView(binding, onCustomPackPollClick, onCustomPackPollRemove)
             }
             ViewType.BUTTON.ordinal -> {
                 val binding = ItemPollsButtonBinding.inflate(inflater, parent, false)
-                PollsButtonViewHolder(binding, onButtonClick)
+                PollsButtonViewHolder(binding, onItemButtonClick)
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }

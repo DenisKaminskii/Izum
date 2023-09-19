@@ -28,6 +28,8 @@ sealed interface EditPollViewState {
     ) : EditPollViewState
 }
 
+// Короче Влад в итоге не возращает список. Он возращает этот же опрос но полноценный.
+// В целом оставляем все как есть, просто надо обработать что не надо обновлять список вcех опросов, который мы на старте получаем.
 @HiltViewModel
 class EditPollViewModel @Inject constructor(
     private val pollsRepository: PollsRepository,

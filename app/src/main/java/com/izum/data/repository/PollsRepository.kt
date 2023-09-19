@@ -82,7 +82,7 @@ class PollsRepositoryImpl(
                 PollOption(
                     id = option.id,
                     title = option.title,
-                    votesCount = option.votesCount
+                    votesCount = 0 // § option.votesCount
                 )
             },
             sections = poll.sections.map { section ->
@@ -95,7 +95,7 @@ class PollsRepositoryImpl(
                                 PollOption(
                                     id = option.id,
                                     title = "",
-                                    votesCount = option.votesCount
+                                    votesCount = 0 // § option.votesCount
                                 )
                             }
                         )

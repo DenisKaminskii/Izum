@@ -12,5 +12,5 @@ data class PollOptionJson(
     @Json(name="votesCount")
     val votesCount: Long,
     @Json(name="createdAt")
-    val createdAt: String
+    val createdAt: String? = null
 )

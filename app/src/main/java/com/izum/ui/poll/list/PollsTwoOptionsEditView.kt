@@ -5,7 +5,8 @@ import com.izum.ui.BaseViewHolder
 
 class PollsTwoOptionsEditViewView(
     private val binding: ItemPollsTwoOptionsEditBinding,
-    private val onClick: () -> Unit
+    private val onClick: (Long) -> Unit,
+    private val onRemoveClick: (Long) -> Unit
 ) : BaseViewHolder<PollsItem.TwoOptionsEdit>(binding.root) {
 
     override fun bind(item: PollsItem.TwoOptionsEdit) {
@@ -13,7 +14,10 @@ class PollsTwoOptionsEditViewView(
         binding.tvLeft.text = item.left
         binding.tvRight.text = item.right
         binding.ivDelete.setOnClickListener {
-            onClick()
+            onRemoveClick(item.id)
+        }
+        binding.root.setOnClickListener {
+            onClick(item.id)
         }
     }
 

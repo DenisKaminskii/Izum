@@ -29,8 +29,7 @@
             android:layout_marginHorizontal="56dp"
             android:gravity="center"
             android:text="Create your own pack and share it with your friends!"
-            android:textColor="@color/white_50"
-            android:textSize="18sp" />
+            android:textColor="@color/white_50" />
 
         <TextView
             android:id="@+id/tvCreatePack"

@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.EditPoll
+import com.izum.data.Poll
 import com.izum.data.repository.CustomPacksRepository
 import com.izum.data.repository.UserRepository
 import com.izum.di.IoDispatcher
@@ -54,7 +55,7 @@ class EditPackViewModel @Inject constructor(
     private var packId: Long = -1
     private var title = ""
     private var shareLink: String = ""
-    private val polls = mutableListOf<EditPoll>()
+    private val polls = mutableListOf<Poll>()
 
     private var isPackFetched = false
 
@@ -77,12 +78,7 @@ class EditPackViewModel @Inject constructor(
                     .collect { polls ->
                         isPackFetched = true
                         this@EditPackViewModel.polls.clear()
-                        this@EditPackViewModel.polls.addAll(polls.map {
-                            EditPoll(
-                                topText = it.options[0].title,
-                                bottomText = it.options[1].title
-                            )
-                        })
+                        this@EditPackViewModel.polls.addAll(polls)
                         updateView()
                     }
             } catch (ex: Exception) {
@@ -106,20 +102,12 @@ class EditPackViewModel @Inject constructor(
 
                 EditPackViewState.Content(
                     title = title,
-                    polls = polls
-                        .map { PollsItem.TwoOptionsEdit(it.topText, it.bottomText) }
-                        .let { packPolls ->
-                            if (packPolls.size >= max) {
-                                packPolls
-                            } else {
-                                packPolls + listOf(
-                                    PollsItem.Button(
-                                        title = "Add poll +",
-                                        onClick = { onAddPollClick() }
-                                    )
-                                )
-                            }
-                        },
+                    polls = polls.map { poll ->
+                        val id = poll.id
+                        val topText = poll.options[0].title
+                        val bottomText = poll.options[1].title
+                        PollsItem.TwoOptionsEdit(id, topText, bottomText)
+                    },
                     isAddButtonVisible = polls.size < max,
                     isShareButtonEnabled = polls.isNotEmpty(),
                     pollsMax = max,
@@ -178,6 +166,16 @@ class EditPackViewModel @Inject constructor(
         viewModelScope.launch {
             route(Router.Route.EditPoll(EditPollVariant.CustomPackAdd(packId)))
         }
+    }
+
+    fun onPollClick(id: Long) {
+        viewModelScope.launch {
+            route(Router.Route.Statistic(id))
+        }
+    }
+
+    fun onPollRemove(id: Long) {
+
     }
 
 }

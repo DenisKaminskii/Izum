@@ -25,11 +25,11 @@ class PackHistoryActivity : BaseActivity() {
     private var _binding: ActivityPackHistoryBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter = PollsAdapter {
-        viewModel.onPollClick()
-    }
-
     private val viewModel: PackHistoryViewModel by viewModels()
+
+    private val adapter = PollsAdapter(
+        onStatisticClick = viewModel::onPollClick
+    )
 
     override fun initLayout() {
         super.initLayout()

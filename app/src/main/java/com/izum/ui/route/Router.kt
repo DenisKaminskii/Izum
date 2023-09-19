@@ -27,7 +27,7 @@ interface Router {
         data class Polls(val pack: com.izum.data.Pack) : Route
         data class EditPoll(val variant: EditPollVariant) : Route
         data class EditPack(val input: EditPackInput) : Route
-        data class Statistic(val poll: Poll) : Route
+        data class Statistic(val pollId: Long) : Route
         data class Pack(val pack: com.izum.data.Pack.Public) : Route
         data class PackHistory(val publicPack: com.izum.data.Pack.Public) : Route
         object ProvideUserInfo : Route
@@ -72,7 +72,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Polls -> showPackPolls(route.pack)
                     is Router.Route.EditPoll -> showEditPoll(route.variant)
                     is Router.Route.EditPack -> showEditPack(route.input)
-                    is Router.Route.Statistic -> showPollStatistic(route.poll)
+                    is Router.Route.Statistic -> showPollStatistic(route.pollId)
                     is Router.Route.Pack -> showPackDialog(route.pack)
                     is Router.Route.PackHistory -> showPackHistory(route.publicPack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
@@ -115,10 +115,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPollStatistic(poll: Poll) {
+    private fun showPollStatistic(pollId: Long) {
         host?.let { activity ->
             val intent = Intent(activity, PollStatisticActivity::class.java)
-            intent.putExtra(PollStatisticActivity.KEY_ARGS_POLL, poll)
+            intent.putExtra(PollStatisticActivity.KEY_ARGS_POLL_ID, pollId)
             activity.startActivity(intent)
         }
     }

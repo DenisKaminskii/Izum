@@ -44,8 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:gravity="center"
-            android:text="@string/no_more_new_unvoted_polls"
-            android:textStyle="bold" />
+            android:text="@string/no_more_new_unvoted_polls" />
 
         <TextView
             android:id="@+id/tvSuggest"
@@ -79,8 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:gravity="center"
-            android:text="@string/polls_loading_error"
-            android:textStyle="bold" />
+            android:text="@string/polls_loading_error" />
 
         <TextView
             android:id="@+id/tvRetry"

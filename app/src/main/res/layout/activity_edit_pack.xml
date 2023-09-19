@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="rvPolls, tvRemove, tvSave, tvDescription, tvPollsCount"
+        app:constraint_referenced_ids="rvPolls, tvRemove, tvDescription, tvPollsCount"
         tools:visibility="visible" />
 
     <LinearLayout
@@ -40,8 +40,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:maxLines="1"
-            android:text="Community Pack" />
+            android:maxLines="1" />
 
         <ImageView
             android:id="@+id/ivShare"
@@ -100,11 +99,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Remove"
+        android:text="Remove pack"
         android:textColor="@color/delete_red"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvAdd"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAdd"
+        style="@style/Text.Button.White.Outline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:drawableEnd="@drawable/ic_add_16"
+        android:text="Add poll"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvRemove" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/vProgress"
@@ -142,9 +154,7 @@
             android:layout_marginHorizontal="32dp"
             android:gravity="center"
             android:text="@string/polls_loading_error"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tvRetry"

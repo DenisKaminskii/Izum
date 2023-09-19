@@ -32,8 +32,9 @@ class EditPackActivity : BaseActivity() {
 
     private val adapter by lazy {
         PollsAdapter(
-            onPollClick = {  },
-            onButtonClick = viewModel::onAddPollClick
+            onCustomPackPollClick = viewModel::onPollClick,
+            onItemButtonClick = viewModel::onAddPollClick,
+            onCustomPackPollRemove = viewModel::onPollRemove
         )
     }
 
@@ -56,6 +57,7 @@ class EditPackActivity : BaseActivity() {
         )}
         tvRetry.setOnClickListener { viewModel.onRetryClick() }
         tvRemove.setOnClickListener { onRemoveClick() }
+        tvAdd.setOnClickListener { viewModel.onAddPollClick() }
 
         rvPolls.adapter = adapter
         rvPolls.layoutManager = LinearLayoutManager(this@EditPackActivity, LinearLayoutManager.VERTICAL, false)

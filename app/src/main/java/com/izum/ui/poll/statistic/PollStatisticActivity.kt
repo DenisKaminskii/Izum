@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PollStatisticActivity : BaseActivity() {
 
     companion object {
-        const val KEY_ARGS_POLL = "KEY_ARGS_POLL"
+        const val KEY_ARGS_POLL_ID = "KEY_ARGS_POLL_ID"
     }
 
     private var _binding: ActivityPollStatisticBinding? = null
@@ -22,9 +22,9 @@ class PollStatisticActivity : BaseActivity() {
 
     private val viewModel: PollStatisticViewModel by viewModels()
 
-    private val adapter = PollsAdapter {
-        viewModel.onStatisticClick()
-    }
+    private val adapter = PollsAdapter(
+        onStatisticClick = { viewModel.onStatisticClick() }
+    )
 
     override fun initLayout() {
         super.initLayout()
@@ -35,13 +35,14 @@ class PollStatisticActivity : BaseActivity() {
     override fun initView(args: Bundle) {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
+        binding.tvShare.setOnClickListener { viewModel.onShareClick() }
 
         binding.rvStatistic.adapter = adapter
         binding.rvStatistic.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         viewModel.onViewInitialized(
-            input = intent.getParcelableExtra(KEY_ARGS_POLL)!!
+            input = intent.getLongExtra(KEY_ARGS_POLL_ID, -1L)
         )
     }
 
@@ -52,11 +53,19 @@ class PollStatisticActivity : BaseActivity() {
 
     private fun update(state: PollStatisticViewState) {
         binding.vProgress.isVisible = state is PollStatisticViewState.Loading
-        binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats
+        binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats || state is PollStatisticViewState.NoData
         binding.vgError.isVisible = state is PollStatisticViewState.Error
+        binding.vgNoData.isVisible = state is PollStatisticViewState.NoData
 
-        if (state !is PollStatisticViewState.Stats) return
-        adapter.setItems(state.stats)
+        when(state) {
+            is PollStatisticViewState.NoData -> {
+                adapter.setItems(listOf(state.options))
+            }
+            is PollStatisticViewState.Stats -> {
+                adapter.setItems(state.stats)
+            }
+            else -> {}
+        }
     }
 
 }
