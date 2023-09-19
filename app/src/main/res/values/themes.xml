@@ -73,7 +73,7 @@
     <style name="Text.Button.White.Outline" parent="Text.Button.Large">
         <item name="android:drawableTint">@color/selector_text_white</item>
         <item name="android:textColor">@color/selector_text_white</item>
-        <item name="android:background">@drawable/selector_shape_white_outline_14</item>
+        <item name="android:background">@drawable/selector_shape_white_outline_10</item>
     </style>
 
     <style name="Text.Button.White.Free" parent="Text.Button.Large">
@@ -83,10 +83,10 @@
     </style>
 
     <style name="Text.Button.Subscribe" parent="Text.Button.Medium">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:drawableTint">@color/white</item>
+        <item name="android:textColor">@color/subscribed</item>
+        <item name="android:drawableTint">@color/subscribed</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/selector_shape_subscribe_gradient_14</item>
+        <item name="android:background">@drawable/selector_shape_subscribe_outline_10</item>
         <item name="android:drawableStart">@drawable/ic_unlock_24</item>
     </style>
 
