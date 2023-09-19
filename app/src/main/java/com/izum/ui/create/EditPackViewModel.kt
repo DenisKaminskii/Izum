@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.izum.data.EditPoll
 import com.izum.data.Poll
 import com.izum.data.repository.CustomPacksRepository
 import com.izum.data.repository.UserRepository
@@ -14,11 +13,11 @@ import com.izum.ui.ViewAction
 import com.izum.ui.create.EditPackViewModel.Companion.POLLS_MAXIMUM_UNSUBSCRIBED
 import com.izum.ui.edit.EditPollVariant
 import com.izum.ui.poll.list.PollsItem
+import com.izum.ui.poll.statistic.PollStatisticInput
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -94,23 +93,33 @@ class EditPackViewModel @Inject constructor(
             if (!isPackFetched) {
                 EditPackViewState.Loading
             } else {
-                val max = if (userRepository.hasSubscription) {
+                val limit = if (userRepository.hasSubscription) {
                     POLLS_MAXIMUM_SUBSCRIBED
                 } else {
                     POLLS_MAXIMUM_UNSUBSCRIBED
                 }
 
-                EditPackViewState.Content(
-                    title = title,
-                    polls = polls.map { poll ->
+                val items = mutableListOf<PollsItem>()
+
+                items.addAll(
+                    polls.map { poll ->
                         val id = poll.id
                         val topText = poll.options[0].title
                         val bottomText = poll.options[1].title
                         PollsItem.TwoOptionsEdit(id, topText, bottomText)
-                    },
-                    isAddButtonVisible = polls.size < max,
+                    }
+                )
+
+                if (polls.size >= limit) {
+                    items.add(PollsItem.Subscribe(onClick = ::onSubscribeClick))
+                }
+
+                EditPackViewState.Content(
+                    title = title,
+                    polls = items,
+                    isAddButtonVisible = polls.size < limit,
                     isShareButtonEnabled = polls.isNotEmpty(),
-                    pollsMax = max,
+                    pollsMax = limit,
                     pollsCount = polls.size,
                 )
             }
@@ -149,7 +158,7 @@ class EditPackViewModel @Inject constructor(
         updateState { EditPackViewState.Loading }
     }
 
-    fun onRemoveApprovedClick() {
+    fun onPackRemoveApproved() {
         viewModelScope.launch(ioDispatcher) {
             try {
                 customPacksRepository.removePack(packId)
@@ -162,20 +171,38 @@ class EditPackViewModel @Inject constructor(
         }
     }
 
+    fun onPollRemoveApproved(id: Long) {
+        viewModelScope.launch(ioDispatcher) {
+            try {
+                customPacksRepository.removePoll(packId, id)
+                emit(ViewAction.ShowToast("Poll successfully removed"))
+            } catch (ex: Exception) {
+                Log.e("Steve", ex.toString())
+                emit(ViewAction.ShowToast("Poll remove failed :( Try again."))
+            }
+        }
+    }
+
     fun onAddPollClick() {
         viewModelScope.launch {
             route(Router.Route.EditPoll(EditPollVariant.CustomPackAdd(packId)))
         }
     }
 
-    fun onPollClick(id: Long) {
-        viewModelScope.launch {
-            route(Router.Route.Statistic(id))
-        }
+    fun onSubscribeClick() {
+        // § TODO: Paywall
     }
 
-    fun onPollRemove(id: Long) {
-
+    fun onPollClick(id: Long) {
+        viewModelScope.launch {
+            route(Router.Route.Statistic(
+                PollStatisticInput(
+                    pollId = id,
+                    shareLink = shareLink,
+                    isCustomPack = true
+                )
+            ))
+        }
     }
 
 }

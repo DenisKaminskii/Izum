@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.izum.R
 import com.izum.data.Pack
 import com.izum.data.Poll
-import com.izum.data.repository.PollsRepository
+import com.izum.data.repository.PublicPacksRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.poll.list.PollsItem
 import com.izum.ui.route.Router
@@ -32,7 +32,7 @@ sealed interface PackHistoryViewState {
 @HiltViewModel
 class PackHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val pollsRepository: PollsRepository,
+    private val publicPacksRepository: PublicPacksRepository,
 ) : StateViewModel<PackHistoryViewModel.Args, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
@@ -56,7 +56,7 @@ class PackHistoryViewModel @Inject constructor(
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPools = pollsRepository.getPackVotedPolls(publicPack.id)
+            val newPools = publicPacksRepository.getPackVotedPolls(publicPack.id)
             isPollFetched = true
             polls.clear()
             polls.addAll(newPools)

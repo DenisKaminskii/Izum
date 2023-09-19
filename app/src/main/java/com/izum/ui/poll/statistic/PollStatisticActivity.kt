@@ -1,20 +1,28 @@
 package com.izum.ui.poll.statistic
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.izum.databinding.ActivityPollStatisticBinding
 import com.izum.ui.BaseActivity
+import com.izum.ui.KEY_ARGS_INPUT
 import com.izum.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class PollStatisticInput(
+    val pollId: Long,
+    val isCustomPack: Boolean,
+    val shareLink: String? = null,
+) : Parcelable
 
 @AndroidEntryPoint
 class PollStatisticActivity : BaseActivity() {
-
-    companion object {
-        const val KEY_ARGS_POLL_ID = "KEY_ARGS_POLL_ID"
-    }
 
     private var _binding: ActivityPollStatisticBinding? = null
     private val binding: ActivityPollStatisticBinding
@@ -35,14 +43,16 @@ class PollStatisticActivity : BaseActivity() {
     override fun initView(args: Bundle) {
         binding.ivBack.setOnClickListener { finish() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
-        binding.tvShare.setOnClickListener { viewModel.onShareClick() }
+        binding.tvShare.setOnClickListener { viewModel.onShareClick(
+            clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
+        ) }
 
         binding.rvStatistic.adapter = adapter
         binding.rvStatistic.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         viewModel.onViewInitialized(
-            input = intent.getLongExtra(KEY_ARGS_POLL_ID, -1L)
+            input = args.getParcelable(KEY_ARGS_INPUT)!!
         )
     }
 

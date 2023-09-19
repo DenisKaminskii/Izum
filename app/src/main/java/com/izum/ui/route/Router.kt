@@ -14,6 +14,7 @@ import com.izum.ui.pack.history.PackHistoryActivity
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
+import com.izum.ui.poll.statistic.PollStatisticInput
 import com.izum.ui.user.UserInfoActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -27,7 +28,7 @@ interface Router {
         data class Polls(val pack: com.izum.data.Pack) : Route
         data class EditPoll(val variant: EditPollVariant) : Route
         data class EditPack(val input: EditPackInput) : Route
-        data class Statistic(val pollId: Long) : Route
+        data class Statistic(val input: PollStatisticInput) : Route
         data class Pack(val pack: com.izum.data.Pack.Public) : Route
         data class PackHistory(val publicPack: com.izum.data.Pack.Public) : Route
         object ProvideUserInfo : Route
@@ -72,7 +73,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Polls -> showPackPolls(route.pack)
                     is Router.Route.EditPoll -> showEditPoll(route.variant)
                     is Router.Route.EditPack -> showEditPack(route.input)
-                    is Router.Route.Statistic -> showPollStatistic(route.pollId)
+                    is Router.Route.Statistic -> showPollStatistic(route.input)
                     is Router.Route.Pack -> showPackDialog(route.pack)
                     is Router.Route.PackHistory -> showPackHistory(route.publicPack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
@@ -115,10 +116,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPollStatistic(pollId: Long) {
+    private fun showPollStatistic(input: PollStatisticInput) {
         host?.let { activity ->
             val intent = Intent(activity, PollStatisticActivity::class.java)
-            intent.putExtra(PollStatisticActivity.KEY_ARGS_POLL_ID, pollId)
+            intent.putExtra(KEY_ARGS_INPUT, input)
             activity.startActivity(intent)
         }
     }

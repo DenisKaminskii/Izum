@@ -2,6 +2,7 @@ package com.izum.api.custom
 
 import com.izum.api.PollJson
 import com.izum.api.TitleJson
+import com.izum.api.statistic.PollStatisticJson
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -28,5 +29,13 @@ interface CustomPackApi {
 
     @POST("custom-packs/{id}/polls")
     suspend fun addPoll(@Path("id") id: Long, @Body request: CustomPackAddPollRequestJson) : PollJson
+
+    @DELETE("custom-packs/polls/{pollId}")
+    suspend fun removePoll(@Path("pollId") pollId: Long)
+
+    @GET("custom-packs/polls/{pollId}/stats")
+    suspend fun getPollStatistic(
+        @Path("pollId") pollId: Long
+    ): PollStatisticJson
 
 }

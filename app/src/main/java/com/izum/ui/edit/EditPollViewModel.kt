@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.izum.R
 import com.izum.data.EditPoll
 import com.izum.data.repository.CustomPacksRepository
-import com.izum.data.repository.PollsRepository
+import com.izum.data.repository.PublicPacksRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.route.Router
@@ -28,11 +28,9 @@ sealed interface EditPollViewState {
     ) : EditPollViewState
 }
 
-// Короче Влад в итоге не возращает список. Он возращает этот же опрос но полноценный.
-// В целом оставляем все как есть, просто надо обработать что не надо обновлять список вcех опросов, который мы на старте получаем.
 @HiltViewModel
 class EditPollViewModel @Inject constructor(
-    private val pollsRepository: PollsRepository,
+    private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository
 ) : StateViewModel<EditPollVariant, EditPollViewState>(
     initialState = EditPollViewState.Input()
@@ -98,7 +96,7 @@ class EditPollViewModel @Inject constructor(
         actionJob = when(inputArgs) {
             is EditPollVariant.Suggest -> viewModelScope.launch {
                 try {
-                    pollsRepository.suggestPoll(editPoll)
+                    publicPacksRepository.suggestPoll(editPoll)
                     emit(ViewAction.ShowToast("Thanks! We will check your poll soon :3"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {

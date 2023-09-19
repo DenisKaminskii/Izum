@@ -7,6 +7,10 @@ import com.izum.api.TitleJson
 import com.izum.data.EditPoll
 import com.izum.data.Pack
 import com.izum.data.Poll
+import com.izum.data.PollOption
+import com.izum.data.PollStatistic
+import com.izum.data.PollStatisticCategory
+import com.izum.data.PollStatisticSection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -33,6 +37,12 @@ interface CustomPacksRepository {
 
     @WorkerThread
     suspend fun addPoll(packId: Long, edit: EditPoll)
+
+    @WorkerThread
+    suspend fun removePoll(packId: Long, pollId: Long)
+
+    @WorkerThread
+    suspend fun getPollStatistic(pollId: Long): PollStatistic
 
 }
 
@@ -104,6 +114,45 @@ class CustomPacksRepositoryImpl @Inject constructor(
         val pollsFlow = polls[packId]!!
         val currentPolls = pollsFlow.replayCache.first()
         this.polls[packId]?.emit(currentPolls + addedPoll)
+    }
+
+    override suspend fun removePoll(packId: Long, pollId: Long) {
+        customPacksApi.removePoll(pollId)
+
+        val pollsFlow = polls[packId]!!
+        val currentPolls = pollsFlow.replayCache.first()
+        val updatedPolls = currentPolls.filter { it.id != pollId }
+        this.polls[packId]?.emit(updatedPolls)
+    }
+
+    override suspend fun getPollStatistic(pollId: Long): PollStatistic {
+        val poll = customPacksApi.getPollStatistic(pollId)
+        return PollStatistic(
+            options = poll.options.map { option ->
+                PollOption(
+                    id = option.id,
+                    title = option.title,
+                    votesCount = option.votesCount
+                )
+            },
+            sections = poll.sections.map { section ->
+                PollStatisticSection(
+                    title = section.title,
+                    categories = section.categories.map { category ->
+                        PollStatisticCategory(
+                            title = category.title,
+                            options = category.options.map { option ->
+                                PollOption(
+                                    id = option.id,
+                                    title = "",
+                                    votesCount = option.votesCount
+                                )
+                            }
+                        )
+                    }
+                )
+            }
+        )
     }
 
 }

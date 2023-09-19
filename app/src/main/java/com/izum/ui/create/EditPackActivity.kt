@@ -33,8 +33,8 @@ class EditPackActivity : BaseActivity() {
     private val adapter by lazy {
         PollsAdapter(
             onCustomPackPollClick = viewModel::onPollClick,
-            onItemButtonClick = viewModel::onAddPollClick,
-            onCustomPackPollRemove = viewModel::onPollRemove
+            onSubscribeClick = viewModel::onSubscribeClick,
+            onCustomPackPollRemove = ::onPollRemoveClick
         )
     }
 
@@ -56,7 +56,7 @@ class EditPackActivity : BaseActivity() {
             clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
         )}
         tvRetry.setOnClickListener { viewModel.onRetryClick() }
-        tvRemove.setOnClickListener { onRemoveClick() }
+        tvRemove.setOnClickListener { onPackRemoveClick() }
         tvAdd.setOnClickListener { viewModel.onAddPollClick() }
 
         rvPolls.adapter = adapter
@@ -84,6 +84,7 @@ class EditPackActivity : BaseActivity() {
         tvPackTitle.text = state.title
         tvPollsCount.text = "${state.pollsCount} / ${state.pollsMax}"
         ivShare.isEnabled = state.isShareButtonEnabled
+        tvAdd.isVisible = state.isAddButtonVisible
         ivShare.alpha = if (state.isShareButtonEnabled) 1f else 0.25f
 
         adapter.setItems(state.polls)
@@ -103,14 +104,31 @@ class EditPackActivity : BaseActivity() {
         titleEditDialog?.show(supportFragmentManager, PackTitleEditDialog::class.java.simpleName)
     }
 
-    private fun onRemoveClick() {
+    private fun onPackRemoveClick() {
         removeDialog?.hide()
         removeDialog = null
         removeDialog = AlertDialog.Builder(this)
             .setTitle("Are you sure?")
             .setMessage("Do you really want to remove this pack?")
             .setPositiveButton("Yes") { dialog, _ ->
-                viewModel.onRemoveApprovedClick()
+                viewModel.onPackRemoveApproved()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+        removeDialog?.show()
+    }
+
+    private fun onPollRemoveClick(id: Long) {
+        removeDialog?.hide()
+        removeDialog = null
+        removeDialog = AlertDialog.Builder(this)
+            .setTitle("Are you sure?")
+            .setMessage("Do you really want to remove this poll?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                viewModel.onPollRemoveApproved(id)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->

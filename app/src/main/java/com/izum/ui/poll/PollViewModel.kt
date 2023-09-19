@@ -4,11 +4,12 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.izum.data.Poll
 import com.izum.data.PollOption
-import com.izum.data.repository.PollsRepository
+import com.izum.data.repository.PublicPacksRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.edit.EditPollVariant
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
+import com.izum.ui.poll.statistic.PollStatisticInput
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -43,7 +44,7 @@ data class OptionViewState(
 
 @HiltViewModel
 class PollViewModel @Inject constructor(
-    private val pollsRepository: PollsRepository
+    private val publicPacksRepository: PublicPacksRepository
 ) : StateViewModel<Arguments, PollViewState>(
     initialState = PollViewState.Loading
 ) {
@@ -83,7 +84,7 @@ class PollViewModel @Inject constructor(
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPolls = pollsRepository.getPackUnvotedPolls(packId)
+            val newPolls = publicPacksRepository.getPackUnvotedPolls(packId)
             isPollFetched = true
             polls.clear()
             polls.addAll(newPolls)
@@ -160,7 +161,11 @@ class PollViewModel @Inject constructor(
 
     fun onStatisticClick() {
         viewModelScope.launch {
-            route(Router.Route.Statistic(poll.id))
+            route(
+                Router.Route.Statistic(
+                    PollStatisticInput(poll.id, isCustomPack = false)
+                )
+            )
         }
     }
 
@@ -183,7 +188,7 @@ class PollViewModel @Inject constructor(
 
         jobVoting = viewModelScope.launch {
             try {
-                pollsRepository.vote(poll.id, optionId)
+                publicPacksRepository.vote(poll.id, optionId)
             } catch (exception: Exception) {
                 emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
                 updateState { viewState }

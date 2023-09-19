@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
-import com.izum.databinding.ItemPollsButtonBinding
 import com.izum.databinding.ItemPollsHeaderBinding
 import com.izum.databinding.ItemPollsTwoOptionsBarBinding
 import com.izum.databinding.ItemPollsTwoOptionsEditBinding
+import com.izum.databinding.ItemSubscribeBinding
 import com.izum.ui.BaseViewHolder
 
 sealed class PollsItem {
@@ -38,8 +38,7 @@ sealed class PollsItem {
         val right: String
     ) : PollsItem()
 
-    data class Button(
-        val title: String,
+    data class Subscribe(
         val onClick: () -> Unit
     ) : PollsItem()
 
@@ -48,7 +47,7 @@ sealed class PollsItem {
 class PollsAdapter(
     private val onCustomPackPollClick: (Long) -> Unit = {},
     private val onStatisticClick: () -> Unit = {},
-    private val onItemButtonClick: () -> Unit = {},
+    private val onSubscribeClick: () -> Unit = {},
     private val onCustomPackPollRemove: (Long) -> Unit = {}
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
@@ -80,7 +79,7 @@ class PollsAdapter(
             is PollsItem.Header -> ViewType.HEADER.ordinal
             is PollsItem.TwoOptionsBar -> ViewType.TWO_OPTIONS_BAR.ordinal
             is PollsItem.TwoOptionsEdit -> ViewType.TWO_OPTIONS_EDIT.ordinal
-            is PollsItem.Button -> ViewType.BUTTON.ordinal
+            is PollsItem.Subscribe -> ViewType.BUTTON.ordinal
         }
     }
 
@@ -90,7 +89,7 @@ class PollsAdapter(
             is PollsHeaderViewHolder -> holder.bind(item as PollsItem.Header)
             is PollsTwoOptionsBarViewHolder -> holder.bind(item as PollsItem.TwoOptionsBar)
             is PollsTwoOptionsEditViewView -> holder.bind(item as PollsItem.TwoOptionsEdit)
-            is PollsButtonViewHolder -> holder.bind(item as PollsItem.Button)
+            is SubscribeViewHolder -> holder.bind(item as PollsItem.Subscribe)
         }
     }
 
@@ -113,8 +112,8 @@ class PollsAdapter(
                 PollsTwoOptionsEditViewView(binding, onCustomPackPollClick, onCustomPackPollRemove)
             }
             ViewType.BUTTON.ordinal -> {
-                val binding = ItemPollsButtonBinding.inflate(inflater, parent, false)
-                PollsButtonViewHolder(binding, onItemButtonClick)
+                val binding = ItemSubscribeBinding.inflate(inflater, parent, false)
+                SubscribeViewHolder(binding, onSubscribeClick)
             }
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }

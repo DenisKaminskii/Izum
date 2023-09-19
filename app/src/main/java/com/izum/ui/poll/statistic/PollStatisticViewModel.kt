@@ -1,12 +1,16 @@
 package com.izum.ui.poll.statistic
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.izum.R
 import com.izum.data.PollStatistic
-import com.izum.data.repository.PollsRepository
+import com.izum.data.repository.CustomPacksRepository
+import com.izum.data.repository.PublicPacksRepository
 import com.izum.di.IoDispatcher
 import com.izum.domain.core.StateViewModel
+import com.izum.ui.ViewAction
 import com.izum.ui.poll.list.PollsItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,19 +37,24 @@ sealed interface PollStatisticViewState {
 @HiltViewModel
 class PollStatisticViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    private val pollsRepository: PollsRepository,
+    private val customPacksRepository: CustomPacksRepository,
+    private val publicPacksRepository: PublicPacksRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) : StateViewModel<Long, PollStatisticViewState>(
+) : StateViewModel<PollStatisticInput, PollStatisticViewState>(
     initialState = PollStatisticViewState.Loading
 ) {
 
     private var statistic: PollStatistic? = null
     private var pollId = -1L
+    private var shareLink: String? = null
+    private var isCustomPack = false
     private var isValueInPercent = true
 
-    override fun onViewInitialized(input: Long) {
+    override fun onViewInitialized(input: PollStatisticInput) {
         super.onViewInitialized(input)
-        pollId = input
+        pollId = input.pollId
+        shareLink = input.shareLink
+        isCustomPack = input.isCustomPack
 
         viewModelScope.launch {
             fetchStatistic()
@@ -55,7 +64,11 @@ class PollStatisticViewModel @Inject constructor(
     private suspend fun fetchStatistic() = withContext(ioDispatcher) {
         try {
             updateView()
-            statistic = pollsRepository.getPollStatistic(pollId)
+            statistic = if (isCustomPack) {
+                customPacksRepository.getPollStatistic(pollId)
+            } else {
+                publicPacksRepository.getPollStatistic(pollId)
+            }
             updateView()
         } catch (ex: Exception) {
             updateState { PollStatisticViewState.Error }
@@ -164,8 +177,17 @@ class PollStatisticViewModel @Inject constructor(
         updateView()
     }
 
-    fun onShareClick() {
-        // §
+    fun onShareClick(clipBoard: ClipboardManager) {
+        if (shareLink == null) {
+            viewModelScope.launch { emit(ViewAction.ShowToast("Something get wrong. Try again.")) }
+            return
+        }
+
+        viewModelScope.launch {
+            val clip: ClipData = ClipData.newPlainText("Polleo Pack Share", shareLink)
+            clipBoard.setPrimaryClip(clip)
+            emit(ViewAction.ShowToast("Link copied to clipboard!"))
+        }
     }
 
 }
