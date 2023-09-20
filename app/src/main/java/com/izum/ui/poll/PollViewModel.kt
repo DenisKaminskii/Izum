@@ -107,13 +107,13 @@ class PollViewModel @Inject constructor(
                 packTitle = packTitle
             )
 
-            val topCount = optionTop.votesCount
-            val bottomCount = optionBottom.votesCount
+            val topCount = optionTop.votesCount + if (votedOptionId == optionTop.id) 1 else 0
+            val bottomCount = optionBottom.votesCount + if (votedOptionId == optionBottom.id) 1 else 0
             val allCount = topCount + bottomCount
 
             PollViewState.Content(
                 packTitle = packTitle,
-                votesCount = poll.options.sumOf { option -> option.votesCount },
+                votesCount = allCount,
                 top = OptionViewState(
                     id = optionTop.id,
                     title = optionTop.title,

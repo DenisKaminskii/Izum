@@ -67,7 +67,7 @@ class PublicPacksRepositoryImpl(
     }
 
     override suspend fun getPackPolls(packId: Long): List<Poll> {
-        val newPolls = polls[packId] ?: pollsApi
+        val newPolls = pollsApi
             .getPackPolls(packId)
             .map(::mapFromJson)
 

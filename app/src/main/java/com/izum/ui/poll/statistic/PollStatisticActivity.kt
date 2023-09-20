@@ -15,6 +15,8 @@ import com.izum.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
+// Если перешли сюда с игры, то надо учесть голос
+
 @Parcelize
 data class PollStatisticInput(
     val pollId: Long,

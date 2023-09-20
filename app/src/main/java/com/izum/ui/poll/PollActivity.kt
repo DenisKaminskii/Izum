@@ -77,6 +77,7 @@ class PollActivity : BaseActivity() {
                 val isBottomVoted = state.votedOptionId == state.bottom.id
                 val isVoted = isTopVoted || isBottomVoted
 
+                binding.tvPackTitle.text = state.packTitle
                 binding.vgTop.alpha = when (state.votedOptionId) {
                     state.top.id -> 1f
                     state.bottom.id -> 0.69f

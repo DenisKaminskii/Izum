@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        tools:visibility="gone"
+        tools:visibility="visible"
         app:constraint_referenced_ids="vgTop, vgBottom, tvStatistic, tvNext" />
 
     <ProgressBar
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/vgToolbar"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             style="@style/Text.Body"
@@ -139,7 +139,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="84dp"
         android:background="@drawable/selector_shape_blue_25"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -83,8 +83,8 @@ class PollStatisticViewModel @Inject constructor(
                 val rightCount = pollStatistic.options[1].votesCount
                 val sumCount = (leftCount + rightCount).toFloat()
 
-                val leftPercent = try { leftCount * 100 / sumCount } catch (ex: Exception) { 0 }
-                val rightPercent = try { rightCount * 100 / sumCount } catch (ex: Exception) { 0 }
+                val leftPercent = try { (leftCount * 100 / sumCount).toInt() } catch (ex: Exception) { 0 }
+                val rightPercent = try { (rightCount * 100 / sumCount).toInt() } catch (ex: Exception) { 0 }
 
                 if (sumCount == 0f) {
                     val optionsItem = PollsItem.TwoOptionsBar(
@@ -115,7 +115,23 @@ class PollStatisticViewModel @Inject constructor(
                                 text = pollStatistic.options[1].title,
                                 color = context.getColor(R.color.blue)
                             ),
-                            barPercent = leftPercent.toInt()
+                            leftTop = PollsItem.TwoOptionsBar.Value(
+                                text = if (!isValueInNumbers) {
+                                    "$leftPercent%"
+                                } else {
+                                    leftCount.toString()
+                                },
+                                color = context.getColor(R.color.red)
+                            ),
+                            rightTop = PollsItem.TwoOptionsBar.Value(
+                                text = if (!isValueInNumbers) {
+                                    "$rightPercent%"
+                                } else {
+                                    rightCount.toString()
+                                },
+                                color = context.getColor(R.color.blue)
+                            ),
+                            barPercent = leftPercent
                         )
 
                         val statsItems = pollStatistic.sections.flatMap { section ->
