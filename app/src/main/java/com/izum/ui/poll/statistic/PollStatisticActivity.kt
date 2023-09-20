@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.izum.R
 import com.izum.databinding.ActivityPollStatisticBinding
 import com.izum.ui.BaseActivity
 import com.izum.ui.KEY_ARGS_INPUT
@@ -17,7 +18,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PollStatisticInput(
     val pollId: Long,
-    val isCustomPack: Boolean,
+    val isCustomPack: Boolean = false,
     val shareLink: String? = null,
 ) : Parcelable
 
@@ -30,9 +31,7 @@ class PollStatisticActivity : BaseActivity() {
 
     private val viewModel: PollStatisticViewModel by viewModels()
 
-    private val adapter = PollsAdapter(
-        onStatisticClick = { viewModel.onStatisticClick() }
-    )
+    private val adapter = PollsAdapter()
 
     override fun initLayout() {
         super.initLayout()
@@ -46,6 +45,7 @@ class PollStatisticActivity : BaseActivity() {
         binding.tvShare.setOnClickListener { viewModel.onShareClick(
             clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
         ) }
+        binding.ivFormat.setOnClickListener { viewModel.onFormatClicked() }
 
         binding.rvStatistic.adapter = adapter
         binding.rvStatistic.layoutManager =
@@ -73,6 +73,10 @@ class PollStatisticActivity : BaseActivity() {
             }
             is PollStatisticViewState.Stats -> {
                 adapter.setItems(state.stats)
+                binding.ivFormat.setImageResource(
+                    if (state.isValueInNumbers) R.drawable.ic_numbers_24
+                    else R.drawable.ic_percent_24
+                )
             }
             else -> {}
         }

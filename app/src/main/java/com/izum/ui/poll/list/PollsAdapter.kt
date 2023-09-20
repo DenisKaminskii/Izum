@@ -17,6 +17,7 @@ sealed class PollsItem {
     ) : PollsItem()
 
     data class TwoOptionsBar(
+        val id: Long,
         val leftTop: Value? = null,
         val rightTop: Value? = null,
         val leftBottom: Value? = null,
@@ -46,9 +47,9 @@ sealed class PollsItem {
 
 class PollsAdapter(
     private val onCustomPackPollClick: (Long) -> Unit = {},
-    private val onStatisticClick: () -> Unit = {},
-    private val onSubscribeClick: () -> Unit = {},
-    private val onCustomPackPollRemove: (Long) -> Unit = {}
+    private val onCustomPackPollRemove: (Long) -> Unit = {},
+    private val onStatisticClick: (Long) -> Unit = {},
+    private val onSubscribeClick: () -> Unit = {}
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     enum class ViewType {

@@ -36,7 +36,7 @@ class PollActivity : BaseActivity() {
         binding.tvNext.setOnClickListener { viewModel.onNextClick() }
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
-        binding.tvSuggest.setOnClickListener { viewModel.onSuggestClick() }
+        binding.tvHistory.setOnClickListener { viewModel.onPackHistoryClick() }
 
         binding.tvStatistic.isVisible = true
         binding.tvNext.isVisible = true
@@ -68,38 +68,42 @@ class PollActivity : BaseActivity() {
         binding.vgError.isVisible = state is PollViewState.Error
         binding.vgNoPolls.isVisible = state is PollViewState.Empty
 
-        if (state !is PollViewState.Content) return
+        when(state) {
+            is PollViewState.Empty -> {
+                binding.tvPackTitle.text = state.packTitle
+            }
+            is PollViewState.Content -> {
+                val isTopVoted = state.votedOptionId == state.top.id
+                val isBottomVoted = state.votedOptionId == state.bottom.id
+                val isVoted = isTopVoted || isBottomVoted
 
-        val isTopVoted = state.votedOptionId == state.top.id
-        val isBottomVoted = state.votedOptionId == state.bottom.id
-        val isVoted = isTopVoted || isBottomVoted
+                binding.vgTop.alpha = when (state.votedOptionId) {
+                    state.top.id -> 1f
+                    state.bottom.id -> 0.69f
+                    else -> 1f
+                }
+                binding.tvTop.text = state.top.title
+                binding.tvTopCount.isVisible = isVoted
+                binding.tvTopCount.text = state.top.votesText
 
-        binding.tvPackTitle.text = state.packTitle
+                binding.vgBottom.alpha = when (state.votedOptionId) {
+                    state.top.id -> 0.69f
+                    state.bottom.id -> 1f
+                    else -> 1f
+                }
+                binding.tvBottom.text = state.bottom.title
+                binding.tvBottomCount.isVisible = isVoted
+                binding.tvBottomCount.text = state.bottom.votesText
 
-        binding.vgTop.alpha = when (state.votedOptionId) {
-            state.top.id -> 1f
-            state.bottom.id -> 0.69f
-            else -> 1f
-        }
-        binding.tvTop.text = state.top.title
-        binding.tvTopCount.isVisible = isVoted
-        binding.tvTopCount.text = state.top.votesText
+                binding.tvStatistic.isEnabled = isVoted
+                binding.tvNext.isEnabled = isVoted
 
-        binding.vgBottom.alpha = when (state.votedOptionId) {
-            state.top.id -> 0.69f
-            state.bottom.id -> 1f
-            else -> 1f
-        }
-        binding.tvBottom.text = state.bottom.title
-        binding.tvBottomCount.isVisible = isVoted
-        binding.tvBottomCount.text = state.bottom.votesText
-
-        binding.tvStatistic.isEnabled = isVoted
-        binding.tvNext.isEnabled = isVoted
-
-        if (state.isFinishVisible) {
-            binding.tvNext.setCompoundDrawables(null, null, null, null)
-            binding.tvNext.text = getString(R.string.finish)
+                if (state.isFinishVisible) {
+                    binding.tvNext.setCompoundDrawables(null, null, null, null)
+                    binding.tvNext.text = getString(R.string.finish)
+                }
+            }
+            else -> {}
         }
     }
 

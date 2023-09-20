@@ -32,6 +32,9 @@ import com.izum.ui.BaseDialogFragment
 import com.izum.ui.dpF
 import com.izum.ui.packs.PacksViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -73,6 +76,7 @@ class PackDialog : BaseDialogFragment() {
 
     private val onPreviewScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
             when (newState) {
                 RecyclerView.SCROLL_STATE_IDLE -> {
                     visibleItemPosition?.let { position ->
@@ -168,6 +172,7 @@ class PackDialog : BaseDialogFragment() {
 
         binding.tvStart.isVisible = !publicPack.isPaid || userRepository.hasSubscription
         binding.tvSubscribe.isVisible = publicPack.isPaid && !userRepository.hasSubscription
+        binding.tvHistory.isVisible = false // §
 
         binding.tvStart.background = GradientDrawable().apply {
             cornerRadius = requireContext().dpF(14)

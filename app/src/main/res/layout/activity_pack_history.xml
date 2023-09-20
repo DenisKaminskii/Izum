@@ -36,6 +36,15 @@
             android:text="Adult pack (18+)"
             android:textColor="@color/white" />
 
+        <ImageView
+            android:id="@+id/ivFormat"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_vertical"
+            android:padding="24dp"
+            android:src="@drawable/ic_numbers_24"
+            app:tint="@color/white" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

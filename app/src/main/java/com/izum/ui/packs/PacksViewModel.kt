@@ -10,6 +10,7 @@ import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.create.EditPackInput
 import com.izum.ui.edit.EditPollVariant
+import com.izum.ui.pack.history.PackHistoryInput
 import com.izum.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -109,13 +110,18 @@ class PacksViewModel @Inject constructor(
 
     fun onStartClick(publicPack: Pack.Public) {
         viewModelScope.launch {
-            route(Router.Route.Polls(publicPack))
+            route(Router.Route.Polls(publicPack.id, publicPack.title))
         }
     }
 
     fun onPackHistoryClick(publicPack: Pack.Public) {
         viewModelScope.launch {
-            route(Router.Route.PackHistory(publicPack))
+            route(Router.Route.PackHistory(
+                input = PackHistoryInput(
+                    packId = publicPack.id,
+                    packTitle = publicPack.title
+                )
+            ))
         }
     }
 

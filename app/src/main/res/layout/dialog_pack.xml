@@ -41,7 +41,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPreview"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="200dp"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:overScrollMode="never" />
@@ -50,7 +50,7 @@
         android:id="@+id/vgIndicators"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal">
 
         <ImageView

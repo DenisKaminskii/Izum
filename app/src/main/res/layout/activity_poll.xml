@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
+        tools:visibility="gone"
         app:constraint_referenced_ids="vgTop, vgBottom, tvStatistic, tvNext" />
 
     <ProgressBar
@@ -36,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/vgToolbar"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <TextView
             style="@style/Text.Body"
@@ -47,14 +48,14 @@
             android:text="@string/no_more_new_unvoted_polls" />
 
         <TextView
-            android:id="@+id/tvSuggest"
+            android:id="@+id/tvHistory"
             style="@style/Text.Button.White.Outline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:gravity="center"
-            android:text="@string/suggest_poll" />
+            android:text="Show statistic" />
 
     </LinearLayout>
 

@@ -2,12 +2,14 @@ package com.izum.ui.poll
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.izum.data.Pack
 import com.izum.data.Poll
 import com.izum.data.PollOption
 import com.izum.data.repository.PublicPacksRepository
 import com.izum.domain.core.StateViewModel
 import com.izum.ui.ViewAction
 import com.izum.ui.edit.EditPollVariant
+import com.izum.ui.pack.history.PackHistoryInput
 import com.izum.ui.poll.PollViewModel.Companion.Arguments
 import com.izum.ui.poll.statistic.PollStatisticInput
 import com.izum.ui.route.Router
@@ -20,7 +22,9 @@ sealed interface PollViewState {
 
     object Loading : PollViewState
 
-    object Empty : PollViewState
+    data class Empty(
+        val packTitle: String
+    ) : PollViewState
 
     object Error : PollViewState
 
@@ -99,7 +103,9 @@ class PollViewModel @Inject constructor(
     private fun updateView() {
         updateState {
             if (!isPollFetched) return@updateState PollViewState.Loading
-            if (polls.isEmpty()) return@updateState PollViewState.Empty
+            if (polls.isEmpty()) return@updateState PollViewState.Empty(
+                packTitle = packTitle
+            )
 
             val topCount = optionTop.votesCount
             val bottomCount = optionBottom.votesCount
@@ -174,10 +180,15 @@ class PollViewModel @Inject constructor(
         updateView()
     }
 
-    fun onSuggestClick() {
+    fun onPackHistoryClick() {
         viewModelScope.launch {
             route(Router.Route.Finish)
-            route(Router.Route.EditPoll(EditPollVariant.Suggest))
+            route(Router.Route.PackHistory(
+                input = PackHistoryInput(
+                    packId = packId,
+                    packTitle = packTitle
+                )
+            ))
         }
     }
 

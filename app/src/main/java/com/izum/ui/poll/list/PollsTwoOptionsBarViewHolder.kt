@@ -12,7 +12,7 @@ import kotlin.math.min
 
 class PollsTwoOptionsBarViewHolder(
     private val binding: ItemPollsTwoOptionsBarBinding,
-    val onClick: () -> Unit
+    val onClick: (Long) -> Unit,
 ) : BaseViewHolder<PollsItem.TwoOptionsBar>(binding.root) {
 
     override fun bind(item: PollsItem.TwoOptionsBar) {
@@ -37,9 +37,9 @@ class PollsTwoOptionsBarViewHolder(
         setValue(binding.tvLeftBottom, item.leftBottom)
         setValue(binding.tvRightBottom, item.rightBottom)
 
-        binding.root.setOnClickListener { onClick() }
+        val pollId = item.id
+        binding.root.setOnClickListener { onClick(pollId) }
     }
-
 
     private fun setValue(
         textView: TextView,

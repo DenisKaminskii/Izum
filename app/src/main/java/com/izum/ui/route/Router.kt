@@ -11,6 +11,7 @@ import com.izum.ui.edit.EditPollActivity
 import com.izum.ui.edit.EditPollVariant
 import com.izum.ui.pack.PackDialog
 import com.izum.ui.pack.history.PackHistoryActivity
+import com.izum.ui.pack.history.PackHistoryInput
 import com.izum.ui.packs.PacksActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
@@ -25,12 +26,12 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        data class Polls(val pack: com.izum.data.Pack) : Route
+        data class Polls(val packId: Long, val packTitle: String) : Route
         data class EditPoll(val variant: EditPollVariant) : Route
         data class EditPack(val input: EditPackInput) : Route
         data class Statistic(val input: PollStatisticInput) : Route
         data class Pack(val pack: com.izum.data.Pack.Public) : Route
-        data class PackHistory(val publicPack: com.izum.data.Pack.Public) : Route
+        data class PackHistory(val input: PackHistoryInput) : Route
         object ProvideUserInfo : Route
         object Finish : Route
     }
@@ -70,12 +71,12 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
             routeQueue.poll()?.let { route ->
                 when(route) {
                     Router.Route.Packs -> showPacks()
-                    is Router.Route.Polls -> showPackPolls(route.pack)
+                    is Router.Route.Polls -> showPackPolls(route.packId, route.packTitle)
                     is Router.Route.EditPoll -> showEditPoll(route.variant)
                     is Router.Route.EditPack -> showEditPack(route.input)
                     is Router.Route.Statistic -> showPollStatistic(route.input)
                     is Router.Route.Pack -> showPackDialog(route.pack)
-                    is Router.Route.PackHistory -> showPackHistory(route.publicPack)
+                    is Router.Route.PackHistory -> showPackHistory(route.input)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
                 }
@@ -91,11 +92,11 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPackPolls(pack: Pack) {
+    private fun showPackPolls(packId: Long, packTitle: String) {
         host?.let { activity ->
             val intent = Intent(activity, PollActivity::class.java)
-            intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, pack.id)
-            intent.putExtra(PollActivity.KEY_ARGS_PACK_TITLE, pack.title)
+            intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, packId)
+            intent.putExtra(PollActivity.KEY_ARGS_PACK_TITLE, packTitle)
             activity.startActivity(intent)
         }
     }
@@ -133,10 +134,10 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         }
     }
 
-    private fun showPackHistory(publicPack: Pack.Public) {
+    private fun showPackHistory(input: PackHistoryInput) {
         host?.let { activity ->
             val intent = Intent(activity, PackHistoryActivity::class.java)
-            intent.putExtra(PackHistoryActivity.KEY_ARGS_PACK, publicPack)
+            intent.putExtra(KEY_ARGS_INPUT, input)
             activity.startActivity(intent)
         }
     }
