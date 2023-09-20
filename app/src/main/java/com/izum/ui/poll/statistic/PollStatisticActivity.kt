@@ -68,6 +68,7 @@ class PollStatisticActivity : BaseActivity() {
         binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats || state is PollStatisticViewState.NoData
         binding.vgError.isVisible = state is PollStatisticViewState.Error
         binding.vgNoData.isVisible = state is PollStatisticViewState.NoData
+        binding.ivFormat.isVisible = state is PollStatisticViewState.Stats
 
         when(state) {
             is PollStatisticViewState.NoData -> {

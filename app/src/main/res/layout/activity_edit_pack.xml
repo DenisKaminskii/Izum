@@ -40,7 +40,8 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:maxLines="1" />
+            android:maxLines="1"
+            tools:text="Custom Pack title" />
 
         <ImageView
             android:id="@+id/ivShare"
