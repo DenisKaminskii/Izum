@@ -127,8 +127,7 @@ class PacksViewModel @Inject constructor(
 
     fun onSubscribeClick() {
         viewModelScope.launch {
-            userRepository.hasSubscription = !userRepository.hasSubscription
-            updateView()
+            route(Router.Route.SubscriptionPaywall)
         }
     }
 

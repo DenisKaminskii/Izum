@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/Text.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Premium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivClose" />
+
+    <ImageView
+        android:id="@+id/ivFriends"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/ic_friends"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <TextView
+        style="@style/Text.Title"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="Add more polls to your own packs"
+        android:textColor="@color/paywall_red"
+        app:layout_constraintBottom_toBottomOf="@id/ivFriends"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivFriends"
+        app:layout_constraintTop_toTopOf="@id/ivFriends" />
+
+    <ImageView
+        android:id="@+id/ivStats"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_stats"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivFriends" />
+
+    <TextView
+        style="@style/Text.Title"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="Statistics for each poll"
+        android:textColor="@color/paywall_purple"
+        app:layout_constraintBottom_toBottomOf="@id/ivStats"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivStats"
+        app:layout_constraintTop_toTopOf="@id/ivStats" />
+
+    <ImageView
+        android:id="@+id/ivPacks"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_packs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivStats" />
+
+    <TextView
+        style="@style/Text.Title"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="Access to all packs"
+        android:textColor="@color/paywall_green"
+        app:layout_constraintBottom_toBottomOf="@id/ivPacks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivPacks"
+        app:layout_constraintTop_toTopOf="@id/ivPacks" />
+
+    <TextView
+        android:id="@+id/tvSubscribeTitle"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:text="We are happy to give you a free 3 days! 🥳🙌"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/tvSubscribeSubtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubscribeSubtitle"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:text="After 3 free days subscription price will be 5€ / month"
+        android:textColor="@color/disabledText"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/tvSubscribe"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSubscribe"
+        style="@style/Text.Button.Subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="56dp"
+        android:drawableStart="@null"
+        android:text="TRY FOR FREE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

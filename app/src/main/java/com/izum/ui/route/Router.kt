@@ -13,6 +13,7 @@ import com.izum.ui.pack.PackDialog
 import com.izum.ui.pack.history.PackHistoryActivity
 import com.izum.ui.pack.history.PackHistoryInput
 import com.izum.ui.packs.PacksActivity
+import com.izum.ui.paywall.SubscriptionPaywallActivity
 import com.izum.ui.poll.PollActivity
 import com.izum.ui.poll.statistic.PollStatisticActivity
 import com.izum.ui.poll.statistic.PollStatisticInput
@@ -34,6 +35,7 @@ interface Router {
         data class PackHistory(val input: PackHistoryInput) : Route
         object ProvideUserInfo : Route
         object Finish : Route
+        object SubscriptionPaywall : Route
     }
 
     fun route(route: Route)
@@ -79,6 +81,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.PackHistory -> showPackHistory(route.input)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
+                    is Router.Route.SubscriptionPaywall -> showSubscriptionPaywall()
                 }
             }
         }
@@ -146,6 +149,13 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, UserInfoActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun showSubscriptionPaywall() {
+        host?.let { activity ->
+            val intent = Intent(activity, SubscriptionPaywallActivity::class.java)
             activity.startActivity(intent)
         }
     }

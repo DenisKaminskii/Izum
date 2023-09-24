@@ -25,7 +25,7 @@
         style="@style/Text.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.7"
+        android:alpha="1"
         android:text="Should be fun. Let's try! :3" />
 
     <Space

@@ -190,7 +190,9 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onSubscribeClick() {
-        // § TODO: Paywall
+        viewModelScope.launch {
+            route(Router.Route.SubscriptionPaywall)
+        }
     }
 
     fun onPollClick(id: Long) {

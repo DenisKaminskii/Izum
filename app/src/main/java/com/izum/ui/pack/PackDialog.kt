@@ -143,7 +143,7 @@ class PackDialog : BaseDialogFragment() {
             dismissAllowingStateLoss()
         }
 
-        binding.tvSubscribe.setOnClickListener { /* */ }
+        binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeClick() }
         binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(publicPack) }
 
         binding.tvPolls.text = "${publicPack.pollsCount} polls"
@@ -211,6 +211,8 @@ class PackDialog : BaseDialogFragment() {
                         textColor = publicPack.contentColor
                     )
                 })
+
+            binding.vgIndicators.isVisible = publicPack.preview.size > 1
         }
     }
 

@@ -45,4 +45,8 @@
     <color name="black_gradient_start">#1B1B1B</color>
     <color name="black_gradient_end">#353535</color>
 
+    <color name="paywall_red">#FF294F</color>
+    <color name="paywall_purple">#7673FA</color>
+    <color name="paywall_green">#31F44D</color>
+
 </resources>
