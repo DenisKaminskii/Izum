@@ -52,13 +52,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:ellipsize="end"
+            android:ellipsize="start"
             android:gravity="bottom|end"
             android:maxLines="1"
             android:paddingStart="8dp"
-            android:text="polls: 174"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="polls: 174" />
 
     </LinearLayout>
 

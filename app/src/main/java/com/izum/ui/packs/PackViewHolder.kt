@@ -34,7 +34,14 @@ class PackViewHolder(
 
         binding.ivLock.isVisible = item.isPaid && !item.hasSubscription
         binding.ivLock.setColorFilter(item.contentColor)
-        binding.tvPollsCount.text = "${item.pollsCount} polls"
+
+        val pollsCommonCount = "${item.pollsCount} polls"
+        val pollsAnsweredCount = item.answeredPollsCount
+            ?.let { "$it / " }
+            ?: ""
+
+        binding.tvPollsCount.text = "$pollsAnsweredCount$pollsCommonCount"
+
         binding.root.setOnClickListener {
             onClick(item.pack)
         }

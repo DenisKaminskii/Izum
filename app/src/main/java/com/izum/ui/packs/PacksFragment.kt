@@ -131,6 +131,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
                     gradientEndColor = it.gradientEndColor,
                     contentColor = it.contentColor,
                     pollsCount = it.pollsCount,
+                    answeredPollsCount = preferenceCache.getLongOrNull("Pack#${it.id}"),
                     isPaid = it.isPaid
                 )
             } else state.customPacks.map {
@@ -143,6 +144,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
                     gradientEndColor = requireContext().getColor(R.color.black_gradient_end),
                     contentColor = requireContext().getColor(R.color.white),
                     pollsCount = it.pollsCount,
+                    answeredPollsCount = preferenceCache.getLongOrNull("Pack#${it.id}"),
                     isPaid = false
                 )
             }

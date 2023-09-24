@@ -85,7 +85,6 @@ class PublicPacksRepositoryImpl(
 
     override suspend fun vote(pollId: Long, optionId: Long) {
         try {
-            // § Записывать результат в polls
             val request = VoteRequestJson(optionId)
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
