@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="backend_url" translatable="false">https://octopus-app-ztlqh.ondigitalocean.app/api/</string>
+    <string name="revenue_cat_api_key" translatable="false">goog_xeFxHOXPnmXSldLbrmcKxkaFmyn</string>
 </resources>

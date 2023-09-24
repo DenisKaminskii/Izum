@@ -16,9 +16,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PacksActivity : BaseActivity() {
 
-    @Inject
-    lateinit var userRepository: UserRepository
-
     private var _binding: ActivityPacksBinding? = null
     private val binding: ActivityPacksBinding
         get() = _binding!!

@@ -18,11 +18,13 @@
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Text.Header"
+        android:textSize="28sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="Premium"
+        android:textAllCaps="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivClose" />

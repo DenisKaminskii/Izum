@@ -1,5 +1,6 @@
 package com.izum.ui.packs
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -14,12 +15,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.izum.R
 import com.izum.databinding.FragmentPacksBinding
+import com.izum.domain.core.PreferenceCache
+import com.izum.domain.core.PreferenceKey
 import com.izum.ui.KEY_ARGS_INPUT
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import javax.inject.Inject
 
 @Parcelize
 data class PacksInput(
@@ -30,6 +34,8 @@ data class PacksInput(
 class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
     companion object {
+
+        private const val ADULT_PACK_ID = 10L
 
         fun newInstance(
             input: PacksInput,
@@ -44,6 +50,8 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         }
     }
 
+    @Inject lateinit var preferenceCache: PreferenceCache
+
     private var _binding: FragmentPacksBinding? = null
     private val binding get() = _binding!!
 
@@ -56,10 +64,21 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
     private val adapter by lazy {
         PacksAdapter { pack ->
-            if (isCustom) {
-                viewModel.onCustomPackClick(pack)
+            if (pack.id == ADULT_PACK_ID) {
+                checkAge {
+                    if (isCustom) {
+                        viewModel.onCustomPackClick(pack)
+                    } else {
+                        viewModel.onPublicPackClick(pack)
+                    }
+                }
+                return@PacksAdapter
             } else {
-                viewModel.onPublicPackClick(pack)
+                if (isCustom) {
+                    viewModel.onCustomPackClick(pack)
+                } else {
+                    viewModel.onPublicPackClick(pack)
+                }
             }
         }
     }
@@ -137,6 +156,34 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             binding.rvPacks.isVisible = state.publicPacks.isNotEmpty()
         }
 
+    }
+
+    private var ageCheckDialog: AlertDialog? = null
+
+    private fun checkAge(
+        onSuccess: () -> Unit
+    ) {
+        val isAdult = preferenceCache.getBoolean(PreferenceKey.IsAdult, false)
+        if (isAdult) {
+            onSuccess()
+            return
+        }
+
+        ageCheckDialog?.hide()
+        ageCheckDialog = null
+        ageCheckDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Are you 18 years old or above?")
+            .setMessage("Content contains obscene language and is not suitable for kids.")
+            .setPositiveButton("Yes") { dialog, _ ->
+                preferenceCache.putBoolean(PreferenceKey.IsAdult, true)
+                onSuccess.invoke()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+        ageCheckDialog?.show()
     }
 
 }

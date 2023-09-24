@@ -14,8 +14,8 @@ android {
         applicationId "com.izum"
         minSdk 28
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -72,6 +72,8 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.6.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'com.revenuecat.purchases:purchases:6.0.0'
+    implementation 'com.revenuecat.purchases:purchases-store-amazon:6.0.0'
 
     // Room
     def room_version = "2.5.2"
