@@ -3,8 +3,8 @@ package com.izum.ui.route
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import com.izum.data.Pack
-import com.izum.data.Poll
 import com.izum.ui.KEY_ARGS_INPUT
+import com.izum.ui.onboarding.OnboardingActivity
 import com.izum.ui.create.EditPackActivity
 import com.izum.ui.create.EditPackInput
 import com.izum.ui.edit.EditPollActivity
@@ -36,6 +36,7 @@ interface Router {
         object ProvideUserInfo : Route
         object Finish : Route
         object SubscriptionPaywall : Route
+        object Onboarding : Route
     }
 
     fun route(route: Route)
@@ -82,6 +83,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
                     is Router.Route.SubscriptionPaywall -> showSubscriptionPaywall()
+                    is Router.Route.Onboarding -> showOnboarding()
                 }
             }
         }
@@ -156,6 +158,14 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
     private fun showSubscriptionPaywall() {
         host?.let { activity ->
             val intent = Intent(activity, SubscriptionPaywallActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun showOnboarding() {
+        host?.let { activity ->
+            val intent = Intent(activity, OnboardingActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             activity.startActivity(intent)
         }
     }

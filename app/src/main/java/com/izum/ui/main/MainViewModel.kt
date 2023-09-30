@@ -28,7 +28,8 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (userRepository.isStatisticInfoProvided) {
-                route(Router.Route.Packs)
+                // § route(Router.Route.Packs)
+                route(Router.Route.Onboarding)
             } else {
                 route(Router.Route.ProvideUserInfo)
             }

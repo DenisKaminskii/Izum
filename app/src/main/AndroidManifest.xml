@@ -68,6 +68,9 @@
         <activity android:name=".ui.paywall.SubscriptionPaywallActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".ui.onboarding.OnboardingActivity"
+            android:screenOrientation="portrait"/>
+
 
     </application>
 

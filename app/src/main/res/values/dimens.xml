@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="min_bar_width">16dp</dimen>
+    <dimen name="bar_margin">4dp</dimen>
+    <dimen name="bar_radius">8dp</dimen>
+</resources>

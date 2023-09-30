@@ -107,15 +107,16 @@
 
         <TextView
             android:id="@+id/tvSubscribe"
-            style="@style/Text.Button.Subscribe"
+            style="@style/Text.Button.White.Outline"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|end"
+            android:drawableStart="@drawable/ic_unlock_24"
             android:elevation="6dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/subscribe"
+            android:text="Unlock"
             android:visibility="gone"
             tools:visibility="gone" />
 
