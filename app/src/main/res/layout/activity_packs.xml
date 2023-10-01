@@ -9,8 +9,10 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/vgTabs"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/black"
+        android:layout_height="80dp"
+        android:background="@drawable/rect_filled_black_soft_bottom_corners_20dp"
+        android:elevation="8dp"
+        android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,19 +38,36 @@
         android:id="@+id/vgPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toTopOf="@id/vCreatePack"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vgTabs" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         android:background="@drawable/black_transparent_gradient"
-        app:layout_constraintBottom_toTopOf="@id/vCreatePack"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/vBottomBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/black_transparent_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/vBottomBackground"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@drawable/rect_filled_black_soft_top_corners_20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -58,9 +77,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:gravity="center_horizontal"
+        android:minWidth="90dp"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="8dp"
         android:paddingVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/vSuggest"
@@ -70,16 +89,16 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_create_pack_24" />
+            android:src="@drawable/ic_create_pack" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:gravity="center_horizontal"
-            android:text="@string/create_pack"
+            android:text="Create pack"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -89,8 +108,10 @@
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_horizontal"
+        android:minWidth="90dp"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/vgSubscription"
         app:layout_constraintStart_toEndOf="@id/vCreatePack">
@@ -98,18 +119,18 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_suggest_24" />
+            android:src="@drawable/ic_suggest_poll" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:text="@string/suggest"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -128,10 +149,10 @@
             style="@style/Text.Button.Subscribe"
             android:layout_width="wrap_content"
             android:layout_height="46dp"
-            android:letterSpacing="0.065"
             android:layout_gravity="center"
             android:ellipsize="end"
             android:gravity="center"
+            android:letterSpacing="0.065"
             android:maxLines="1"
             android:text="Get all packs"
             android:visibility="gone"
