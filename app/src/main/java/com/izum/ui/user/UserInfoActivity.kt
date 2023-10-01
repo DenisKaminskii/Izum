@@ -4,12 +4,18 @@ import android.os.Bundle
 import android.text.Editable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.izum.databinding.ActivityUserInfoBinding
+import com.izum.domain.core.PreferenceCache
+import com.izum.domain.core.PreferenceKey
 import com.izum.ui.BaseActivity
 import com.izum.ui.Keyboard
 import com.izum.ui.SimpleTextWatcher
+import com.izum.ui.route.Router
 import com.izum.ui.user.UserInfoViewModel.Companion.AGE_LIMIT
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserInfoActivity : BaseActivity() {
@@ -18,6 +24,8 @@ class UserInfoActivity : BaseActivity() {
     val binding: ActivityUserInfoBinding get() = _binding!!
 
     private val viewModel: UserInfoViewModel by viewModels()
+
+    @Inject lateinit var preferenceCache: PreferenceCache
 
     override fun initLayout() {
         super.initLayout()
@@ -68,11 +76,20 @@ class UserInfoActivity : BaseActivity() {
         update(UserInfoViewState())
 
         viewModel.onViewInitialized(Unit)
+
+        checkOnboardingShow()
     }
 
     override fun initSubs() {
         super.initSubs()
         subscribe(viewModel) { viewState -> update(viewState)}
+    }
+
+    private fun checkOnboardingShow() {
+        val isOnboardingShowed = preferenceCache.getBoolean(PreferenceKey.IsOnboardingShowed, false)
+        if (!isOnboardingShowed) {
+            router.route(Router.Route.Onboarding)
+        }
     }
 
     private fun update(viewState: UserInfoViewState) {

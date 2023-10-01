@@ -6,12 +6,15 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.izum.databinding.ActivityOnboardingBinding
+import com.izum.domain.core.PreferenceCache
+import com.izum.domain.core.PreferenceKey
 import com.izum.ui.BaseActivity
 import com.izum.ui.dpF
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.random.Random
 
 @AndroidEntryPoint
@@ -20,11 +23,28 @@ class OnboardingActivity : BaseActivity() {
     private var _binding: ActivityOnboardingBinding? = null
     private val binding get() = _binding!!
 
+    @Inject lateinit var preferenceCache: PreferenceCache
+
     private val firstTitle = "Over 500+ exciting questions!"
     private val secondTitle = "Explore statistics for each question"
+    private val thirdTitle = "Create your own content"
 
     private var isLockInput = true
     private var index = 0
+
+    private val vgSecondTop: List<View>
+        get() = listOf(
+            binding.tvSecondTopTitle,
+            binding.tvSecondTopSubtitle,
+            binding.lbSecondTop
+        )
+
+    private val vgSecondBottom: List<View>
+        get() = listOf(
+            binding.tvSecondBottomTitle,
+            binding.tvSecondBottomSubtitle,
+            binding.lbSecondBottom
+        )
 
     override fun initLayout() {
         super.initLayout()
@@ -41,7 +61,6 @@ class OnboardingActivity : BaseActivity() {
         }
 
         animateFirstScreenIntro()
-        animateSecondScreen()
     }
 
     private fun animateFirstScreenIntro() = lifecycleScope.launch {
@@ -84,11 +103,18 @@ class OnboardingActivity : BaseActivity() {
 
             index = (index + 1) % votesPercents.size
 
-            delay(1_000)
+            delay(750)
         }
     }
 
     private fun onContinueClick() = lifecycleScope.launch {
+        if (isLockInput) return@launch
+
+        if (index >= 2) {
+            close()
+            return@launch
+        }
+
         isLockInput = true
 
         hideScreen(index)
@@ -102,8 +128,14 @@ class OnboardingActivity : BaseActivity() {
         isLockInput = false
     }
 
+    private fun close() {
+        preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed, true)
+        finish()
+    }
+
     private fun hideScreen(index: Int) = lifecycleScope.launch {
         when(index) {
+            // More unique answers
             0 -> {
                 binding.tvTitle.animate()
                     .translationY(-dpF(500))
@@ -124,6 +156,7 @@ class OnboardingActivity : BaseActivity() {
 
                 binding.vgFirst.isGone = true
             }
+            // Statistic
             1 -> {
                 binding.tvTitle.animate()
                     .translationY(-dpF(500))
@@ -148,26 +181,13 @@ class OnboardingActivity : BaseActivity() {
                 }
 
                 delay(500)
+
                 binding.vgSecond.isGone = true
             }
         }
     }
 
-    private val vgSecondTop: List<View>
-        get() = listOf(
-            binding.tvSecondTopTitle,
-            binding.tvSecondTopSubtitle,
-            binding.lbSecondTop
-        )
-
-    private val vgSecondBottom: List<View>
-        get() = listOf(
-            binding.tvSecondBottomTitle,
-            binding.tvSecondBottomSubtitle,
-            binding.lbSecondBottom
-        )
-
-    private fun showScreen(index: Int) {
+    private fun showScreen(index: Int) = lifecycleScope.launch {
         when(index) {
             // Statistic
             1 -> {
@@ -175,10 +195,12 @@ class OnboardingActivity : BaseActivity() {
                 binding.vgSecondGenders.alpha = 0f
                 binding.ivSecondStatistic.alpha = 0f
 
-                vgSecondTop.forEach { view -> view.translationX = - dpF(500) }
-                vgSecondBottom.forEach { view -> view.translationX = dpF(500) }
+                vgSecondTop.forEach { view -> view.translationX = - dpF(750) }
+                vgSecondBottom.forEach { view -> view.translationX = dpF(750) }
 
                 binding.vgSecond.isVisible = true
+                binding.lbSecondTop.update(LinearBarState(listOf(33, 33, 34)))
+                binding.lbSecondBottom.update(LinearBarState(listOf(34, 33, 33)))
 
                 binding.tvTitle.animate()
                     .translationY(0f)
@@ -201,10 +223,40 @@ class OnboardingActivity : BaseActivity() {
                         .setDuration(500)
                         .start()
                 }
+
+                delay(500)
+
+                animateSecondScreen()
             }
             // Create own content
             2 -> {
-                // §
+                binding.tvTitle.text = thirdTitle
+
+                binding.ivThirdDiscussion.translationX = -dpF(500)
+                binding.ivThirdCreateOwnContent.translationX = dpF(500)
+                binding.tvThirdSubtitle.alpha = 0f
+
+                binding.vgThird.isVisible = true
+
+                binding.tvTitle.animate()
+                    .translationY(0f)
+                    .setDuration(500)
+                    .start()
+
+                binding.tvThirdSubtitle.animate()
+                    .alpha(1f)
+                    .setDuration(500)
+                    .start()
+
+                binding.ivThirdDiscussion.animate()
+                    .translationX(0f)
+                    .setDuration(500)
+                    .start()
+
+                binding.ivThirdCreateOwnContent.animate()
+                    .translationX(0f)
+                    .setDuration(500)
+                    .start()
             }
         }
     }

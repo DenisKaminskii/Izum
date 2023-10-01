@@ -19,6 +19,7 @@ class LinearBarView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+
     private val bars = listOf(
         Bar(ContextCompat.getColor(context, R.color.gender_male)),
         Bar(ContextCompat.getColor(context, R.color.gender_female)),

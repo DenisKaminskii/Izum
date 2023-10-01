@@ -31,7 +31,8 @@ enum class PreferenceKey {
     Token,
     HasSubscription,
     UserInfoProvided,
-    IsAdult
+    IsAdult,
+    IsOnboardingShowed
 }
 
 class PreferenceCacheImpl @Inject constructor(

@@ -165,7 +165,6 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
     private fun showOnboarding() {
         host?.let { activity ->
             val intent = Intent(activity, OnboardingActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             activity.startActivity(intent)
         }
     }

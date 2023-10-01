@@ -24,7 +24,7 @@
         android:autoSizeMaxTextSize="32sp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
-        android:text="Over 500+ exciting questions!"
+        android:text="Create your own content"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="ivSecondStatistic, vgSecondGenders, tvSecondTopTitle, tvSecondTopSubtitle, lbSecondTop, tvSecondBottomTitle, tvSecondBottomSubtitle, lbSecondBottom"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/vgSecondGenders"
@@ -192,6 +192,50 @@
         app:layout_constraintBottom_toTopOf="@id/tvContinue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/vgThird"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="ivThirdDiscussion, ivThirdCreateOwnContent, tvThirdSubtitle"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tvThirdSubtitle"
+        style="@style/Text.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:drawablePadding="4dp"
+        android:text="And share with friends"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <ImageView
+        android:id="@+id/ivThirdDiscussion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/img_onboarding_discussion"
+        app:layout_constraintBottom_toTopOf="@id/ivThirdCreateOwnContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvThirdSubtitle" />
+
+    <ImageView
+        android:id="@+id/ivThirdCreateOwnContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/img_onboarding_create_own_content"
+        app:layout_constraintBottom_toTopOf="@id/tvContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivThirdDiscussion" />
 
     <TextView
         android:id="@+id/tvContinue"
