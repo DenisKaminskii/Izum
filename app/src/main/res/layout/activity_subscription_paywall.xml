@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -18,16 +19,115 @@
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Text.Header"
-        android:textSize="28sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:text="Premium"
         android:textAllCaps="true"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivClose" />
+
+    <ImageView
+        android:id="@+id/ivPremium"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="64dp"
+        android:layout_marginVertical="40dp"
+        android:src="@drawable/img_onboarding_premium"
+        app:layout_constraintBottom_toTopOf="@id/tvExtraFirst"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvExtraFirst"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="6dp"
+        android:gravity="center"
+        android:text="Add more questions to your own packs"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvExtraSecond"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivPremium" />
+
+    <TextView
+        android:id="@+id/tvExtraSecond"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="6dp"
+        android:gravity="center"
+        android:text="Explore statistic for each question"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvExtraThird"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExtraFirst" />
+
+    <TextView
+        android:id="@+id/tvExtraThird"
+        style="@style/Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="Access to all packs!"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/vgPrices"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExtraSecond" />
+
+    <LinearLayout
+        android:id="@+id/vgPrices"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/tvSubscribeTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExtraThird">
+
+        <com.izum.ui.paywall.PremiumPriceItemView
+            android:id="@+id/iPriceFirst"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            tools:background="@drawable/rect_outline_white_10_stroke_2" />
+
+        <com.izum.ui.paywall.PremiumPriceItemView
+            android:id="@+id/iPriceSecond"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginVertical="16dp"
+            android:layout_weight="1"
+            tools:background="@drawable/rect_outline_white_10_stroke_2" />
+
+        <com.izum.ui.paywall.PremiumPriceItemView
+            android:id="@+id/iPriceThird"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            tools:background="@drawable/rect_outline_white_10_stroke_2" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvSubscribeTitle"
@@ -37,8 +137,9 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_horizontal"
-        android:text="We are happy to give you a free 3 days! 🥳🙌"
+        android:text="You have a free 3 days! 🥳🙌"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/tvSubscribeSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -63,8 +164,7 @@
         style="@style/Text.Button.Subscribe"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="56dp"
+        android:layout_margin="24dp"
         android:drawableStart="@null"
         android:text="TRY FOR FREE"
         app:layout_constraintBottom_toBottomOf="parent"

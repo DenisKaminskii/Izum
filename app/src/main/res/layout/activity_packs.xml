@@ -12,7 +12,7 @@
         android:layout_height="80dp"
         android:background="@drawable/rect_filled_black_soft_bottom_corners_20dp"
         android:elevation="8dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/vBottomBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vgTabs" />
@@ -98,7 +98,8 @@
             android:gravity="center_horizontal"
             android:text="Create pack"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -130,7 +131,8 @@
             android:maxLines="1"
             android:text="@string/suggest"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

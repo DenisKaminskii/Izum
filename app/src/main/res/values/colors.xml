@@ -13,7 +13,7 @@
     <color name="disabledText">#B6B6B6</color>
     <color name="disabledIcon">#9E9E9E</color>
 
-    <color name="black_soft">#161616</color>
+    <color name="black_soft">#121212</color>
     <color name="black_wet">#373737</color>
     <color name="white_25">#40EFEFEF</color>
     <color name="purple">#AF30DC</color>
@@ -29,9 +29,9 @@
     <color name="red">#F36265</color>
     <color name="blue">#3296B8</color>
 
-    <color name="gender_female">#FF48E2</color>
-    <color name="gender_male">#3FA3FF</color>
-    <color name="gender_other">#FAAD18</color>
+    <color name="gender_female">#EC41D1</color>
+    <color name="gender_male">#3A96EA</color>
+    <color name="gender_other">#E49E17</color>
 
     <color name="subscribe_gradient_start">#EB2B30</color>
     <color name="subscribe_gradient_end">#D839FA</color>
@@ -45,9 +45,10 @@
     <color name="black_gradient_start">#1B1B1B</color>
     <color name="black_gradient_end">#353535</color>
 
-    <color name="paywall_red">#FF294F</color>
-    <color name="paywall_purple">#7673FA</color>
-    <color name="paywall_green">#31F44D</color>
+    <color name="paywall_red">#E4AC3A</color>
+    <color name="paywall_purple">#43CCD1</color>
+    <color name="paywall_green">#43D151</color>
+    <color name="paywall_black">#272727</color>
 
     <color name="onboarding_black">#141414</color>
 
