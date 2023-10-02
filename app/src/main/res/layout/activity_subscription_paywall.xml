@@ -100,7 +100,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvExtraThird">
 
-        <com.izum.ui.paywall.PremiumPriceItemView
+        <com.polleo.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceFirst"
             android:layout_width="0dp"
             android:layout_height="140dp"
@@ -109,7 +109,7 @@
             android:layout_weight="1"
             tools:background="@drawable/rect_outline_white_10_stroke_2" />
 
-        <com.izum.ui.paywall.PremiumPriceItemView
+        <com.polleo.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceSecond"
             android:layout_width="0dp"
             android:layout_height="140dp"
@@ -118,7 +118,7 @@
             android:layout_weight="1"
             tools:background="@drawable/rect_outline_white_10_stroke_2" />
 
-        <com.izum.ui.paywall.PremiumPriceItemView
+        <com.polleo.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceThird"
             android:layout_width="0dp"
             android:layout_height="140dp"

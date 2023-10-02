@@ -147,7 +147,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvSecondTopTitle" />
 
-    <com.izum.ui.onboarding.LinearBarView
+    <com.polleo.ui.onboarding.LinearBarView
         android:id="@+id/lbSecondTop"
         android:layout_width="match_parent"
         android:layout_height="20dp"
@@ -183,7 +183,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvSecondBottomTitle" />
 
-    <com.izum.ui.onboarding.LinearBarView
+    <com.polleo.ui.onboarding.LinearBarView
         android:id="@+id/lbSecondBottom"
         android:layout_width="match_parent"
         android:layout_height="20dp"

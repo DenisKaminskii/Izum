@@ -38,7 +38,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/vFragmentContainer"
-        android:name="com.izum.ui.edit.EditPollFragment"
+        android:name="com.polleo.ui.edit.EditPollFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

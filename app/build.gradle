@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.izum'
+    namespace 'com.polleo'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.izum"
+        applicationId "com.polleo"
         minSdk 28
         targetSdk 33
         versionCode 2
