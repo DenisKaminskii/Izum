@@ -18,7 +18,8 @@ data class PacksItem(
     val pollsCount: Long,
     val isPaid: Boolean,
     val hasSubscription: Boolean,
-    val pack: Pack
+    val pack: Pack,
+    val isUpdated: Boolean = false
 )
 
 class PacksAdapter(

@@ -4,14 +4,14 @@
     <style name="Theme.Izum" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSecondary">@color/purple_200</item>
+        <item name="colorSecondary">@color/black</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorSurface">@color/black</item>
         <item name="android:statusBarColor">@color/black</item>
     </style>
 
     <style name="PacksTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">26sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -65,8 +65,8 @@
     </style>
 
     <style name="Text.Button.White.Filled" parent="Text.Button.Large">
-        <item name="android:textColor">@color/black_wet</item>
-        <item name="android:drawableTint">@color/black_wet</item>
+        <item name="android:textColor">@color/black_soft</item>
+        <item name="android:drawableTint">@color/black_soft</item>
         <item name="android:background">@drawable/rect_filled_white_14</item>
     </style>
 

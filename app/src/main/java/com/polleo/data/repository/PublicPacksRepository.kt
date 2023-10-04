@@ -16,6 +16,7 @@ import com.polleo.data.PollStatistic
 import com.polleo.data.PollStatisticCategory
 import com.polleo.data.PollStatisticSection
 import com.polleo.data.Vote
+import com.polleo.domain.core.PreferenceCache
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import java.io.IOException
@@ -50,7 +51,8 @@ interface PublicPacksRepository {
 
 class PublicPacksRepositoryImpl(
     private val packsApi: PackApi,
-    private val pollsApi: PollApi
+    private val pollsApi: PollApi,
+    private val preferenceCache: PreferenceCache
 ) : PublicPacksRepository {
 
     private val _packs = MutableSharedFlow<List<Pack.Public>>(replay = 1)
@@ -62,8 +64,19 @@ class PublicPacksRepositoryImpl(
     override suspend fun fetch() {
         val newPacks = packsApi.getPacks()
             .map(Pack.Public::fromJson)
+            .map(::validateForCountUpdated)
 
         _packs.emit(newPacks)
+    }
+
+    private fun validateForCountUpdated(pack: Pack.Public): Pack.Public {
+        return preferenceCache.getLongOrNull("${pack.id}_count")
+            ?.let { cacheCount ->
+                pack.copy(
+                    isUpdated = cacheCount < pack.pollsCount
+                )
+            }
+            ?: pack
     }
 
     override suspend fun getPackPolls(packId: Long): List<Poll> {

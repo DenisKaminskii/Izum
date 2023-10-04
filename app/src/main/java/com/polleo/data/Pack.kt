@@ -9,7 +9,8 @@ import kotlinx.parcelize.Parcelize
 
 sealed class Pack(
     open val id: Long,
-    open val title: String
+    open val title: String,
+    open val isUpdated: Boolean
 ) : Parcelable {
 
     @Parcelize
@@ -24,8 +25,9 @@ sealed class Pack(
         @ColorInt val contentColor: Int,
         @ColorInt val gradientStartColor: Int,
         @ColorInt val gradientEndColor: Int,
-        val preview: List<PackPreview>
-    ) : Pack(id, title) {
+        val preview: List<PackPreview>,
+        override val isUpdated: Boolean = false
+    ) : Pack(id, title, isUpdated) {
 
         companion object {
 
@@ -58,8 +60,9 @@ sealed class Pack(
         val description: String?,
         val pollsCount: Long,
         val token: String,
-        val link: String
-    ) : Pack(id, title) {
+        val link: String,
+        override val isUpdated: Boolean = false
+    ) : Pack(id, title, isUpdated) {
 
         companion object {
 

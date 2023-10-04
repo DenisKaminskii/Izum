@@ -55,11 +55,11 @@ class PackHistoryViewModel @Inject constructor(
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPools = publicPacksRepository.getPackVotedPolls(input.packId)
-            preferenceCache.putLong("Pack#${input.packId}", newPools.size.toLong())
+            val votedPolls = publicPacksRepository.getPackVotedPolls(input.packId)
+            preferenceCache.putLong("${input.packId}_voted_count", votedPolls.count().toLong())
             isPollFetched = true
             polls.clear()
-            polls.addAll(newPools)
+            polls.addAll(votedPolls)
             updateView()
         } catch (exception: Exception) {
             Log.e("Steve", exception.toString())

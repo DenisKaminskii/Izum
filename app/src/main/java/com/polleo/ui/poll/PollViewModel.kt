@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.polleo.data.Poll
 import com.polleo.data.PollOption
 import com.polleo.data.repository.PublicPacksRepository
+import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.pack.history.PackHistoryInput
@@ -46,7 +47,8 @@ data class OptionViewState(
 
 @HiltViewModel
 class PollViewModel @Inject constructor(
-    private val publicPacksRepository: PublicPacksRepository
+    private val publicPacksRepository: PublicPacksRepository,
+    private val preferenceCache: PreferenceCache
 ) : StateViewModel<Arguments, PollViewState>(
     initialState = PollViewState.Loading
 ) {
@@ -74,7 +76,6 @@ class PollViewModel @Inject constructor(
         get() = poll.options[1]
 
     private var votedOptionId: Long? = null
-    private var jobVoting: Job? = null
 
     override fun onViewInitialized(input: Arguments) {
         super.onViewInitialized(input)
@@ -143,13 +144,6 @@ class PollViewModel @Inject constructor(
     }
 
     fun onNextClick() {
-        if (jobVoting?.isActive == true) {
-            viewModelScope.launch {
-                emit(ViewAction.ShowToast("Uploading vote..."))
-            }
-            return
-        }
-
         polls.removeFirstOrNull()
         votedOptionId = null
         updateView()
@@ -195,15 +189,22 @@ class PollViewModel @Inject constructor(
         votedOptionId = optionId
         updateView()
 
-        jobVoting = viewModelScope.launch {
+        viewModelScope.launch {
             try {
                 publicPacksRepository.vote(poll.id, optionId)
+                increaseAnsweredPollsCount()
             } catch (exception: Exception) {
                 emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
                 updateState { viewState }
                 return@launch
             }
         }
+    }
+
+    private fun increaseAnsweredPollsCount() {
+        val key = "${packId}_voted_count"
+        val packAnsweredPollsCount = preferenceCache.getLong(key, 0L)
+        preferenceCache.putLong(key, packAnsweredPollsCount + 1)
     }
 
 }

@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:gravity="start"
-        android:text="Pack title"
+        android:text="Create new pack"
         android:textStyle="bold" />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -25,7 +25,7 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
         android:background="@null"
-        android:hint="Type pack title .."
+        android:hint="Type pack title here .."
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="18"
         android:paddingVertical="12dp"
@@ -36,9 +36,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:gravity="end"
         android:orientation="horizontal"
-        android:layout_marginBottom="4dp"
         android:paddingVertical="4dp">
 
         <TextView

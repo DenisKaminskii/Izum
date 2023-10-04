@@ -7,6 +7,7 @@ import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.CustomPacksRepositoryImpl
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.data.repository.PublicPacksRepositoryImpl
+import com.polleo.domain.core.PreferenceCache
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,9 +22,10 @@ class PacksModule {
     @Singleton
     fun providePacksRepository(
         packsApi: PackApi,
-        pollsApi: PollApi
+        pollsApi: PollApi,
+        preferenceCache: PreferenceCache
     ) : PublicPacksRepository {
-        return PublicPacksRepositoryImpl(packsApi, pollsApi)
+        return PublicPacksRepositoryImpl(packsApi, pollsApi, preferenceCache)
     }
 
     @Provides

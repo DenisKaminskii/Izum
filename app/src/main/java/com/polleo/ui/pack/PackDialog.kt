@@ -27,6 +27,7 @@ import com.polleo.R
 import com.polleo.data.Pack
 import com.polleo.data.repository.UserRepository
 import com.polleo.databinding.DialogPackBinding
+import com.polleo.domain.core.PreferenceCache
 import com.polleo.ui.BaseDialogFragment
 import com.polleo.ui.dpF
 import com.polleo.ui.packs.PacksViewModel
@@ -55,6 +56,9 @@ class PackDialog : BaseDialogFragment() {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var preferenceCache: PreferenceCache
 
     private var _binding: DialogPackBinding? = null
     private val binding get() = _binding!!
@@ -174,6 +178,8 @@ class PackDialog : BaseDialogFragment() {
             cornerRadius = requireContext().dpF(14)
             setStroke(requireContext().dpF(2).toInt(), publicPack.contentColor)
         }
+
+        preferenceCache.putLong("${publicPack.id}_count", publicPack.pollsCount)
 
         initPreviewList()
     }
