@@ -68,15 +68,15 @@ class EditPollViewModel @Inject constructor(
 
             EditPollViewState.Input(
                 title = when (inputArgs) {
-                    is EditPollVariant.Suggest -> "Suggest poll"
+                    is EditPollVariant.Suggest -> "Suggest question"
                     is EditPollVariant.CustomPackAdd -> "Add poll"
                 },
                 isDoneEnabled = isBothTextAreNotEmpty || actionJob?.isActive == true,
                 actionText = actionTitle,
                 actionDrawableId = actionDrawableId,
                 suggestText = when (inputArgs) {
-                    is EditPollVariant.Suggest -> "Suggest your poll to us. We will check it and add to the app if like it :3"
-                    is EditPollVariant.CustomPackAdd -> "Add new poll to the pack"
+                    is EditPollVariant.Suggest -> "Suggest your question and it might be featured in the 'Suggests' pack!"
+                    is EditPollVariant.CustomPackAdd -> "Add new question to your pack"
                 }
             )
         }

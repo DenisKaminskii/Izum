@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_background">
+    android:background="@color/black">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/vgTabs"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/rect_filled_black_soft_bottom_corners_20dp"
         android:elevation="8dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -51,14 +51,6 @@
         android:background="@drawable/black_transparent_gradient"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/vBottomBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@drawable/black_transparent_gradient"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

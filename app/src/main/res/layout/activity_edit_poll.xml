@@ -56,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
             android:gravity="center"
+            android:lineSpacingExtra="4dp"
             android:text="Suggest your question and it might be featured in the 'Suggests' pack!"
             android:textColor="@color/white_50" />
 
