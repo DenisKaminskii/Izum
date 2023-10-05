@@ -3,17 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="32dp">
+    android:paddingTop="24dp">
 
     <TextView
         style="@style/Text.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:alpha="0.42"
         android:gravity="center"
-        android:text="Expand polls limit to 100 with subscription"
-        android:textColor="@color/disabledText" />
+        android:text="Expand questions limit to 100 with subscription"
+        android:textColor="@color/white_50" />
 
     <TextView
         android:id="@+id/tvSubscribe"
@@ -21,9 +20,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="34dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         android:minWidth="120dp"
-        android:text="Subscribe" />
+        android:text="Remove limit" />
 
 </LinearLayout>

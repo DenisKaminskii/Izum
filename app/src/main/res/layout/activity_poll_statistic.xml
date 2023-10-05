@@ -107,10 +107,10 @@
             style="@style/Text.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
+            android:layout_marginHorizontal="48dp"
             android:gravity="center"
-            android:text="Unfortunately, no one has responded to the survey yet."
-            android:textColor="@color/white" />
+            android:text="Unfortunately, no one has responded to this pack yet"
+            android:textColor="@color/white_50" />
 
         <TextView
             android:id="@+id/tvShare"
@@ -118,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
             android:drawableEnd="@drawable/ic_share_16"
             android:drawablePadding="8dp"
             android:minWidth="120dp"

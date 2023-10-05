@@ -44,13 +44,25 @@
             tools:text="Custom Pack title" />
 
         <ImageView
-            android:id="@+id/ivShare"
-            android:layout_width="72dp"
-            android:layout_height="match_parent"
+            android:id="@+id/ivEdit"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
             android:foreground="?attr/selectableItemBackground"
-            android:padding="24dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/ivShare"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="4dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="12dp"
             android:src="@drawable/ic_share_24"
-            app:tint="@color/subscribed" />
+            app:tint="@color/white" />
 
     </LinearLayout>
 
@@ -60,11 +72,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="4dp"
-        android:alpha="0.42"
+        android:layout_marginTop="8dp"
         android:gravity="start"
-        android:text="Polls"
-        android:textColor="@color/disabledText"
+        android:text="Questions"
+        android:textColor="@color/edit_pack_item_stroke"
         app:layout_constraintEnd_toStartOf="@id/tvPollsCount"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,10 +87,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:alpha="0.42"
         android:gravity="end"
         android:text="0/10"
-        android:textColor="@color/disabledText"
+        android:textColor="@color/edit_pack_item_stroke"
         app:layout_constraintBottom_toBottomOf="@id/tvDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvDescription"
@@ -115,8 +125,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:drawableEnd="@drawable/ic_add_16"
-        android:text="Add poll"
-        android:textColor="@color/white"
+        android:text="Add"
+        android:textColor="@color/selector_text_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvRemove" />

@@ -32,8 +32,11 @@ sealed interface EditPackViewState {
         val polls: List<PollsItem> = emptyList(),
         val isAddButtonVisible: Boolean = true,
         val isShareButtonEnabled: Boolean = false,
+        val isEditButtonEnabled: Boolean = false,
         val pollsMax: Int = POLLS_MAXIMUM_UNSUBSCRIBED,
-        val pollsCount: Int = 0
+        val pollsCount: Int = 0,
+        val isEditMode: Boolean = false,
+        val isEditRemoveVisible: Boolean = false
     ) : EditPackViewState
 }
 
@@ -57,6 +60,9 @@ class EditPackViewModel @Inject constructor(
     private val polls = mutableListOf<Poll>()
 
     private var isPackFetched = false
+
+    private var isEditMode = false
+    private var removePollsIds = mutableListOf<Long>()
 
     override fun onViewInitialized(input: EditPackInput) {
         super.onViewInitialized(input)
@@ -106,7 +112,13 @@ class EditPackViewModel @Inject constructor(
                         val id = poll.id
                         val topText = poll.options[0].title
                         val bottomText = poll.options[1].title
-                        PollsItem.TwoOptionsEdit(id, topText, bottomText)
+
+                        PollsItem.TwoOptionsEdit(
+                            id = id,
+                            left = topText,
+                            right = bottomText,
+                            isSelected = if (isEditMode) removePollsIds.contains(id) else null
+                        )
                     }
                 )
 
@@ -119,16 +131,72 @@ class EditPackViewModel @Inject constructor(
                     polls = items,
                     isAddButtonVisible = polls.size < limit,
                     isShareButtonEnabled = polls.isNotEmpty(),
+                    isEditButtonEnabled = polls.isNotEmpty(),
                     pollsMax = limit,
                     pollsCount = polls.size,
+                    isEditMode = isEditMode,
+                    isEditRemoveVisible = removePollsIds.isNotEmpty()
                 )
             }
         }
     }
 
+    fun onEditClick() {
+        removePollsIds.clear()
+        isEditMode = true
+        updateView()
+    }
+
+    fun onRemovePollsApproved() = try {
+        viewModelScope.launch(ioDispatcher) {
+            removePollsIds.forEach { pollId ->
+                launch {
+                    try {
+                        customPacksRepository.removePoll(packId, pollId)
+                    } catch (ex: Exception) {
+                        Log.e("Steve", ex.toString())
+                    }
+                }.join()
+            }
+        }.invokeOnCompletion {
+            resetEditMode()
+            viewModelScope.launch {
+                emit(ViewAction.ShowToast("Questions successfully removed"))
+            }
+        }
+    } catch (ex: Exception) {
+        Log.e("Steve", ex.toString())
+        viewModelScope.launch {
+            emit(ViewAction.ShowToast("Questions remove failed :( Try again."))
+        }
+    }
+
+    fun onEditCancelClick() {
+        resetEditMode()
+    }
+
+    fun onPollItemSelected(pollId: Long) {
+        if (removePollsIds.contains(pollId)) {
+            removePollsIds.remove(pollId)
+        } else {
+            removePollsIds.add(pollId)
+        }
+        updateView()
+    }
+
     fun onBackClick() {
         viewModelScope.launch {
             route(Router.Route.Finish)
+        }
+    }
+
+    fun onBackPressed() {
+        if (isEditMode) {
+            resetEditMode()
+        } else {
+            viewModelScope.launch {
+                route(Router.Route.Finish)
+            }
         }
     }
 
@@ -171,22 +239,16 @@ class EditPackViewModel @Inject constructor(
         }
     }
 
-    fun onPollRemoveApproved(id: Long) {
-        viewModelScope.launch(ioDispatcher) {
-            try {
-                customPacksRepository.removePoll(packId, id)
-                emit(ViewAction.ShowToast("Poll successfully removed"))
-            } catch (ex: Exception) {
-                Log.e("Steve", ex.toString())
-                emit(ViewAction.ShowToast("Poll remove failed :( Try again."))
-            }
-        }
-    }
-
     fun onAddPollClick() {
         viewModelScope.launch {
             route(Router.Route.EditPoll(EditPollVariant.CustomPackAdd(packId)))
         }
+    }
+
+    private fun resetEditMode() {
+        isEditMode = false
+        removePollsIds.clear()
+        updateView()
     }
 
     fun onSubscribeClick() {
@@ -196,14 +258,18 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onPollClick(id: Long) {
-        viewModelScope.launch {
-            route(Router.Route.Statistic(
-                PollStatisticInput(
-                    pollId = id,
-                    shareLink = shareLink,
-                    isCustomPack = true
-                )
-            ))
+        if (isEditMode) {
+            onPollItemSelected(id)
+        } else {
+            viewModelScope.launch {
+                route(Router.Route.Statistic(
+                    PollStatisticInput(
+                        pollId = id,
+                        shareLink = shareLink,
+                        isCustomPack = true
+                    )
+                ))
+            }
         }
     }
 

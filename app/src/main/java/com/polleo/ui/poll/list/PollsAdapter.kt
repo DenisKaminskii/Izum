@@ -36,7 +36,8 @@ sealed class PollsItem {
     data class TwoOptionsEdit(
         val id: Long,
         val left: String,
-        val right: String
+        val right: String,
+        val isSelected: Boolean? = null
     ) : PollsItem()
 
     data class Subscribe(
@@ -47,7 +48,7 @@ sealed class PollsItem {
 
 class PollsAdapter(
     private val onCustomPackPollClick: (Long) -> Unit = {},
-    private val onCustomPackPollRemove: (Long) -> Unit = {},
+    private val onCustomPackPollSelected: (Long) -> Unit = {},
     private val onStatisticClick: (Long) -> Unit = {},
     private val onSubscribeClick: () -> Unit = {}
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
@@ -110,7 +111,7 @@ class PollsAdapter(
             }
             ViewType.TWO_OPTIONS_EDIT.ordinal -> {
                 val binding = ItemPollsTwoOptionsEditBinding.inflate(inflater, parent, false)
-                PollsTwoOptionsEditViewView(binding, onCustomPackPollClick, onCustomPackPollRemove)
+                PollsTwoOptionsEditViewView(binding, onCustomPackPollClick, onCustomPackPollSelected)
             }
             ViewType.BUTTON.ordinal -> {
                 val binding = ItemSubscribeBinding.inflate(inflater, parent, false)

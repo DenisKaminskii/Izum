@@ -3,11 +3,15 @@ package com.polleo.ui.create
 import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.polleo.R
 import com.polleo.databinding.ActivityEditPackBinding
 import com.polleo.ui.BaseActivity
 import com.polleo.ui.KEY_ARGS_INPUT
@@ -34,7 +38,7 @@ class EditPackActivity : BaseActivity() {
         PollsAdapter(
             onCustomPackPollClick = viewModel::onPollClick,
             onSubscribeClick = viewModel::onSubscribeClick,
-            onCustomPackPollRemove = ::onPollRemoveClick
+            onCustomPackPollSelected = viewModel::onPollItemSelected
         )
     }
 
@@ -49,18 +53,26 @@ class EditPackActivity : BaseActivity() {
 
     override fun initView(args: Bundle) = with(binding) {
         super.initView(args)
-
         tvPackTitle.setOnClickListener { onTitleClick() }
         ivBack.setOnClickListener { viewModel.onBackClick() }
-        ivShare.setOnClickListener { viewModel.onShareClick(
-            clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
-        )}
+        ivShare.setOnClickListener {
+            viewModel.onShareClick(
+                clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
+            )
+        }
         tvRetry.setOnClickListener { viewModel.onRetryClick() }
         tvRemove.setOnClickListener { onPackRemoveClick() }
         tvAdd.setOnClickListener { viewModel.onAddPollClick() }
 
         rvPolls.adapter = adapter
-        rvPolls.layoutManager = LinearLayoutManager(this@EditPackActivity, LinearLayoutManager.VERTICAL, false)
+        rvPolls.layoutManager =
+            LinearLayoutManager(this@EditPackActivity, LinearLayoutManager.VERTICAL, false)
+
+        onBackPressedDispatcher.addCallback(this@EditPackActivity, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.onBackPressed()
+            }
+        })
 
         update(EditPackViewState.Loading)
 
@@ -84,7 +96,36 @@ class EditPackActivity : BaseActivity() {
         tvPackTitle.text = state.title
         tvPollsCount.text = "${state.pollsCount} / ${state.pollsMax}"
         ivShare.isEnabled = state.isShareButtonEnabled
+        ivEdit.isEnabled = state.isEditButtonEnabled
+        ivEdit.setImageResource(
+            when {
+                state.isEditMode -> if (state.isEditRemoveVisible) {
+                    R.drawable.ic_remove
+                } else {
+                    R.drawable.ic_close_24
+                }
+                else -> R.drawable.ic_edit
+            }
+        )
+        ivEdit.imageTintList = ColorStateList(
+            arrayOf(intArrayOf(android.R.attr.state_enabled)),
+            intArrayOf(
+                if (state.isEditRemoveVisible) getColor(R.color.red)
+                else getColor(R.color.white)
+            )
+        )
+        ivEdit.setOnClickListener {
+            if (state.isEditMode) {
+                if (state.isEditRemoveVisible) {
+                    onPollsRemoveApproved()
+                } else {
+                    viewModel.onEditCancelClick()
+                }
+            }
+            else viewModel.onEditClick()
+        }
         tvAdd.isVisible = state.isAddButtonVisible
+        tvAdd.isEnabled = !state.isEditMode
         ivShare.alpha = if (state.isShareButtonEnabled) 1f else 0.25f
 
         adapter.setItems(state.polls)
@@ -121,14 +162,14 @@ class EditPackActivity : BaseActivity() {
         removeDialog?.show()
     }
 
-    private fun onPollRemoveClick(id: Long) {
+    private fun onPollsRemoveApproved() {
         removeDialog?.hide()
         removeDialog = null
         removeDialog = AlertDialog.Builder(this)
             .setTitle("Are you sure?")
-            .setMessage("Do you really want to remove this poll?")
+            .setMessage("Do you really want to remove this questions?")
             .setPositiveButton("Yes") { dialog, _ ->
-                viewModel.onPollRemoveApproved(id)
+                viewModel.onRemovePollsApproved()
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->

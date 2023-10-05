@@ -69,7 +69,7 @@ class EditPollViewModel @Inject constructor(
             EditPollViewState.Input(
                 title = when (inputArgs) {
                     is EditPollVariant.Suggest -> "Suggest question"
-                    is EditPollVariant.CustomPackAdd -> "Add poll"
+                    is EditPollVariant.CustomPackAdd -> "Add question"
                 },
                 isDoneEnabled = isBothTextAreNotEmpty || actionJob?.isActive == true,
                 actionText = actionTitle,

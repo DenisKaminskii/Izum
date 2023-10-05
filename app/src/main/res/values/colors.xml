@@ -46,5 +46,6 @@
     <color name="paywall_black">#272727</color>
 
     <color name="onboarding_black">#141414</color>
+    <color name="edit_pack_item_stroke">#333333</color>
 
 </resources>

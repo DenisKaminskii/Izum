@@ -2,10 +2,12 @@ package com.polleo.ui.packs
 
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
+import com.polleo.R
 import com.polleo.databinding.ActivityPacksBinding
 import com.polleo.ui.BaseActivity
 import com.polleo.ui.create.PackTitleEditDialog
@@ -31,6 +33,10 @@ class PacksActivity : BaseActivity() {
     }
 
     override fun initView(args: Bundle) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = getColor(R.color.black_soft)
+
         binding.vgPager.adapter = viewPagerAdapter
 
         binding.vgSubscription.setOnClickListener { viewModel.onSubscribeClick() }
