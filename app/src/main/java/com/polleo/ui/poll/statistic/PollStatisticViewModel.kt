@@ -8,10 +8,12 @@ import com.polleo.R
 import com.polleo.data.PollStatistic
 import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.PublicPacksRepository
+import com.polleo.data.repository.UserRepository
 import com.polleo.di.IoDispatcher
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.poll.list.PollsItem
+import com.polleo.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,8 +27,13 @@ sealed interface PollStatisticViewState {
 
     object Error : PollStatisticViewState
 
-    data class NoData(
+    data class NoSubscription(
         val options: PollsItem.TwoOptionsBar
+    ) : PollStatisticViewState
+
+    data class NoData(
+        val options: PollsItem.TwoOptionsBar,
+        val isShowSharePack: Boolean = false
     ) : PollStatisticViewState
 
     data class Stats(
@@ -40,7 +47,8 @@ class PollStatisticViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     private val customPacksRepository: CustomPacksRepository,
     private val publicPacksRepository: PublicPacksRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val userRepository: UserRepository
 ) : StateViewModel<PollStatisticInput, PollStatisticViewState>(
     initialState = PollStatisticViewState.Loading
 ) {
@@ -49,6 +57,7 @@ class PollStatisticViewModel @Inject constructor(
     private var pollId = -1L
     private var shareLink: String? = null
     private var isCustomPack = false
+    private var votedOptionId: Long? = null
     private var isValueInNumbers = true
 
     override fun onViewInitialized(input: PollStatisticInput) {
@@ -56,6 +65,7 @@ class PollStatisticViewModel @Inject constructor(
         pollId = input.pollId
         shareLink = input.shareLink
         isCustomPack = input.isCustomPack
+        votedOptionId = input.votedOptionId
 
         viewModelScope.launch {
             fetchStatistic()
@@ -79,61 +89,54 @@ class PollStatisticViewModel @Inject constructor(
     private fun updateView() = viewModelScope.launch {
         statistic
             ?.let { pollStatistic ->
-                val leftCount = pollStatistic.options[0].votesCount
+                val leftVotesCount = pollStatistic.options[0].votesCount
                 val rightCount = pollStatistic.options[1].votesCount
-                val sumCount = (leftCount + rightCount).toFloat()
 
-                val leftPercent = try { (leftCount * 100 / sumCount).toInt() } catch (ex: Exception) { 0 }
-                val rightPercent = try { (rightCount * 100 / sumCount).toInt() } catch (ex: Exception) { 0 }
+                val leftFakeVote = if (votedOptionId == pollStatistic.options[0].id) 1 else 0
+                val rightFakeVote = if (votedOptionId == pollStatistic.options[1].id) 1 else 0
 
-                if (sumCount == 0f) {
-                    val optionsItem = PollsItem.TwoOptionsBar(
-                        id = pollId,
-                        leftBottom = PollsItem.TwoOptionsBar.Value(
-                            text = pollStatistic.options[0].title,
-                            color = context.getColor(R.color.red)
-                        ),
-                        rightBottom = PollsItem.TwoOptionsBar.Value(
-                            text = pollStatistic.options[1].title,
-                            color = context.getColor(R.color.blue)
-                        ),
-                        barPercent = 50
-                    )
+                val sumCount = (leftVotesCount + rightCount).toFloat() + leftFakeVote + rightFakeVote
 
-                    updateState {
-                        PollStatisticViewState.NoData(optionsItem)
-                    }
-                } else {
-                    updateState { currentViewState ->
-                        val optionsItem = PollsItem.TwoOptionsBar(
-                            id = pollId,
-                            leftBottom = PollsItem.TwoOptionsBar.Value(
-                                text = pollStatistic.options[0].title,
-                                color = context.getColor(R.color.red)
-                            ),
-                            rightBottom = PollsItem.TwoOptionsBar.Value(
-                                text = pollStatistic.options[1].title,
-                                color = context.getColor(R.color.blue)
-                            ),
-                            leftTop = PollsItem.TwoOptionsBar.Value(
-                                text = if (!isValueInNumbers) {
-                                    "$leftPercent%"
-                                } else {
-                                    leftCount.toString()
-                                },
-                                color = context.getColor(R.color.red)
-                            ),
-                            rightTop = PollsItem.TwoOptionsBar.Value(
-                                text = if (!isValueInNumbers) {
-                                    "$rightPercent%"
-                                } else {
-                                    rightCount.toString()
-                                },
-                                color = context.getColor(R.color.blue)
-                            ),
-                            barPercent = leftPercent
-                        )
+                val leftPercent = if (sumCount == 0f) 50 else (leftVotesCount * 100 / sumCount).toInt()
+                val rightPercent = if (sumCount == 0f) 50 else (rightCount * 100 / sumCount).toInt()
 
+                val optionsItem = PollsItem.TwoOptionsBar(
+                    id = pollId,
+                    leftTop = PollsItem.TwoOptionsBar.Value(
+                        text = if (!isValueInNumbers) {
+                            "$leftPercent%"
+                        } else {
+                            leftVotesCount.toString()
+                        },
+                        color = context.getColor(R.color.red)
+                    ),
+                    rightTop = PollsItem.TwoOptionsBar.Value(
+                        text = if (!isValueInNumbers) {
+                            "$rightPercent%"
+                        } else {
+                            rightCount.toString()
+                        },
+                        color = context.getColor(R.color.blue)
+                    ),
+                    leftBottom = PollsItem.TwoOptionsBar.Value(
+                        text = pollStatistic.options[0].title,
+                        color = context.getColor(R.color.red)
+                    ),
+                    rightBottom = PollsItem.TwoOptionsBar.Value(
+                        text = pollStatistic.options[1].title,
+                        color = context.getColor(R.color.blue)
+                    ),
+                    barPercent = leftPercent
+                )
+
+                if (userRepository.hasSubscription) {
+                    if (sumCount == 0f) {
+                        updateState {
+                            PollStatisticViewState.NoData(
+                                options = optionsItem
+                            )
+                        }
+                    } else {
                         val statsItems = pollStatistic.sections.flatMap { section ->
                             listOf(
                                 PollsItem.Header(section.title)
@@ -178,10 +181,17 @@ class PollStatisticViewModel @Inject constructor(
                             }
                         }
 
-
-                        PollStatisticViewState.Stats(
-                            stats = listOf(optionsItem) + statsItems,
-                            isValueInNumbers = isValueInNumbers
+                        updateState {
+                            PollStatisticViewState.Stats(
+                                stats = listOf(optionsItem) + statsItems,
+                                isValueInNumbers = isValueInNumbers
+                            )
+                        }
+                    }
+                } else {
+                    updateState {
+                        PollStatisticViewState.NoSubscription(
+                            options = optionsItem
                         )
                     }
                 }
@@ -198,6 +208,12 @@ class PollStatisticViewModel @Inject constructor(
     fun onFormatClicked() {
         isValueInNumbers = !isValueInNumbers
         updateView()
+    }
+
+    fun onSubscribeClick() {
+        viewModelScope.launch {
+            route(Router.Route.SubscriptionPaywall)
+        }
     }
 
     fun onShareClick(clipBoard: ClipboardManager) {

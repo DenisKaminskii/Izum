@@ -25,7 +25,7 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
         android:background="@null"
-        android:hint="Type pack title here .."
+        android:hint="Type title here .."
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="18"
         android:paddingVertical="12dp"

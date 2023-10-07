@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.polleo.R
+import com.polleo.data.Poll
 import com.polleo.databinding.ActivityPollStatisticBinding
 import com.polleo.ui.BaseActivity
 import com.polleo.ui.KEY_ARGS_INPUT
@@ -15,11 +16,10 @@ import com.polleo.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 
-// Если перешли сюда с игры, то надо учесть голос
-
 @Parcelize
 data class PollStatisticInput(
     val pollId: Long,
+    val votedOptionId: Long? = null,
     val isCustomPack: Boolean = false,
     val shareLink: String? = null,
 ) : Parcelable
@@ -47,6 +47,7 @@ class PollStatisticActivity : BaseActivity() {
         binding.tvShare.setOnClickListener { viewModel.onShareClick(
             clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager,
         ) }
+        binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeClick() }
         binding.ivFormat.setOnClickListener { viewModel.onFormatClicked() }
 
         binding.rvStatistic.adapter = adapter
@@ -65,10 +66,14 @@ class PollStatisticActivity : BaseActivity() {
 
     private fun update(state: PollStatisticViewState) {
         binding.vProgress.isVisible = state is PollStatisticViewState.Loading
-        binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats || state is PollStatisticViewState.NoData
+        binding.rvStatistic.isVisible = state is PollStatisticViewState.Stats
+                || state is PollStatisticViewState.NoData
+                || state is PollStatisticViewState.NoSubscription
+
         binding.vgError.isVisible = state is PollStatisticViewState.Error
-        binding.vgNoData.isVisible = state is PollStatisticViewState.NoData
         binding.ivFormat.isVisible = state is PollStatisticViewState.Stats
+        binding.vgNoData.isVisible = state is PollStatisticViewState.NoData
+        binding.vgSubscribe.isVisible = state is PollStatisticViewState.NoSubscription
 
         when(state) {
             is PollStatisticViewState.NoData -> {
@@ -80,6 +85,9 @@ class PollStatisticActivity : BaseActivity() {
                     if (state.isValueInNumbers) R.drawable.ic_numbers_24
                     else R.drawable.ic_percent_24
                 )
+            }
+            is PollStatisticViewState.NoSubscription -> {
+                adapter.setItems(listOf(state.options))
             }
             else -> {}
         }

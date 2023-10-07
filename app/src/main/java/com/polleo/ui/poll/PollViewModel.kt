@@ -158,12 +158,16 @@ class PollViewModel @Inject constructor(
     }
 
     fun onStatisticClick() {
-        viewModelScope.launch {
-            route(
-                Router.Route.Statistic(
-                    PollStatisticInput(poll.id, isCustomPack = false)
+        votedOptionId?.let {
+            viewModelScope.launch {
+                route(
+                    Router.Route.Statistic(
+                        PollStatisticInput(poll.id, isCustomPack = false, votedOptionId = it)
+                    )
                 )
-            )
+            }
+        } ?: viewModelScope.launch {
+            emit(ViewAction.ShowToast("You should vote first"))
         }
     }
 

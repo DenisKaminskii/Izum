@@ -18,6 +18,8 @@ import com.polleo.databinding.FragmentPacksBinding
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceKey
 import com.polleo.ui.KEY_ARGS_INPUT
+import com.polleo.ui.dp
+import com.polleo.ui.utils.RecyclerGridItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -112,6 +114,9 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private fun initView() {
         binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvPacks.adapter = adapter
+        binding.rvPacks.addItemDecoration(
+            RecyclerGridItemDecoration(vertical = requireContext().dp(8))
+        )
         binding.tvCreatePack.setOnClickListener { onCreatePackClick?.invoke() }
     }
 
