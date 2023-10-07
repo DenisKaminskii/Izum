@@ -1,11 +1,17 @@
 package com.polleo.ui.poll
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.google.android.play.core.review.ReviewException
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.model.ReviewErrorCode
+import com.google.android.play.core.review.testing.FakeReviewManager
 import com.polleo.data.Poll
 import com.polleo.data.PollOption
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.domain.core.PreferenceCache
+import com.polleo.domain.core.PreferenceKey
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.pack.history.PackHistoryInput
@@ -13,6 +19,7 @@ import com.polleo.ui.poll.PollViewModel.Companion.Arguments
 import com.polleo.ui.poll.statistic.PollStatisticInput
 import com.polleo.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -47,6 +54,7 @@ data class OptionViewState(
 
 @HiltViewModel
 class PollViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val publicPacksRepository: PublicPacksRepository,
     private val preferenceCache: PreferenceCache
 ) : StateViewModel<Arguments, PollViewState>(
@@ -54,6 +62,9 @@ class PollViewModel @Inject constructor(
 ) {
 
     companion object {
+
+        private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 1 // 80
+
         data class Arguments(
             val packId: Long,
             val packTitle: String
@@ -147,6 +158,7 @@ class PollViewModel @Inject constructor(
         polls.removeFirstOrNull()
         votedOptionId = null
         updateView()
+        checkGoogleStoreReviewShow()
     }
 
     fun onTopVote() {
@@ -155,6 +167,26 @@ class PollViewModel @Inject constructor(
 
     fun onBottomVote() {
         onVote(optionBottom.id)
+    }
+
+    private fun checkGoogleStoreReviewShow() {
+        val isShown = preferenceCache.getBoolean(PreferenceKey.GoogleStoreReviewShown, false)
+        val commonVotesCount = preferenceCache.getLong(PreferenceKey.CommonVotesCount.name, 0L)
+        if (!isShown && commonVotesCount >= VOTES_UNTIL_GOOGLE_STORE_REVIEW) {
+            val manager = ReviewManagerFactory.create(context)
+
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    viewModelScope.launch {
+                        route(Router.Route.GoogleReview(reviewInfo = task.result))
+                    }
+                } else {
+                    @ReviewErrorCode val reviewErrorCode = (task.getException() as ReviewException).errorCode
+                    Log.d("Steve", "Review error: $reviewErrorCode")
+                }
+            }
+        }
     }
 
     fun onStatisticClick() {
@@ -206,9 +238,12 @@ class PollViewModel @Inject constructor(
     }
 
     private fun increaseAnsweredPollsCount() {
-        val key = "${packId}_voted_count"
-        val packAnsweredPollsCount = preferenceCache.getLong(key, 0L)
-        preferenceCache.putLong(key, packAnsweredPollsCount + 1)
+        val keyPack = "${packId}_voted_count"
+        val packVotesCount = preferenceCache.getLong(keyPack, 0L)
+        preferenceCache.putLong(keyPack, packVotesCount + 1)
+
+        val commonVotesCount = preferenceCache.getLong(PreferenceKey.CommonVotesCount.name, 0L)
+        preferenceCache.putLong(PreferenceKey.CommonVotesCount.name, commonVotesCount + 1)
     }
 
 }

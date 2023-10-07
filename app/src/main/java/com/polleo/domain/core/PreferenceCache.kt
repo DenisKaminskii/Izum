@@ -32,7 +32,9 @@ enum class PreferenceKey {
     HasSubscription,
     UserInfoProvided,
     IsAdult,
-    IsOnboardingShowed
+    IsOnboardingShowed,
+    CommonVotesCount,
+    GoogleStoreReviewShown
 }
 
 class PreferenceCacheImpl @Inject constructor(

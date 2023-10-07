@@ -35,8 +35,10 @@ class CoreModule {
     }
 
     @Provides
-    fun provideRouter() : Router {
-        return RouterImpl()
+    fun provideRouter(
+        preferenceCache: PreferenceCache
+    ) : Router {
+        return RouterImpl(preferenceCache)
     }
 
 }

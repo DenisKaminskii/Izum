@@ -2,7 +2,11 @@ package com.polleo.ui.route
 
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.polleo.data.Pack
+import com.polleo.domain.core.PreferenceCache
+import com.polleo.domain.core.PreferenceKey
 import com.polleo.ui.KEY_ARGS_INPUT
 import com.polleo.ui.onboarding.OnboardingActivity
 import com.polleo.ui.create.EditPackActivity
@@ -37,6 +41,7 @@ interface Router {
         object Finish : Route
         object SubscriptionPaywall : Route
         object Onboarding : Route
+        data class GoogleReview(val reviewInfo: ReviewInfo) : Route
     }
 
     fun route(route: Route)
@@ -47,7 +52,9 @@ interface Router {
 
 }
 
-class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
+class RouterImpl @Inject constructor(
+    private val preferenceCache: PreferenceCache
+) : Router, CoroutineScope by MainScope() {
 
     private val routeQueue = ConcurrentLinkedQueue<Router.Route>()
 
@@ -84,6 +91,7 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
                     is Router.Route.Finish -> finish()
                     is Router.Route.SubscriptionPaywall -> showSubscriptionPaywall()
                     is Router.Route.Onboarding -> showOnboarding()
+                    is Router.Route.GoogleReview -> showGoogleReview(route.reviewInfo)
                 }
             }
         }
@@ -166,6 +174,16 @@ class RouterImpl @Inject constructor() : Router, CoroutineScope by MainScope() {
         host?.let { activity ->
             val intent = Intent(activity, OnboardingActivity::class.java)
             activity.startActivity(intent)
+        }
+    }
+
+    private fun showGoogleReview(reviewInfo: ReviewInfo) {
+        host?.let { activity ->
+            val manager = ReviewManagerFactory.create(activity)
+            val flow = manager.launchReviewFlow(activity, reviewInfo)
+            flow.addOnCompleteListener { _ ->
+                preferenceCache.putBoolean(PreferenceKey.GoogleStoreReviewShown, true)
+            }
         }
     }
 
