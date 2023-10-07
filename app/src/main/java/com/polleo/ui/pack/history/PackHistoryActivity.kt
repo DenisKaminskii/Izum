@@ -65,6 +65,7 @@ class PackHistoryActivity : BaseActivity() {
         binding.vProgress.isVisible = viewState is PackHistoryViewState.Loading
         binding.vgError.isVisible = viewState is PackHistoryViewState.Error
         binding.vgNoPolls.isVisible = viewState is PackHistoryViewState.Empty
+        binding.ivFormat.isVisible = viewState is PackHistoryViewState.Content
 
         if (viewState !is PackHistoryViewState.Content) return
         binding.rvPolls.isVisible = viewState.polls.isNotEmpty()
