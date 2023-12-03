@@ -211,12 +211,14 @@ class PollViewModel @Inject constructor(
     fun onPackHistoryClick() {
         viewModelScope.launch {
             route(Router.Route.Finish)
-            route(Router.Route.PackHistory(
-                input = PackHistoryInput(
-                    packId = packId,
-                    packTitle = packTitle
+            route(
+                Router.Route.PackHistory(
+                    input = PackHistoryInput(
+                        packId = packId,
+                        packTitle = packTitle
+                    )
                 )
-            ))
+            )
         }
     }
 
