@@ -67,12 +67,14 @@ class PollViewModel @Inject constructor(
 
         data class Arguments(
             val packId: Long,
-            val packTitle: String
+            val packTitle: String,
+            val isPaid: Boolean
         )
     }
 
     private var packTitle = ""
     private var packId = -1L
+    private var isPaid = false
 
     private val polls = mutableListOf<Poll>()
     private var isPollFetched = false
@@ -92,6 +94,7 @@ class PollViewModel @Inject constructor(
         super.onViewInitialized(input)
         packId = input.packId
         packTitle = input.packTitle
+        isPaid = input.isPaid
 
         fetchPolls()
     }
@@ -215,7 +218,8 @@ class PollViewModel @Inject constructor(
                 Router.Route.PackHistory(
                     input = PackHistoryInput(
                         packId = packId,
-                        packTitle = packTitle
+                        packTitle = packTitle,
+                        isPaid = isPaid
                     )
                 )
             )

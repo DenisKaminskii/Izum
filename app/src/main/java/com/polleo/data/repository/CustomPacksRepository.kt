@@ -84,7 +84,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
 
     override suspend fun createPack(title: String): Pair<Long, String> {
         val response = customPacksApi.createPack(TitleJson(title))
-        return response.id to response.link
+        return response.id to response.code
     }
 
     override suspend fun updatePack(id: Long, title: String) {

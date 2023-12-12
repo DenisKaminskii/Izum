@@ -20,13 +20,16 @@ sealed interface PackHistoryViewState {
 
     object Loading : PackHistoryViewState
 
-    object Empty : PackHistoryViewState
+    data class Empty(
+        val isPaid: Boolean
+    ) : PackHistoryViewState
 
     object Error : PackHistoryViewState
 
     data class Content(
         val polls: List<PollsItem>,
-        val isValueInNumbers: Boolean = true
+        val isValueInNumbers: Boolean = true,
+        val isPaid: Boolean
     ) : PackHistoryViewState
 
 }
@@ -71,7 +74,7 @@ class PackHistoryViewModel @Inject constructor(
     private fun updateView() {
         updateState {
             if (!isPollFetched) return@updateState PackHistoryViewState.Loading
-            if (polls.isEmpty()) return@updateState PackHistoryViewState.Empty
+            if (polls.isEmpty()) return@updateState PackHistoryViewState.Empty(isPaid = input.isPaid)
 
             PackHistoryViewState.Content(
                 polls
@@ -105,15 +108,22 @@ class PackHistoryViewModel @Inject constructor(
                             barPercent = poll.options[0].votesCount.toInt() * 100 / (poll.options[0].votesCount.toInt() + poll.options[1].votesCount.toInt())
                         )
                     },
-                isValueInNumbers = isValueInNumbers
+                isValueInNumbers = isValueInNumbers,
+                isPaid = input.isPaid
             )
         }
     }
 
-    fun onNoPollsClicked() {
+    fun onStartClicked() {
         viewModelScope.launch {
             route(Router.Route.Finish)
             route(Router.Route.Polls(input.packId, input.packTitle))
+        }
+    }
+
+    fun onSubscribeAndStartClicked() {
+        viewModelScope.launch {
+            route(Router.Route.SubscriptionPaywall)
         }
     }
 

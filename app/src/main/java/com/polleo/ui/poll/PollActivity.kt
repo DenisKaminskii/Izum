@@ -15,6 +15,7 @@ class PollActivity : BaseActivity() {
     companion object {
         const val KEY_ARGS_PACK_ID = "KEY_ARGS_PACK_ID"
         const val KEY_ARGS_PACK_TITLE = "KEY_ARGS_PACK_TITLE"
+        const val KEY_ARGS_IS_PAID = "KEY_ARGS_IS_PAID"
     }
 
     private var _binding: ActivityPollBinding? = null
@@ -46,7 +47,8 @@ class PollActivity : BaseActivity() {
         viewModel.onViewInitialized(
             input = PollViewModel.Companion.Arguments(
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
-                packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: ""
+                packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: "",
+                isPaid = intent.getBooleanExtra(KEY_ARGS_IS_PAID, false)
             )
         )
 

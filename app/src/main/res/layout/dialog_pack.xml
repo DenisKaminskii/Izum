@@ -132,18 +132,6 @@
             android:text="@string/start"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvHistory"
-            style="@style/Text.Button.White.Outline"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="Statistics"
-            android:visibility="visible" />
-
     </FrameLayout>
 
 </LinearLayout>

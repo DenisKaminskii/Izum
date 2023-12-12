@@ -172,7 +172,6 @@ class PackDialog : BaseDialogFragment() {
 
         binding.tvStart.isVisible = !publicPack.isPaid || userRepository.hasSubscription
         binding.tvSubscribe.isVisible = publicPack.isPaid && !userRepository.hasSubscription
-        binding.tvHistory.isVisible = false // §
 
         binding.tvStart.background = GradientDrawable().apply {
             cornerRadius = requireContext().dpF(14)

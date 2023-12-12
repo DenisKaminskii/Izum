@@ -18,7 +18,8 @@ import javax.inject.Inject
 @Parcelize
 data class PackHistoryInput(
     val packId: Long,
-    val packTitle: String
+    val packTitle: String,
+    val isPaid: Boolean
 ) : Parcelable
 
 @AndroidEntryPoint
@@ -46,7 +47,8 @@ class PackHistoryActivity : BaseActivity() {
         val input = args.getParcelable<PackHistoryInput>(KEY_ARGS_INPUT)!!
 
         binding.ivBack.setOnClickListener { finish() }
-        binding.tvNoPolls.setOnClickListener { viewModel.onNoPollsClicked() }
+        binding.tvStart.setOnClickListener { viewModel.onStartClicked() }
+        binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeAndStartClicked() }
         binding.ivFormat.setOnClickListener { viewModel.onFormatClicked() }
 
         binding.tvPackTitle.text = input.packTitle
@@ -65,6 +67,8 @@ class PackHistoryActivity : BaseActivity() {
         binding.vProgress.isVisible = viewState is PackHistoryViewState.Loading
         binding.vgError.isVisible = viewState is PackHistoryViewState.Error
         binding.vgNoPolls.isVisible = viewState is PackHistoryViewState.Empty
+        binding.tvStart.isVisible = viewState is PackHistoryViewState.Empty && !viewState.isPaid
+        binding.tvSubscribe.isVisible = viewState is PackHistoryViewState.Empty && viewState.isPaid
         binding.ivFormat.isVisible = viewState is PackHistoryViewState.Content
 
         if (viewState !is PackHistoryViewState.Content) return

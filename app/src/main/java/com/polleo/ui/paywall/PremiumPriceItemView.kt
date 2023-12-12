@@ -1,24 +1,25 @@
 package com.polleo.ui.paywall
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import com.polleo.databinding.ItemPricePremiumBinding
 import com.polleo.ui.dp
 import com.polleo.ui.dpF
 
 data class PremiumPriceItemState(
     val title: String,
-    val price: String,
     val subtitle: String,
     val isSelected: Boolean,
-    @ColorInt
-    val primaryColor: Int,
-    @ColorInt
-    val textColor: Int
+    @ColorInt val titleColor: Int,
+    @ColorInt val subtitleColor: Int,
+    @DrawableRes val icon: Int,
+    @ColorInt val accentColor: Int
 )
 
 class PremiumPriceItemView : LinearLayout {
@@ -47,25 +48,24 @@ class PremiumPriceItemView : LinearLayout {
     fun update(state: PremiumPriceItemState) = with(binding) {
         tvTitle.text = state.title
         tvSubtitle.text = state.subtitle
-        tvPrice.text = state.price
+
+        tvTitle.setTextColor(state.titleColor)
+        tvSubtitle.setTextColor(state.subtitleColor)
+        ivCheck.setImageResource(state.icon)
 
         root.background = GradientDrawable().apply {
             setColor(
-                if (state.isSelected) state.primaryColor
+                if (state.isSelected) state.accentColor
                 else context.getColor(android.R.color.transparent)
             )
             if (!state.isSelected) {
                 setStroke(
                     context.dp(2),
-                    state.primaryColor
+                    state.accentColor
                 )
             }
-            cornerRadius = context.dpF(24)
+            cornerRadius = context.dpF(10)
         }
-
-        tvTitle.setTextColor(if (state.isSelected) state.textColor else state.primaryColor)
-        tvSubtitle.setTextColor(if (state.isSelected) state.textColor else state.primaryColor)
-        tvPrice.setTextColor(if (state.isSelected) state.textColor else state.primaryColor)
     }
 
 }

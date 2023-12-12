@@ -120,7 +120,8 @@ class PacksViewModel @Inject constructor(
             route(Router.Route.PackHistory(
                 input = PackHistoryInput(
                     packId = publicPack.id,
-                    packTitle = publicPack.title
+                    packTitle = publicPack.title,
+                    isPaid = publicPack.isPaid
                 )
             ))
         }

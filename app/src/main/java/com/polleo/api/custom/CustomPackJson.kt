@@ -15,6 +15,6 @@ data class CustomPackJson(
     val pollsCount: Long,
     @Json(name = "token")
     val token: String,
-    @Json(name = "link")
-    val link: String
+    @Json(name = "code")
+    val code: String
 )

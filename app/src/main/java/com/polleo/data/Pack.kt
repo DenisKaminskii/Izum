@@ -73,7 +73,7 @@ sealed class Pack(
                     description = json.description,
                     pollsCount = json.pollsCount,
                     token = json.token,
-                    link = json.link
+                    link = json.code
                 )
             }
 
