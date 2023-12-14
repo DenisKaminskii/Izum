@@ -10,7 +10,6 @@ import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.create.EditPackInput
 import com.polleo.ui.edit.EditPollVariant
-import com.polleo.ui.pack.history.PackHistoryInput
 import com.polleo.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -110,27 +109,23 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onStartClick(publicPack: Pack.Public) {
+    fun onNewCustomPackStartClick(pack: Pack) {
         viewModelScope.launch {
-            route(Router.Route.Polls(publicPack.id, publicPack.title))
+            route(Router.Route.Polls(pack))
         }
     }
 
-    fun onStartClick(packId: Long, packTitle: String) {
+    fun onNewCustomPackStartClick(packId: Long) {
+        val pack = customPacks.firstOrNull { it.id == packId } ?: return
+
         viewModelScope.launch {
-            route(Router.Route.Polls(packId, packTitle))
+            route(Router.Route.Polls(pack))
         }
     }
 
-    fun onPackHistoryClick(publicPack: Pack.Public) {
+    fun onPackHistoryClick(pack: Pack) {
         viewModelScope.launch {
-            route(Router.Route.PackHistory(
-                input = PackHistoryInput(
-                    packId = publicPack.id,
-                    packTitle = publicPack.title,
-                    isPaid = publicPack.isPaid
-                )
-            ))
+            route(Router.Route.PackHistory(pack))
         }
     }
 

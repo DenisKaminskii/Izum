@@ -11,6 +11,7 @@
     <color name="black_soft">#121212</color>
     <color name="black_background">#101010</color>
     <color name="white_25">#40EFEFEF</color>
+    <color name="white_35">#59EFEFEF</color>
     <color name="white_50">#80EFEFEF</color>
     <color name="white_95">#E0E0E0</color>
     <color name="purple">#AF30DC</color>
@@ -59,6 +60,6 @@
     <color name="paywall_gradient_lifetime_end">#8AF847</color>
 
     <color name="onboarding_black">#141414</color>
-    <color name="edit_pack_item_stroke">#555555</color>
+    <color name="edit_pack_item_stroke">@color/white_35</color>
 
 </resources>

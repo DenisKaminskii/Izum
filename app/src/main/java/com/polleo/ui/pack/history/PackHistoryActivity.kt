@@ -6,21 +6,15 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.polleo.R
+import com.polleo.data.Pack
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.databinding.ActivityPackHistoryBinding
 import com.polleo.ui.BaseActivity
-import com.polleo.ui.KEY_ARGS_INPUT
+import com.polleo.ui.KEY_ARGS_PACK
 import com.polleo.ui.poll.list.PollsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
-
-@Parcelize
-data class PackHistoryInput(
-    val packId: Long,
-    val packTitle: String,
-    val isPaid: Boolean
-) : Parcelable
 
 @AndroidEntryPoint
 class PackHistoryActivity : BaseActivity() {
@@ -44,18 +38,18 @@ class PackHistoryActivity : BaseActivity() {
     }
 
     override fun initView(args: Bundle) {
-        val input = args.getParcelable<PackHistoryInput>(KEY_ARGS_INPUT)!!
+        val pack = args.getParcelable<Pack>(KEY_ARGS_PACK)!!
 
         binding.ivBack.setOnClickListener { finish() }
         binding.tvStart.setOnClickListener { viewModel.onStartClicked() }
         binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeAndStartClicked() }
         binding.ivFormat.setOnClickListener { viewModel.onFormatClicked() }
 
-        binding.tvPackTitle.text = input.packTitle
+        binding.tvPackTitle.text = pack.title
         binding.rvPolls.adapter = adapter
         binding.rvPolls.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        viewModel.onViewInitialized(input)
+        viewModel.onViewInitialized(pack)
     }
 
     override fun initSubs() {

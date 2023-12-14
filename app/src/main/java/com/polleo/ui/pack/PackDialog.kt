@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,16 +18,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.polleo.R
 import com.polleo.data.Pack
 import com.polleo.data.repository.UserRepository
 import com.polleo.databinding.DialogPackBinding
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.ui.BaseDialogFragment
+import com.polleo.ui.KEY_ARGS_PACK
 import com.polleo.ui.dpF
 import com.polleo.ui.packs.PacksViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,15 +36,13 @@ class PackDialog : BaseDialogFragment() {
 
     companion object {
 
-        private const val KEY_ARGS_PACK = "KEY_ARGS_PACK"
-
         fun show(
             fragmentManager: FragmentManager,
-            publicPack: Pack.Public
+            pack: Pack
         ) {
             PackDialog().apply {
                 arguments = Bundle().apply {
-                    putParcelable(KEY_ARGS_PACK, publicPack)
+                    putParcelable(KEY_ARGS_PACK, pack)
                 }
             }.show(fragmentManager, "PackFragment")
         }
@@ -67,13 +61,13 @@ class PackDialog : BaseDialogFragment() {
         ViewModelProvider(requireActivity())[PacksViewModel::class.java]
     }
 
-    private lateinit var publicPack: Pack.Public
+    private lateinit var pack: Pack
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)
         arguments?.let {
-            publicPack = it.getParcelable(KEY_ARGS_PACK)!!
+            pack = it.getParcelable(KEY_ARGS_PACK)!!
         }
     }
 
@@ -92,9 +86,9 @@ class PackDialog : BaseDialogFragment() {
         dialog.window?.setBackgroundDrawable(
             createInsetDrawable(
                 context = requireContext(),
-                horizontalOffset = requireContext().dpF(32),
-                gradientStart = publicPack.gradientStartColor,
-                gradientEnd = publicPack.gradientEndColor
+                horizontalOffset = requireContext().dpF(48),
+                gradientStart = pack.gradientStartColor,
+                gradientEnd = pack.gradientEndColor
             )
         )
         return dialog
@@ -109,46 +103,46 @@ class PackDialog : BaseDialogFragment() {
         )
 
         binding.tvStart.setOnClickListener {
-            viewModel.onStartClick(publicPack)
+            viewModel.onNewCustomPackStartClick(pack)
             dismissAllowingStateLoss()
         }
 
         binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeClick() }
-        binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(publicPack) }
+        binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(pack) }
 
-        binding.tvPolls.text = "${publicPack.pollsCount} polls"
-        binding.tvTitle.text = publicPack.title
+        binding.tvPolls.text = "${pack.pollsCount} polls"
+        binding.tvTitle.text = pack.title
 
-        binding.tvTitle.setTextColor(publicPack.contentColor)
-        binding.ivHistory.setColorFilter(publicPack.contentColor)
-        binding.ivFirst.setColorFilter(publicPack.contentColor)
-        binding.ivSecond.setColorFilter(publicPack.contentColor)
-        binding.ivThird.setColorFilter(publicPack.contentColor)
-        binding.tvPolls.setTextColor(publicPack.contentColor)
-        binding.tvStart.setTextColor(publicPack.contentColor)
+        binding.tvTitle.setTextColor(pack.contentColor)
+        binding.ivHistory.setColorFilter(pack.contentColor)
+        binding.ivFirst.setColorFilter(pack.contentColor)
+        binding.ivSecond.setColorFilter(pack.contentColor)
+        binding.ivThird.setColorFilter(pack.contentColor)
+        binding.tvPolls.setTextColor(pack.contentColor)
+        binding.tvStart.setTextColor(pack.contentColor)
         binding.tvStart.compoundDrawableTintList = ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_enabled)),
-            intArrayOf(publicPack.contentColor)
+            intArrayOf(pack.contentColor)
         )
-        binding.tvSubscribe.setTextColor(publicPack.contentColor)
+        binding.tvSubscribe.setTextColor(pack.contentColor)
         binding.tvSubscribe.compoundDrawableTintList = ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_enabled)),
-            intArrayOf(publicPack.contentColor)
+            intArrayOf(pack.contentColor)
         )
         binding.tvSubscribe.backgroundTintList = ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_enabled)),
-            intArrayOf(publicPack.contentColor)
+            intArrayOf(pack.contentColor)
         )
 
-        binding.tvStart.isVisible = !publicPack.isPaid || userRepository.hasSubscription
-        binding.tvSubscribe.isVisible = publicPack.isPaid && !userRepository.hasSubscription
+        binding.tvStart.isVisible = !pack.isPaid || userRepository.hasSubscription
+        binding.tvSubscribe.isVisible = pack.isPaid && !userRepository.hasSubscription
 
         binding.tvStart.background = GradientDrawable().apply {
             cornerRadius = requireContext().dpF(14)
-            setStroke(requireContext().dpF(2).toInt(), publicPack.contentColor)
+            setStroke(requireContext().dpF(2).toInt(), pack.contentColor)
         }
 
-        preferenceCache.putLong("${publicPack.id}_count", publicPack.pollsCount)
+        preferenceCache.putLong("${pack.id}_count", pack.pollsCount)
     }
 
     override fun initSubs() {

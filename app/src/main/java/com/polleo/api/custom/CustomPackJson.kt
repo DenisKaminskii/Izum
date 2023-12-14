@@ -1,5 +1,7 @@
 package com.polleo.api.custom
 
+import android.content.Context
+import com.polleo.R
 import com.polleo.data.Pack
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -21,7 +23,8 @@ data class CustomPackJson(
 )
 
 fun CustomPackJson.toModel(
-    isMine: Boolean
+    isMine: Boolean,
+    context: Context
 ) = Pack.Custom(
     id = id,
     title = title,
@@ -29,5 +32,8 @@ fun CustomPackJson.toModel(
     pollsCount = pollsCount,
     token = token,
     code = code,
-    isMine = isMine
+    isMine = isMine,
+    contentColor = context.getColor(R.color.black_soft),
+    gradientStartColor = context.getColor(R.color.white_gradient_start),
+    gradientEndColor = context.getColor(R.color.white_gradient_end)
 )

@@ -23,7 +23,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
     companion object {
 
         fun getInstance(
-            onStart: ((packId: Long, packTitle: String) -> Unit)
+            onStart: ((packId: Long) -> Unit)
         ) : AddCustomPackDialog {
             val dialog = AddCustomPackDialog()
             dialog.onStart = onStart
@@ -37,7 +37,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
     private var _binding: DialogAddCustomPackBinding? = null
     private val binding get() = _binding!!
 
-    private var onStart: ((Long, String) -> Unit)? = null
+    private var onStart: ((Long) -> Unit)? = null
 
     private val animDuration = 225L
 
@@ -168,8 +168,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
             showCustomPackAdded(state)
             tvAdd.setOnClickListener {
                 val packId = state.pack.id
-                val packTitle = state.pack.title
-                onStart?.invoke(packId, packTitle)
+                onStart?.invoke(packId)
                 dismissAllowingStateLoss()
             }
         }

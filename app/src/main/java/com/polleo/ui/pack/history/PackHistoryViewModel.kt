@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.polleo.R
+import com.polleo.data.Pack
 import com.polleo.data.Poll
+import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.StateViewModel
@@ -38,8 +40,9 @@ sealed interface PackHistoryViewState {
 class PackHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val publicPacksRepository: PublicPacksRepository,
+    private val customPacksRepository: CustomPacksRepository,
     private val preferenceCache: PreferenceCache
-) : StateViewModel<PackHistoryInput, PackHistoryViewState>(
+) : StateViewModel<Pack, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
 
@@ -47,19 +50,22 @@ class PackHistoryViewModel @Inject constructor(
     private var isPollFetched = false
     private var isValueInNumbers = true
 
-    private lateinit var input: PackHistoryInput
+    private lateinit var pack: Pack
 
-    override fun onViewInitialized(input: PackHistoryInput) {
+    override fun onViewInitialized(input: Pack) {
         super.onViewInitialized(input)
-        this.input = input
-
+        this.pack = input
         fetchPolls()
     }
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val votedPolls = publicPacksRepository.getPackVotedPolls(input.packId)
-            preferenceCache.putLong("${input.packId}_voted_count", votedPolls.count().toLong())
+            val votedPolls = if (pack is Pack.Custom) {
+                customPacksRepository.getPackVotedPolls(pack.id)
+            } else {
+                publicPacksRepository.getPackVotedPolls(pack.id)
+            }
+            preferenceCache.putLong("${pack.id}_voted_count", votedPolls.count().toLong())
             isPollFetched = true
             polls.clear()
             polls.addAll(votedPolls)
@@ -74,7 +80,7 @@ class PackHistoryViewModel @Inject constructor(
     private fun updateView() {
         updateState {
             if (!isPollFetched) return@updateState PackHistoryViewState.Loading
-            if (polls.isEmpty()) return@updateState PackHistoryViewState.Empty(isPaid = input.isPaid)
+            if (polls.isEmpty()) return@updateState PackHistoryViewState.Empty(isPaid = pack.isPaid)
 
             PackHistoryViewState.Content(
                 polls
@@ -109,7 +115,7 @@ class PackHistoryViewModel @Inject constructor(
                         )
                     },
                 isValueInNumbers = isValueInNumbers,
-                isPaid = input.isPaid
+                isPaid = pack.isPaid
             )
         }
     }
@@ -117,7 +123,7 @@ class PackHistoryViewModel @Inject constructor(
     fun onStartClicked() {
         viewModelScope.launch {
             route(Router.Route.Finish)
-            route(Router.Route.Polls(input.packId, input.packTitle))
+            route(Router.Route.Polls(pack))
         }
     }
 

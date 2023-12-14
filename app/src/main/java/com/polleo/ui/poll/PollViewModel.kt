@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.model.ReviewErrorCode
+import com.polleo.data.Pack
 import com.polleo.data.Poll
 import com.polleo.data.PollOption
 import com.polleo.data.repository.CustomPacksRepository
@@ -14,7 +15,6 @@ import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceKey
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
-import com.polleo.ui.pack.history.PackHistoryInput
 import com.polleo.ui.poll.statistic.PollStatisticInput
 import com.polleo.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +56,7 @@ class PollViewModel @Inject constructor(
     private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository,
     private val preferenceCache: PreferenceCache
-) : StateViewModel<PollInput, PollViewState>(
+) : StateViewModel<Pack, PollViewState>(
     initialState = PollViewState.Loading
 ) {
 
@@ -65,7 +65,7 @@ class PollViewModel @Inject constructor(
         private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 1 // 80
     }
 
-    private lateinit var input: PollInput
+    private lateinit var pack: Pack
 
     private val polls = mutableListOf<Poll>()
     private var isPollFetched = false
@@ -81,18 +81,18 @@ class PollViewModel @Inject constructor(
 
     private var votedOptionId: Long? = null
 
-    override fun onViewInitialized(input: PollInput) {
+    override fun onViewInitialized(input: Pack) {
         super.onViewInitialized(input)
-        this.input = input
+        this.pack = input
         fetchPolls()
     }
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPolls = if (input.isCustom) {
-                customPacksRepository.getPackUnvotedPolls(input.packId)
+            val newPolls = if (pack is Pack.Custom) {
+                customPacksRepository.getPackUnvotedPolls(pack.id)
             } else {
-                publicPacksRepository.getPackUnvotedPolls(input.packId)
+                publicPacksRepository.getPackUnvotedPolls(pack.id)
             }
             isPollFetched = true
             polls.clear()
@@ -109,7 +109,7 @@ class PollViewModel @Inject constructor(
         updateState {
             if (!isPollFetched) return@updateState PollViewState.Loading
             if (polls.isEmpty()) return@updateState PollViewState.Empty(
-                packTitle = input.packTitle
+                packTitle = pack.title
             )
 
             val topCount = optionTop.votesCount + if (votedOptionId == optionTop.id) 1 else 0
@@ -117,7 +117,7 @@ class PollViewModel @Inject constructor(
             val allCount = topCount + bottomCount
 
             PollViewState.Content(
-                packTitle = input.packTitle,
+                packTitle = pack.title,
                 votesCount = allCount,
                 top = OptionViewState(
                     id = optionTop.id,
@@ -206,15 +206,7 @@ class PollViewModel @Inject constructor(
     fun onPackHistoryClick() {
         viewModelScope.launch {
             route(Router.Route.Finish)
-            route(
-                Router.Route.PackHistory(
-                    input = PackHistoryInput(
-                        packId = input.packId,
-                        packTitle = input.packTitle,
-                        isPaid = input.isPaid
-                    )
-                )
-            )
+            route(Router.Route.PackHistory(pack))
         }
     }
 
@@ -225,7 +217,7 @@ class PollViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                if (input.isCustom) {
+                if (pack is Pack.Custom) {
                     customPacksRepository.vote(poll.id, optionId)
                 } else {
                     publicPacksRepository.vote(poll.id, optionId)
@@ -240,7 +232,7 @@ class PollViewModel @Inject constructor(
     }
 
     private fun increaseAnsweredPollsCount() {
-        val keyPack = "${input.packId}_voted_count"
+        val keyPack = "${pack.id}_voted_count"
         val packVotesCount = preferenceCache.getLong(keyPack, 0L)
         preferenceCache.putLong(keyPack, packVotesCount + 1)
 

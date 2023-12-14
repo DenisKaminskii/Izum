@@ -1,5 +1,6 @@
 package com.polleo.data.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.polleo.api.custom.CustomPackAddPollRequestJson
@@ -16,6 +17,7 @@ import com.polleo.data.PollStatisticCategory
 import com.polleo.data.PollStatisticSection
 import com.polleo.data.retrieveCodeData
 import com.polleo.domain.core.PreferenceCache
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +50,9 @@ interface CustomPacksRepository {
     suspend fun getPackUnvotedPolls(packId: Long): List<Poll>
 
     @WorkerThread
+    suspend fun getPackVotedPolls(packId: Long): List<Poll>
+
+    @WorkerThread
     suspend fun removePack(id: Long)
 
     @WorkerThread
@@ -74,7 +79,8 @@ interface CustomPacksRepository {
 
 }
 
-class CustomPacksRepositoryImpl @Inject constructor(
+class CustomPacksRepositoryImpl(
+    private val context: Context,
     private val customPacksApi: CustomPackApi,
     private val preferenceCache: PreferenceCache
 ) : CustomPacksRepository {
@@ -87,14 +93,14 @@ class CustomPacksRepositoryImpl @Inject constructor(
     override val packs: StateFlow<CustomPacksState>
         get() = _packs
 
-    private val polls: HashMap<Long, MutableSharedFlow<List<Poll>>> = hashMapOf()
+    private val polls: HashMap<Long, MutableStateFlow<List<Poll>>> = hashMapOf()
 
     private val addedPacks: List<AddedCustomPack>
         get() = preferenceCache.getList(KEY_ADDED_CUSTOM_PACKS, AddedCustomPack::class.java).orEmpty()
 
     override suspend fun fetchMyPacks() {
         val myPacks = customPacksApi.getMyPacks()
-            .map { it.toModel(isMine = true) }
+            .map { it.toModel(isMine = true, context = context) }
 
         _packs.update { state ->
             state.copy(myPacks = myPacks,)
@@ -106,7 +112,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
             .mapNotNull { pack ->
                 try {
                     customPacksApi.getCustomPack(pack.id, pack.token)
-                        .toModel(isMine = false)
+                        .toModel(isMine = false, context = context)
                 } catch (e: Exception) {
                     null
                 }
@@ -118,23 +124,19 @@ class CustomPacksRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMyPackPolls(packId: Long, packToken: String): Flow<List<Poll>> {
-        if (!polls.containsKey(packId)) {
-            polls[packId] = MutableSharedFlow(replay = 1)
-        }
-
-        val pollsFlow = polls[packId]!!
         val newPolls = customPacksApi.getCustomPackPolls(packId, packToken)
             .map(Poll::fromJson)
 
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableStateFlow(newPolls)
+        }
+
+        val pollsFlow = polls[packId]!!
         pollsFlow.emit(newPolls)
         return pollsFlow
     }
 
     override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> {
-        if (!polls.containsKey(packId)) {
-            polls[packId] = MutableSharedFlow(replay = 1)
-        }
-
         val packToken = addedPacks
             .firstOrNull { addedPack -> addedPack.id == packId }
             ?.token
@@ -143,9 +145,35 @@ class CustomPacksRepositoryImpl @Inject constructor(
                 return emptyList()
             }
 
-        return customPacksApi.getCustomPackPolls(packId, packToken)
+        val newPolls = customPacksApi.getCustomPackPolls(packId, packToken)
             .map(Poll::fromJson)
-            .filter { poll -> poll.voted?.optionId == null }
+
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableStateFlow(newPolls)
+        }
+        polls[packId]?.emit(newPolls)
+
+        return newPolls.filter { poll -> poll.voted?.optionId == null }
+    }
+
+    override suspend fun getPackVotedPolls(packId: Long): List<Poll> {
+        val packToken = addedPacks
+            .firstOrNull { addedPack -> addedPack.id == packId }
+            ?.token
+            ?: run {
+                Log.e("Steve", "Error while fetching pack token")
+                return emptyList()
+            }
+
+        val newPolls = customPacksApi.getCustomPackPolls(packId, packToken)
+            .map(Poll::fromJson)
+
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableStateFlow(newPolls)
+        }
+        polls[packId]?.emit(newPolls)
+
+        return newPolls.filter { poll -> poll.voted?.optionId != null }
     }
 
     override suspend fun removePack(id: Long) {
@@ -164,7 +192,8 @@ class CustomPacksRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePack(id: Long, title: String) {
-        val updatedPack = customPacksApi.updatePack(id, TitleJson(title)).toModel(isMine = true)
+        val updatedPack = customPacksApi.updatePack(id, TitleJson(title))
+            .toModel(isMine = true, context = context)
 
         _packs.update { state ->
             state.copy(
@@ -185,7 +214,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
         ).let(Poll::fromJson)
 
         if (!polls.containsKey(packId)) {
-            polls[packId] = MutableSharedFlow(replay = 1)
+            polls[packId] = MutableStateFlow(listOf())
         }
 
         val pollsFlow = polls[packId]!!
@@ -235,7 +264,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
     override suspend fun getCustomPack(packId: Long, token: String): Pack.Custom? {
         return try {
             val pack = customPacksApi.getCustomPack(packId, token = token)
-            val customPack = pack.toModel(isMine = false)
+            val customPack = pack.toModel(isMine = false, context = context)
             addNewCustomPack(customPack)
             customPack
         } catch (e: Exception) {

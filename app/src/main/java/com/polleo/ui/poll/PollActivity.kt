@@ -6,25 +6,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.polleo.R
+import com.polleo.data.Pack
 import com.polleo.databinding.ActivityPollBinding
 import com.polleo.ui.BaseActivity
-
-data class PollInput(
-    val packId: Long,
-    val packTitle: String,
-    val isPaid: Boolean,
-    val isCustom: Boolean
-)
+import com.polleo.ui.KEY_ARGS_PACK
 
 @SuppressLint("ClickableViewAccessibility")
 class  PollActivity : BaseActivity() {
-
-    companion object {
-        const val KEY_ARGS_PACK_ID = "KEY_ARGS_PACK_ID"
-        const val KEY_ARGS_PACK_TITLE = "KEY_ARGS_PACK_TITLE"
-        const val KEY_ARGS_IS_PAID = "KEY_ARGS_IS_PAID"
-        const val KEY_ARGS_IS_CUSTOM = "KEY_ARGS_IS_CUSTOM"
-    }
 
     private var _binding: ActivityPollBinding? = null
     private val binding: ActivityPollBinding
@@ -50,22 +38,20 @@ class  PollActivity : BaseActivity() {
         binding.tvStatistic.isVisible = true
         binding.tvNext.isVisible = true
 
-        update(PollViewState.Loading)
-
-        viewModel.onViewInitialized(
-            input = PollInput(
-                packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
-                packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: "",
-                isPaid = intent.getBooleanExtra(KEY_ARGS_IS_PAID, false),
-                isCustom = intent.getBooleanExtra(KEY_ARGS_IS_CUSTOM, false)
-            )
-        )
-
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finish()
             }
         })
+
+        update(PollViewState.Loading)
+
+        val input = intent.getParcelableExtra<Pack>(KEY_ARGS_PACK)
+        if (input != null) {
+            viewModel.onViewInitialized(input)
+        } else {
+            finish()
+        }
     }
 
     override fun initSubs() {

@@ -8,6 +8,7 @@ import com.polleo.data.Pack
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceKey
 import com.polleo.ui.KEY_ARGS_INPUT
+import com.polleo.ui.KEY_ARGS_PACK
 import com.polleo.ui.onboarding.OnboardingActivity
 import com.polleo.ui.create.EditPackActivity
 import com.polleo.ui.create.EditPackInput
@@ -15,7 +16,6 @@ import com.polleo.ui.edit.EditPollActivity
 import com.polleo.ui.edit.EditPollVariant
 import com.polleo.ui.pack.PackDialog
 import com.polleo.ui.pack.history.PackHistoryActivity
-import com.polleo.ui.pack.history.PackHistoryInput
 import com.polleo.ui.packs.PacksActivity
 import com.polleo.ui.paywall.SubscriptionPaywallActivity
 import com.polleo.ui.poll.PollActivity
@@ -31,12 +31,12 @@ interface Router {
 
     sealed interface Route {
         object Packs : Route
-        data class Polls(val packId: Long, val packTitle: String) : Route
+        data class Polls(val pack: com.polleo.data.Pack) : Route
         data class EditPoll(val variant: EditPollVariant) : Route
         data class EditPack(val input: EditPackInput) : Route
         data class Statistic(val input: PollStatisticInput) : Route
-        data class Pack(val pack: com.polleo.data.Pack.Public) : Route
-        data class PackHistory(val input: PackHistoryInput) : Route
+        data class Pack(val pack: com.polleo.data.Pack) : Route
+        data class PackHistory(val pack: com.polleo.data.Pack) : Route
         object ProvideUserInfo : Route
         object Finish : Route
         object SubscriptionPaywall : Route
@@ -81,12 +81,12 @@ class RouterImpl @Inject constructor(
             routeQueue.poll()?.let { route ->
                 when(route) {
                     Router.Route.Packs -> showPacks()
-                    is Router.Route.Polls -> showPackPolls(route.packId, route.packTitle)
+                    is Router.Route.Polls -> showPackPolls(route.pack)
                     is Router.Route.EditPoll -> showEditPoll(route.variant)
                     is Router.Route.EditPack -> showEditPack(route.input)
                     is Router.Route.Statistic -> showPollStatistic(route.input)
                     is Router.Route.Pack -> showPackDialog(route.pack)
-                    is Router.Route.PackHistory -> showPackHistory(route.input)
+                    is Router.Route.PackHistory -> showPackHistory(route.pack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
                     is Router.Route.SubscriptionPaywall -> showSubscriptionPaywall()
@@ -105,11 +105,10 @@ class RouterImpl @Inject constructor(
         }
     }
 
-    private fun showPackPolls(packId: Long, packTitle: String) {
+    private fun showPackPolls(pack: Pack) {
         host?.let { activity ->
             val intent = Intent(activity, PollActivity::class.java)
-            intent.putExtra(PollActivity.KEY_ARGS_PACK_ID, packId)
-            intent.putExtra(PollActivity.KEY_ARGS_PACK_TITLE, packTitle)
+            intent.putExtra(KEY_ARGS_PACK, pack)
             activity.startActivity(intent)
         }
     }
@@ -138,19 +137,19 @@ class RouterImpl @Inject constructor(
         }
     }
 
-    private fun showPackDialog(publicPack: Pack.Public) {
+    private fun showPackDialog(pack: Pack) {
         host?.let { activity ->
             PackDialog.show(
                 activity.supportFragmentManager,
-                publicPack
+                pack
             )
         }
     }
 
-    private fun showPackHistory(input: PackHistoryInput) {
+    private fun showPackHistory(pack: Pack) {
         host?.let { activity ->
             val intent = Intent(activity, PackHistoryActivity::class.java)
-            intent.putExtra(KEY_ARGS_INPUT, input)
+            intent.putExtra(KEY_ARGS_PACK, pack)
             activity.startActivity(intent)
         }
     }

@@ -16,6 +16,7 @@ import java.util.function.Consumer
 import javax.inject.Inject
 
 const val KEY_ARGS_INPUT = "KEY_ARGS_INPUT"
+const val KEY_ARGS_PACK = "KEY_ARGS_PACK"
 
 @AndroidEntryPoint
 abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {

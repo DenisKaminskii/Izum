@@ -9,24 +9,40 @@ import kotlinx.parcelize.Parcelize
 sealed class Pack(
     open val id: Long,
     open val title: String,
-    open val isUpdated: Boolean
+    open val isUpdated: Boolean,
+    open val description: String?,
+    open val isPaid: Boolean,
+    open val pollsCount: Long,
+    @ColorInt open val contentColor: Int,
+    @ColorInt open val gradientStartColor: Int,
+    @ColorInt open val gradientEndColor: Int
 ) : Parcelable {
 
     @Parcelize
     data class Public(
         override val id: Long,
         override val title: String,
-        val description: String?,
-        val isPaid: Boolean,
+        override val description: String?,
+        override val isPaid: Boolean,
         val productId: String?,
-        val pollsCount: Long,
+        override val pollsCount: Long,
         val authorId: Long?,
-        @ColorInt val contentColor: Int,
-        @ColorInt val gradientStartColor: Int,
-        @ColorInt val gradientEndColor: Int,
+        @ColorInt override val contentColor: Int,
+        @ColorInt override val gradientStartColor: Int,
+        @ColorInt override val gradientEndColor: Int,
         val preview: List<PackPreview>,
         override val isUpdated: Boolean = false
-    ) : Pack(id, title, isUpdated) {
+    ) : Pack(
+        id,
+        title,
+        isUpdated,
+        description,
+        isPaid,
+        pollsCount,
+        contentColor,
+        gradientStartColor,
+        gradientEndColor
+    ) {
 
         companion object {
 
@@ -56,13 +72,26 @@ sealed class Pack(
     data class Custom(
         override val id: Long,
         override val title: String,
-        val description: String?,
-        val pollsCount: Long,
+        override val description: String?,
+        override val pollsCount: Long,
+        @ColorInt override val contentColor: Int,
+        @ColorInt override val gradientStartColor: Int,
+        @ColorInt override val gradientEndColor: Int,
         val token: String,
         val code: String,
         val isMine: Boolean,
         override val isUpdated: Boolean = false
-    ) : Pack(id, title, isUpdated)
+    ) : Pack(
+        id,
+        title,
+        isUpdated,
+        description,
+        false,
+        pollsCount,
+        contentColor,
+        gradientStartColor,
+        gradientEndColor
+    )
 
 }
 

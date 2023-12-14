@@ -216,7 +216,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         addCustomPackDialog?.dismissAllowingStateLoss()
         addCustomPackDialog = null
         addCustomPackDialog = AddCustomPackDialog.getInstance(
-            onStart = { packId, packTitle ->  viewModel.onStartClick(packId, packTitle) }
+            onStart = { packId ->  viewModel.onNewCustomPackStartClick(packId) }
         )
         addCustomPackDialog?.show(childFragmentManager, "PackTitleEditDialog")
     }
