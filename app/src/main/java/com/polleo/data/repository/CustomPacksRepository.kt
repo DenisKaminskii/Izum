@@ -5,6 +5,7 @@ import androidx.annotation.WorkerThread
 import com.polleo.api.custom.CustomPackAddPollRequestJson
 import com.polleo.api.custom.CustomPackApi
 import com.polleo.api.TitleJson
+import com.polleo.api.VoteRequestJson
 import com.polleo.api.custom.toModel
 import com.polleo.data.EditPoll
 import com.polleo.data.Pack
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.io.IOException
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -40,7 +42,10 @@ interface CustomPacksRepository {
     suspend fun fetchAddedPacks()
 
     @WorkerThread
-    suspend fun getPolls(packId: Long, packToken: String): Flow<List<Poll>>
+    suspend fun getMyPackPolls(packId: Long, packToken: String): Flow<List<Poll>>
+
+    @WorkerThread
+    suspend fun getPackUnvotedPolls(packId: Long): List<Poll>
 
     @WorkerThread
     suspend fun removePack(id: Long)
@@ -62,6 +67,10 @@ interface CustomPacksRepository {
 
     @WorkerThread
     suspend fun getCustomPack(packId: Long, token: String): Pack.Custom?
+
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun vote(pollId: Long, optionId: Long)
 
 }
 
@@ -108,7 +117,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPolls(packId: Long, packToken: String): Flow<List<Poll>> {
+    override suspend fun getMyPackPolls(packId: Long, packToken: String): Flow<List<Poll>> {
         if (!polls.containsKey(packId)) {
             polls[packId] = MutableSharedFlow(replay = 1)
         }
@@ -119,6 +128,24 @@ class CustomPacksRepositoryImpl @Inject constructor(
 
         pollsFlow.emit(newPolls)
         return pollsFlow
+    }
+
+    override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> {
+        if (!polls.containsKey(packId)) {
+            polls[packId] = MutableSharedFlow(replay = 1)
+        }
+
+        val packToken = addedPacks
+            .firstOrNull { addedPack -> addedPack.id == packId }
+            ?.token
+            ?: run {
+                Log.e("Steve", "Error while fetching pack token")
+                return emptyList()
+            }
+
+        return customPacksApi.getCustomPackPolls(packId, packToken)
+            .map(Poll::fromJson)
+            .filter { poll -> poll.voted?.optionId == null }
     }
 
     override suspend fun removePack(id: Long) {
@@ -214,6 +241,16 @@ class CustomPacksRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.d("Steve", "Error while fetching custom pack", e)
             null
+        }
+    }
+
+    override suspend fun vote(pollId: Long, optionId: Long) {
+        try {
+            val request = VoteRequestJson(optionId)
+            customPacksApi.vote(pollId, request)
+        } catch (exception: Exception) {
+            Log.e("Steve", exception.toString())
+            throw exception
         }
     }
 

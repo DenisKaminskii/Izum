@@ -96,13 +96,17 @@ class PacksViewModel @Inject constructor(
         if (pack !is Pack.Custom) return
 
         viewModelScope.launch {
-            route(Router.Route.EditPack(
-                input = EditPackInput(
-                    packId = pack.id,
-                    packTitle = pack.title,
-                    packCode = (pack as? Pack.Custom)?.code ?: ""
-                )
-            ))
+            if (pack.isMine) {
+                route(Router.Route.EditPack(
+                    input = EditPackInput(
+                        packId = pack.id,
+                        packTitle = pack.title,
+                        packCode = (pack as? Pack.Custom)?.code ?: ""
+                    )
+                ))
+            } else {
+                route(Router.Route.Pack(pack))
+            }
         }
     }
 

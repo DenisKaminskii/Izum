@@ -69,36 +69,6 @@ class PackDialog : BaseDialogFragment() {
 
     private lateinit var publicPack: Pack.Public
 
-    private val previewAdapter by lazy { PackPreviewAdapter() }
-
-    private val visibleItemPosition: Int?
-        get() = (binding.rvPreview.layoutManager as LinearLayoutManager?)?.findFirstVisibleItemPosition()
-
-    private val onPreviewScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
-            when (newState) {
-                RecyclerView.SCROLL_STATE_IDLE -> {
-                    visibleItemPosition?.let { position ->
-                        val checked = R.drawable.ic_radio_checked_24
-                        val unchecked = R.drawable.ic_radio_unchecked_24
-                        binding.ivFirst.setImageResource(if (position == 0) checked else unchecked)
-                        binding.ivSecond.setImageResource(if (position == 1) checked else unchecked)
-                        binding.ivThird.setImageResource(if (position == 2) checked else unchecked)
-                    }
-                }
-            }
-        }
-    }
-
-    private val linearSmoothScroller: LinearSmoothScroller by lazy {
-        object : LinearSmoothScroller(requireContext()) {
-            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return 100f / displayMetrics.densityDpi
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)
@@ -179,42 +149,6 @@ class PackDialog : BaseDialogFragment() {
         }
 
         preferenceCache.putLong("${publicPack.id}_count", publicPack.pollsCount)
-
-        initPreviewList()
-    }
-
-    private fun initPreviewList() {
-        with(binding.rvPreview) {
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this.layoutManager = layoutManager
-
-            val snapHelper = LinearSnapHelper()
-            snapHelper.attachToRecyclerView(this)
-
-            adapter = previewAdapter
-            addOnScrollListener(onPreviewScrollListener)
-            onFlingListener = object : RecyclerView.OnFlingListener() {
-                override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                    val centerView = snapHelper.findSnapView(layoutManager) ?: return false
-                    val position = layoutManager.getPosition(centerView)
-                    linearSmoothScroller.targetPosition = position
-                    layoutManager.startSmoothScroll(linearSmoothScroller)
-                    return true
-                }
-            }
-
-            previewAdapter.setItems(publicPack.preview
-                .take(3)
-                .map {
-                    PackPreviewItem(
-                        topText = it.option1,
-                        bottomText = it.option2,
-                        textColor = publicPack.contentColor
-                    )
-                })
-
-            binding.vgIndicators.isVisible = publicPack.preview.size > 1
-        }
     }
 
     override fun initSubs() {

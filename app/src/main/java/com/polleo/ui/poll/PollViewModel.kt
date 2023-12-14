@@ -65,9 +65,7 @@ class PollViewModel @Inject constructor(
         private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 1 // 80
     }
 
-    private var packTitle = ""
-    private var packId = -1L
-    private var isPaid = false
+    private lateinit var input: PollInput
 
     private val polls = mutableListOf<Poll>()
     private var isPollFetched = false
@@ -85,16 +83,17 @@ class PollViewModel @Inject constructor(
 
     override fun onViewInitialized(input: PollInput) {
         super.onViewInitialized(input)
-        packId = input.packId
-        packTitle = input.packTitle
-        isPaid = input.isPaid
-
+        this.input = input
         fetchPolls()
     }
 
     private fun fetchPolls() = viewModelScope.launch {
         try {
-            val newPolls = publicPacksRepository.getPackUnvotedPolls(packId)
+            val newPolls = if (input.isCustom) {
+                customPacksRepository.getPackUnvotedPolls(input.packId)
+            } else {
+                publicPacksRepository.getPackUnvotedPolls(input.packId)
+            }
             isPollFetched = true
             polls.clear()
             polls.addAll(newPolls)
@@ -110,7 +109,7 @@ class PollViewModel @Inject constructor(
         updateState {
             if (!isPollFetched) return@updateState PollViewState.Loading
             if (polls.isEmpty()) return@updateState PollViewState.Empty(
-                packTitle = packTitle
+                packTitle = input.packTitle
             )
 
             val topCount = optionTop.votesCount + if (votedOptionId == optionTop.id) 1 else 0
@@ -118,7 +117,7 @@ class PollViewModel @Inject constructor(
             val allCount = topCount + bottomCount
 
             PollViewState.Content(
-                packTitle = packTitle,
+                packTitle = input.packTitle,
                 votesCount = allCount,
                 top = OptionViewState(
                     id = optionTop.id,
@@ -210,9 +209,9 @@ class PollViewModel @Inject constructor(
             route(
                 Router.Route.PackHistory(
                     input = PackHistoryInput(
-                        packId = packId,
-                        packTitle = packTitle,
-                        isPaid = isPaid
+                        packId = input.packId,
+                        packTitle = input.packTitle,
+                        isPaid = input.isPaid
                     )
                 )
             )
@@ -226,7 +225,11 @@ class PollViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                publicPacksRepository.vote(poll.id, optionId)
+                if (input.isCustom) {
+                    customPacksRepository.vote(poll.id, optionId)
+                } else {
+                    publicPacksRepository.vote(poll.id, optionId)
+                }
                 increaseAnsweredPollsCount()
             } catch (exception: Exception) {
                 emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
@@ -237,7 +240,7 @@ class PollViewModel @Inject constructor(
     }
 
     private fun increaseAnsweredPollsCount() {
-        val keyPack = "${packId}_voted_count"
+        val keyPack = "${input.packId}_voted_count"
         val packVotesCount = preferenceCache.getLong(keyPack, 0L)
         preferenceCache.putLong(keyPack, packVotesCount + 1)
 

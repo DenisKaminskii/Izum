@@ -17,7 +17,7 @@ data class PollInput(
 )
 
 @SuppressLint("ClickableViewAccessibility")
-class PollActivity : BaseActivity() {
+class  PollActivity : BaseActivity() {
 
     companion object {
         const val KEY_ARGS_PACK_ID = "KEY_ARGS_PACK_ID"

@@ -81,7 +81,7 @@ class EditPackViewModel @Inject constructor(
         pollsSubscription = viewModelScope.launch(ioDispatcher) {
             try {
                 val codeData = packCode.retrieveCodeData() ?: throw Exception("Couldn't parse the pack code")
-                customPacksRepository.getPolls(packId = codeData.first, packToken = codeData.second)
+                customPacksRepository.getMyPackPolls(packId = codeData.first, packToken = codeData.second)
                     .collect { polls ->
                         isPackFetched = true
                         this@EditPackViewModel.polls.clear()

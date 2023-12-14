@@ -2,6 +2,7 @@ package com.polleo.api.custom
 
 import com.polleo.api.PollJson
 import com.polleo.api.TitleJson
+import com.polleo.api.VoteRequestJson
 import com.polleo.api.statistic.PollStatisticJson
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -47,5 +48,11 @@ interface CustomPackApi {
         @Path("id") id: Long,
         @Query("token") token: String,
     ) : List<PollJson>
+
+    @POST("custom-packs/polls/{pollId}/vote")
+    suspend fun vote(
+        @Path("pollId") pollId: Long,
+        @Body request: VoteRequestJson
+    )
 
 }
