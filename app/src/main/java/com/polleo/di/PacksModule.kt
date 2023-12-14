@@ -32,8 +32,9 @@ class PacksModule {
     @Singleton
     fun provideCustomPacksRepository(
         customPacksApi: CustomPackApi,
+        preferenceCache: PreferenceCache
     ) : CustomPacksRepository {
-        return CustomPacksRepositoryImpl(customPacksApi)
+        return CustomPacksRepositoryImpl(customPacksApi, preferenceCache)
     }
 
 }

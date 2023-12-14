@@ -4,6 +4,7 @@ import androidx.annotation.WorkerThread
 import com.polleo.api.custom.CustomPackAddPollRequestJson
 import com.polleo.api.custom.CustomPackApi
 import com.polleo.api.TitleJson
+import com.polleo.api.custom.toModel
 import com.polleo.data.EditPoll
 import com.polleo.data.Pack
 import com.polleo.data.Poll
@@ -11,6 +12,7 @@ import com.polleo.data.PollOption
 import com.polleo.data.PollStatistic
 import com.polleo.data.PollStatisticCategory
 import com.polleo.data.PollStatisticSection
+import com.polleo.domain.core.PreferenceCache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -47,8 +49,13 @@ interface CustomPacksRepository {
 }
 
 class CustomPacksRepositoryImpl @Inject constructor(
-    private val customPacksApi: CustomPackApi
+    private val customPacksApi: CustomPackApi,
+    private val preferenceCache: PreferenceCache
 ) : CustomPacksRepository {
+
+    companion object {
+        private const val KEY_ADDED_CUSTOM_PACK_IDS = "KEY_ADDED_CUSTOM_PACK_IDS"
+    }
 
     private val _packs = MutableSharedFlow<List<Pack.Custom>>(replay = 1)
     override val packs: SharedFlow<List<Pack.Custom>>
@@ -56,11 +63,14 @@ class CustomPacksRepositoryImpl @Inject constructor(
 
     private val polls: HashMap<Long, MutableSharedFlow<List<Poll>>> = hashMapOf()
 
-    override suspend fun fetch() {
-        val newPacks = customPacksApi.getPacks()
-            .map(Pack.Custom::fromJson)
+    private val addedCustomPackIds: List<Int>
+        get() = preferenceCache.getList(KEY_ADDED_CUSTOM_PACK_IDS, Int::class.java).orEmpty()
 
-        _packs.emit(newPacks)
+    override suspend fun fetch() {
+        val myPacks = customPacksApi.getPacks()
+            .map { it.toModel(isMine = true) }
+
+        _packs.emit(myPacks)
     }
 
     override suspend fun getPolls(packId: Long): Flow<List<Poll>> {
@@ -88,9 +98,7 @@ class CustomPacksRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePack(id: Long, title: String) {
-        val updatedPack = Pack.Custom.fromJson(
-            json = customPacksApi.updatePack(id, TitleJson(title))
-        )
+        val updatedPack = customPacksApi.updatePack(id, TitleJson(title)).toModel(isMine = true)
 
         val current = _packs.replayCache.first()
         _packs.emit(current.map { if (it.id == id) updatedPack else it })

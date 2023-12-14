@@ -135,7 +135,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/tvSubscribeTitle"
@@ -154,7 +155,7 @@
             android:id="@+id/iPriceSecond"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             tools:background="@drawable/rect_outline_white_10_stroke_2" />
 
@@ -166,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginVertical="8dp"
         android:gravity="center_horizontal"
         android:text="You have a free 3 days! 🥳🙌"
         android:textSize="14sp"

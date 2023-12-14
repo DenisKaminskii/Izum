@@ -18,6 +18,7 @@ import com.polleo.databinding.FragmentPacksBinding
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceKey
 import com.polleo.ui.KEY_ARGS_INPUT
+import com.polleo.ui.custom.AddCustomPackDialog
 import com.polleo.ui.dp
 import com.polleo.ui.utils.RecyclerGridItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,6 +92,12 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         isCustom = input.isCustom
     }
 
+    override fun onStop() {
+        super.onStop()
+        addCustomPackDialog?.dismissAllowingStateLoss()
+        addCustomPackDialog = null
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -114,10 +121,14 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private fun initView() {
         binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvPacks.adapter = adapter
-        binding.rvPacks.addItemDecoration(
-            RecyclerGridItemDecoration(vertical = requireContext().dp(8))
-        )
+        binding.rvPacks.addItemDecoration(RecyclerGridItemDecoration(vertical = requireContext().dp(8)))
+
         binding.tvCreatePack.setOnClickListener { onCreatePackClick?.invoke() }
+
+        binding.fabAddCustomPack.isVisible = isCustom
+        binding.fabAddCustomPack.backgroundTintList = requireContext().getColorStateList(R.color.white_95)
+        binding.fabAddCustomPack.setColorFilter(requireContext().getColor(R.color.black_soft))
+        binding.fabAddCustomPack.setOnClickListener { onAddCustomPackClicked() }
     }
 
     private fun update(state: PacksViewState) {
@@ -191,6 +202,18 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             }
             .create()
         ageCheckDialog?.show()
+    }
+
+    private var addCustomPackDialog: AddCustomPackDialog? = null
+
+    private fun onAddCustomPackClicked() {
+        addCustomPackDialog?.dismissAllowingStateLoss()
+        addCustomPackDialog = null
+        addCustomPackDialog = AddCustomPackDialog.getInstance(
+            onCustomPackAdded = {},
+            onStart = { packId ->  }
+        )
+        addCustomPackDialog?.show(childFragmentManager, "PackTitleEditDialog")
     }
 
 }

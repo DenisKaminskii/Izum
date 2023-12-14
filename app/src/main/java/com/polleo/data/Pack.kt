@@ -60,26 +60,10 @@ sealed class Pack(
         val description: String?,
         val pollsCount: Long,
         val token: String,
-        val link: String,
+        val code: String,
+        val isMine: Boolean,
         override val isUpdated: Boolean = false
-    ) : Pack(id, title, isUpdated) {
-
-        companion object {
-
-            fun fromJson(json: CustomPackJson): Custom {
-                return Custom(
-                    id = json.id,
-                    title = json.title,
-                    description = json.description,
-                    pollsCount = json.pollsCount,
-                    token = json.token,
-                    link = json.code
-                )
-            }
-
-        }
-
-    }
+    ) : Pack(id, title, isUpdated)
 
 }
 

@@ -7,6 +7,7 @@ import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceCacheImpl
 import com.polleo.ui.route.Router
 import com.polleo.ui.route.RouterImpl
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,9 +30,10 @@ class CoreModule {
     @Provides
     @Singleton
     fun providePreferenceCache(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        moshi: Moshi
     ) : PreferenceCache {
-        return PreferenceCacheImpl(context)
+        return PreferenceCacheImpl(context, moshi)
     }
 
     @Provides

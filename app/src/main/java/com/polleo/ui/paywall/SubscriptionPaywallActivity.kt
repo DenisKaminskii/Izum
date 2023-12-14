@@ -87,22 +87,3 @@ class SubscriptionPaywallActivity : BaseActivity() {
     }
 
 }
-
-//if (newState.gradientTopColor != prevState.gradientTopColor) { §
-//    val colorFrom = getCompatColor(prevState.gradientTopColor)
-//    val colorTo = getCompatColor(newState.gradientTopColor)
-//    val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-//    colorAnimation.duration = animDuration
-//    val gradientBottomColor = getCompatColor(R.color.black_origin)
-//
-//    colorAnimation.addUpdateListener { animator ->
-//        vgRoot.background = GradientDrawable(
-//            GradientDrawable.Orientation.TOP_BOTTOM,
-//            intArrayOf(
-//                animator.animatedValue as Int,
-//                gradientBottomColor
-//            )
-//        )
-//    }
-//    colorAnimation.start()
-//}

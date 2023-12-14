@@ -16,12 +16,16 @@
     <color name="purple">#AF30DC</color>
     <color name="sand">#DFB45F</color>
 
+    <color name="grey_light">#BABABA</color>
     <color name="grey">#494949</color>
+    <color name="grey_dark">#2F2F2F</color>
 
     <color name="black">#000000</color>
     <color name="black_95">#0E0E0E</color>
     <color name="white">#E5E5E5</color>
+    <color name="tomato">#B94E2C</color>
     <color name="delete_red">#EA4040</color>
+    <color name="invalid_red">#AD2323</color>
 
     <color name="red">#F36265</color>
     <color name="blue">#3296B8</color>
@@ -30,8 +34,8 @@
     <color name="gender_male">#3A96EA</color>
     <color name="gender_other">#E49E17</color>
 
-    <color name="subscribe_gradient_start">#EB2B30</color>
-    <color name="subscribe_gradient_end">#D839FA</color>
+    <color name="subscribe_gradient_start">#EB2B4D</color>
+    <color name="subscribe_gradient_end">#E339FE</color>
     <color name="subscribed">#6EE5FF</color>
 
     <color name="red_gradient_start">#961676</color>
@@ -41,6 +45,8 @@
 
     <color name="black_gradient_start">#1B1B1B</color>
     <color name="black_gradient_end">#353535</color>
+    <color name="white_gradient_start">#B9B9B9</color>
+    <color name="white_gradient_end">#FEFEFE</color>
 
     <color name="paywall_grey">#838383</color>
     <color name="paywall_pink">#D430B0</color>

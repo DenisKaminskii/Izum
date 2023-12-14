@@ -103,7 +103,7 @@ class PacksViewModel @Inject constructor(
                 input = EditPackInput(
                     packId = pack.id,
                     packTitle = pack.title,
-                    shareLink = (pack as? Pack.Custom)?.link ?: ""
+                    shareLink = (pack as? Pack.Custom)?.code ?: ""
                 )
             ))
         }

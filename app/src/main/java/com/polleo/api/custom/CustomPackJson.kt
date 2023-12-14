@@ -1,5 +1,6 @@
 package com.polleo.api.custom
 
+import com.polleo.data.Pack
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -17,4 +18,16 @@ data class CustomPackJson(
     val token: String,
     @Json(name = "code")
     val code: String
+)
+
+fun CustomPackJson.toModel(
+    isMine: Boolean
+) = Pack.Custom(
+    id = id,
+    title = title,
+    description = description,
+    pollsCount = pollsCount,
+    token = token,
+    code = code,
+    isMine = isMine
 )
