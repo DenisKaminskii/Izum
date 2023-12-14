@@ -36,6 +36,10 @@ class TokenInterceptor(
         val response = chain.proceed(authenticatedRequest)
 
         if (response.code == HttpsURLConnection.HTTP_UNAUTHORIZED || response.code == HttpsURLConnection.HTTP_FORBIDDEN) {
+            if (request.method == "GET" && request.url.encodedPath.contains("custom-packs/")) {
+                return response
+            }
+
             val newToken = runBlocking { getOrUpdateToken(currentToken ?: "") }
             if (newToken != null) {
                 val newRequest = request.newBuilder()

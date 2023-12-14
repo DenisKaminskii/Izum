@@ -22,7 +22,7 @@ import kotlinx.parcelize.Parcelize
 data class EditPackInput(
     val packId: Long,
     val packTitle: String? = null,
-    val shareLink: String
+    val packCode: String
 ) : Parcelable
 
 @AndroidEntryPoint

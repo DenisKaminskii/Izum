@@ -24,6 +24,8 @@
     <color name="black_95">#0E0E0E</color>
     <color name="white">#E5E5E5</color>
     <color name="tomato">#B94E2C</color>
+    <color name="tomato_disabled">#BC9386</color>
+    <color name="tomato_pressed">#8D3A1F</color>
     <color name="delete_red">#EA4040</color>
     <color name="invalid_red">#AD2323</color>
 

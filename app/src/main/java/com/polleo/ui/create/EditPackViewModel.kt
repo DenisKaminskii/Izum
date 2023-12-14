@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.polleo.data.Poll
 import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.UserRepository
+import com.polleo.data.retrieveCodeData
 import com.polleo.di.IoDispatcher
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
@@ -55,8 +56,8 @@ class EditPackViewModel @Inject constructor(
     }
 
     private var packId: Long = -1
-    private var title = ""
-    private var shareLink: String = ""
+    private var packTitle = ""
+    private var packCode: String = ""
     private val polls = mutableListOf<Poll>()
 
     private var isPackFetched = false
@@ -67,8 +68,8 @@ class EditPackViewModel @Inject constructor(
     override fun onViewInitialized(input: EditPackInput) {
         super.onViewInitialized(input)
         packId = input.packId
-        title = input.packTitle ?: ""
-        shareLink = input.shareLink
+        packTitle = input.packTitle ?: ""
+        packCode = input.packCode
 
         subscribePolls()
     }
@@ -79,7 +80,8 @@ class EditPackViewModel @Inject constructor(
         pollsSubscription = null
         pollsSubscription = viewModelScope.launch(ioDispatcher) {
             try {
-                customPacksRepository.getPolls(packId = packId)
+                val codeData = packCode.retrieveCodeData() ?: throw Exception("Couldn't parse the pack code")
+                customPacksRepository.getPolls(packId = codeData.first, packToken = codeData.second)
                     .collect { polls ->
                         isPackFetched = true
                         this@EditPackViewModel.polls.clear()
@@ -127,7 +129,7 @@ class EditPackViewModel @Inject constructor(
                 }
 
                 EditPackViewState.Content(
-                    title = title,
+                    title = packTitle,
                     polls = items,
                     isAddButtonVisible = polls.size < limit,
                     isShareButtonEnabled = polls.isNotEmpty(),
@@ -204,7 +206,7 @@ class EditPackViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             try {
                 customPacksRepository.updatePack(packId, title)
-                this@EditPackViewModel.title = title
+                this@EditPackViewModel.packTitle = title
                 updateView()
             } catch (ex: Exception) {
                 emit(ViewAction.ShowToast("Title update failed :( Try again."))
@@ -215,7 +217,7 @@ class EditPackViewModel @Inject constructor(
 
     fun onShareClick(clipBoard: ClipboardManager) {
         viewModelScope.launch {
-            val clip: ClipData = ClipData.newPlainText("Polleo Pack Share", shareLink)
+            val clip: ClipData = ClipData.newPlainText("Polleo Pack Share", packCode)
             clipBoard.setPrimaryClip(clip)
             emit(ViewAction.ShowToast("Link copied to clipboard!"))
         }
@@ -265,7 +267,7 @@ class EditPackViewModel @Inject constructor(
                 route(Router.Route.Statistic(
                     PollStatisticInput(
                         pollId = id,
-                        shareLink = shareLink,
+                        shareLink = packCode,
                         isCustomPack = true
                     )
                 ))

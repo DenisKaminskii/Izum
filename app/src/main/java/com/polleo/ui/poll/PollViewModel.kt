@@ -6,21 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.model.ReviewErrorCode
-import com.google.android.play.core.review.testing.FakeReviewManager
 import com.polleo.data.Poll
 import com.polleo.data.PollOption
+import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.PreferenceKey
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.pack.history.PackHistoryInput
-import com.polleo.ui.poll.PollViewModel.Companion.Arguments
 import com.polleo.ui.poll.statistic.PollStatisticInput
 import com.polleo.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,20 +54,15 @@ data class OptionViewState(
 class PollViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val publicPacksRepository: PublicPacksRepository,
+    private val customPacksRepository: CustomPacksRepository,
     private val preferenceCache: PreferenceCache
-) : StateViewModel<Arguments, PollViewState>(
+) : StateViewModel<PollInput, PollViewState>(
     initialState = PollViewState.Loading
 ) {
 
     companion object {
 
         private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 1 // 80
-
-        data class Arguments(
-            val packId: Long,
-            val packTitle: String,
-            val isPaid: Boolean
-        )
     }
 
     private var packTitle = ""
@@ -90,7 +83,7 @@ class PollViewModel @Inject constructor(
 
     private var votedOptionId: Long? = null
 
-    override fun onViewInitialized(input: Arguments) {
+    override fun onViewInitialized(input: PollInput) {
         super.onViewInitialized(input)
         packId = input.packId
         packTitle = input.packTitle

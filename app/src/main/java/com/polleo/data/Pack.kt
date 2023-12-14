@@ -3,7 +3,6 @@ package com.polleo.data
 import android.graphics.Color
 import android.os.Parcelable
 import androidx.annotation.ColorInt
-import com.polleo.api.custom.CustomPackJson
 import com.polleo.api.PackJson
 import kotlinx.parcelize.Parcelize
 
@@ -72,3 +71,14 @@ data class PackPreview(
     val option1: String,
     val option2: String
 ) : Parcelable
+
+
+fun String.retrieveCodeData() : Pair<Long, String>? {
+    val split = split("-")
+    if (split.size < 2) return null
+
+    val id = split[0].toLongOrNull() ?: return null
+    val name = split[1].takeIf { it.isNotBlank() } ?: return null
+
+    return id to name
+}

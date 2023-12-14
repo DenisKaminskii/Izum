@@ -6,7 +6,6 @@ import com.polleo.data.repository.CustomPacksRepository
 import com.polleo.data.repository.PublicPacksRepository
 import com.polleo.data.repository.UserRepository
 import com.polleo.di.IoDispatcher
-import com.polleo.domain.core.PreferenceCache
 import com.polleo.domain.core.StateViewModel
 import com.polleo.ui.ViewAction
 import com.polleo.ui.create.EditPackInput
@@ -62,19 +61,17 @@ class PacksViewModel @Inject constructor(
             customPacksRepository.packs
                 .collect { customPacks ->
                     this@PacksViewModel.customPacks.clear()
-                    this@PacksViewModel.customPacks.addAll(customPacks)
+                    this@PacksViewModel.customPacks.addAll(customPacks.myPacks)
+                    this@PacksViewModel.customPacks.addAll(customPacks.addedPacks)
                     updateView()
                 }
         }
     }
 
-    fun onStart() {
-        fetchPacks()
-    }
-
-    private fun fetchPacks() = viewModelScope.launch(ioDispatcher) {
-        publicPacksRepository.fetch()
-        customPacksRepository.fetch()
+    fun onStart() = viewModelScope.launch(ioDispatcher) {
+        launch { publicPacksRepository.fetchFeed() }
+        launch { customPacksRepository.fetchMyPacks() }
+        launch { customPacksRepository.fetchAddedPacks() }
     }
 
     private fun updateView() {
@@ -103,7 +100,7 @@ class PacksViewModel @Inject constructor(
                 input = EditPackInput(
                     packId = pack.id,
                     packTitle = pack.title,
-                    shareLink = (pack as? Pack.Custom)?.code ?: ""
+                    packCode = (pack as? Pack.Custom)?.code ?: ""
                 )
             ))
         }
@@ -112,6 +109,12 @@ class PacksViewModel @Inject constructor(
     fun onStartClick(publicPack: Pack.Public) {
         viewModelScope.launch {
             route(Router.Route.Polls(publicPack.id, publicPack.title))
+        }
+    }
+
+    fun onStartClick(packId: Long, packTitle: String) {
+        viewModelScope.launch {
+            route(Router.Route.Polls(packId, packTitle))
         }
     }
 
@@ -143,7 +146,7 @@ class PacksViewModel @Inject constructor(
                 route(Router.Route.EditPack(EditPackInput(
                     packId = newPackId,
                     packTitle = title,
-                    shareLink = newPackLink
+                    packCode = newPackLink
                 )))
             } catch (ex: Exception) {
                 emit(ViewAction.ShowToast("Error creating pack. Try again."))

@@ -72,9 +72,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:alpha="0"
-                tools:alpha="1"
                 android:text="Invalid code format"
-                android:textColor="@color/invalid_red" />
+                android:textColor="@color/tomato_pressed"
+                tools:alpha="1" />
 
         </LinearLayout>
 
@@ -116,10 +116,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="8dp"
                 android:ellipsize="end"
+                android:enabled="false"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="Add"
-                android:textColor="@color/tomato"
+                android:textColor="@color/selector_text_tomato"
                 android:visibility="visible" />
 
         </LinearLayout>

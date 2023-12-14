@@ -156,9 +156,15 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
                     description = it.description ?: "",
                     hasSubscription = state.hasSubscription,
                     title = it.title,
-                    gradientStartColor = requireContext().getColor(R.color.black_gradient_start),
-                    gradientEndColor = requireContext().getColor(R.color.black_gradient_end),
-                    contentColor = requireContext().getColor(R.color.white),
+                    gradientStartColor =
+                    if (it.isMine) requireContext().getColor(R.color.black_gradient_start)
+                    else requireContext().getColor(R.color.white_gradient_start),
+                    gradientEndColor =
+                    if (it.isMine) requireContext().getColor(R.color.black_gradient_end)
+                    else requireContext().getColor(R.color.white_gradient_end),
+                    contentColor =
+                    if (it.isMine) requireContext().getColor(R.color.white)
+                    else requireContext().getColor(R.color.black_soft),
                     pollsCount = it.pollsCount,
                     answeredPollsCount = preferenceCache.getLongOrNull("${it.id}_voted_count"),
                     isPaid = false
@@ -210,8 +216,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         addCustomPackDialog?.dismissAllowingStateLoss()
         addCustomPackDialog = null
         addCustomPackDialog = AddCustomPackDialog.getInstance(
-            onCustomPackAdded = {},
-            onStart = { packId ->  }
+            onStart = { packId, packTitle ->  viewModel.onStartClick(packId, packTitle) }
         )
         addCustomPackDialog?.show(childFragmentManager, "PackTitleEditDialog")
     }

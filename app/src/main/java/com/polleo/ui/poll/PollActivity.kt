@@ -9,6 +9,13 @@ import com.polleo.R
 import com.polleo.databinding.ActivityPollBinding
 import com.polleo.ui.BaseActivity
 
+data class PollInput(
+    val packId: Long,
+    val packTitle: String,
+    val isPaid: Boolean,
+    val isCustom: Boolean
+)
+
 @SuppressLint("ClickableViewAccessibility")
 class PollActivity : BaseActivity() {
 
@@ -16,6 +23,7 @@ class PollActivity : BaseActivity() {
         const val KEY_ARGS_PACK_ID = "KEY_ARGS_PACK_ID"
         const val KEY_ARGS_PACK_TITLE = "KEY_ARGS_PACK_TITLE"
         const val KEY_ARGS_IS_PAID = "KEY_ARGS_IS_PAID"
+        const val KEY_ARGS_IS_CUSTOM = "KEY_ARGS_IS_CUSTOM"
     }
 
     private var _binding: ActivityPollBinding? = null
@@ -45,10 +53,11 @@ class PollActivity : BaseActivity() {
         update(PollViewState.Loading)
 
         viewModel.onViewInitialized(
-            input = PollViewModel.Companion.Arguments(
+            input = PollInput(
                 packId = intent.getLongExtra(KEY_ARGS_PACK_ID, -1),
                 packTitle = intent.getStringExtra(KEY_ARGS_PACK_TITLE) ?: "",
-                isPaid = intent.getBooleanExtra(KEY_ARGS_IS_PAID, false)
+                isPaid = intent.getBooleanExtra(KEY_ARGS_IS_PAID, false),
+                isCustom = intent.getBooleanExtra(KEY_ARGS_IS_CUSTOM, false)
             )
         )
 

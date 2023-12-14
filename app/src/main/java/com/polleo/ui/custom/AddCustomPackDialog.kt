@@ -1,9 +1,6 @@
 package com.polleo.ui.custom
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.app.Dialog
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +13,6 @@ import com.polleo.databinding.DialogAddCustomPackBinding
 import com.polleo.ui.BaseDialogFragment
 import com.polleo.ui.Keyboard
 import com.polleo.ui.SimpleTextWatcher
-import com.polleo.ui.dpF
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,11 +23,9 @@ class AddCustomPackDialog : BaseDialogFragment() {
     companion object {
 
         fun getInstance(
-            onCustomPackAdded: (() -> Unit),
-            onStart: ((Int) -> Unit)
+            onStart: ((packId: Long, packTitle: String) -> Unit)
         ) : AddCustomPackDialog {
             val dialog = AddCustomPackDialog()
-            dialog.onCustomPackAdded = onCustomPackAdded
             dialog.onStart = onStart
             return AddCustomPackDialog()
         }
@@ -43,8 +37,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
     private var _binding: DialogAddCustomPackBinding? = null
     private val binding get() = _binding!!
 
-    private var onCustomPackAdded: (() -> Unit)? = null
-    private var onStart: ((Int) -> Unit)? = null
+    private var onStart: ((Long, String) -> Unit)? = null
 
     private val animDuration = 225L
 
@@ -115,7 +108,10 @@ class AddCustomPackDialog : BaseDialogFragment() {
             .setDuration(animDuration)
             .start()
 
-        etCode.isEnabled = state == AddCustomPackViewState.Default || state == AddCustomPackViewState.Error
+        etCode.isEnabled = state is AddCustomPackViewState.Default
+                || state is AddCustomPackViewState.InvalidCode
+                || state is AddCustomPackViewState.NotFound
+
         etCode.animate()
             .alpha(
                 when(state) {
@@ -126,8 +122,12 @@ class AddCustomPackDialog : BaseDialogFragment() {
             .setDuration(animDuration)
             .start()
 
-        tvCancel.isEnabled = state == AddCustomPackViewState.Default || state == AddCustomPackViewState.Error
-        tvAdd.isEnabled = state == AddCustomPackViewState.Default || state == AddCustomPackViewState.Error
+        tvCancel.isEnabled = state is AddCustomPackViewState.Default
+                || state is AddCustomPackViewState.InvalidCode
+                || state is AddCustomPackViewState.NotFound
+
+        tvAdd.isEnabled = state is AddCustomPackViewState.Default && !etCode.text.isNullOrBlank()
+
         vgButtons.animate()
             .alpha(
                 when(state) {
@@ -139,10 +139,15 @@ class AddCustomPackDialog : BaseDialogFragment() {
             .setDuration(animDuration)
             .start()
 
+        tvError.text = when (state) {
+            AddCustomPackViewState.NotFound -> "There is no pack with such code"
+            else -> "Invalid code"
+        }
+
         tvError.animate()
             .alpha(
                 when(state) {
-                    AddCustomPackViewState.Error -> 1f
+                    AddCustomPackViewState.InvalidCode, AddCustomPackViewState.NotFound -> 1f
                     else -> 0f
                 }
             )
@@ -161,6 +166,12 @@ class AddCustomPackDialog : BaseDialogFragment() {
 
         if (state is AddCustomPackViewState.Success) {
             showCustomPackAdded(state)
+            tvAdd.setOnClickListener {
+                val packId = state.pack.id
+                val packTitle = state.pack.title
+                onStart?.invoke(packId, packTitle)
+                dismissAllowingStateLoss()
+            }
         }
     }
 
@@ -209,7 +220,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
         launch {
             delay(animDuration * 2)
 
-            tvTitle.text = state.title
+            tvTitle.text = state.pack.title
             tvTitle.animate()
                 .alpha(1f)
                 .setDuration(animDuration * 2)
@@ -225,7 +236,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
                 .setDuration(animDuration * 2)
                 .start()
 
-            tvPolls.text = state.pollsCount.toString()
+            tvPolls.text = state.pack.pollsCount.toString()
             tvPolls.animate()
                 .alpha(1f)
                 .setDuration(animDuration * 2)

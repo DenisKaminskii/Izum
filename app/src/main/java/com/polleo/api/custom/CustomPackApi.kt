@@ -9,11 +9,12 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CustomPackApi {
 
     @GET("custom-packs")
-    suspend fun getPacks() : List<CustomPackJson>
+    suspend fun getMyPacks() : List<CustomPackJson>
 
     @DELETE("custom-packs/{id}")
     suspend fun deletePack(@Path("id") id: Long)
@@ -23,9 +24,6 @@ interface CustomPackApi {
 
     @PATCH("custom-packs/{id}")
     suspend fun updatePack(@Path("id") id: Long, @Body request: TitleJson) : CustomPackJson
-
-    @GET("custom-packs/{id}/polls")
-    suspend fun getCustomPackPolls(@Path("id") id: Long) : List<PollJson>
 
     @POST("custom-packs/{id}/polls")
     suspend fun addPoll(@Path("id") id: Long, @Body request: CustomPackAddPollRequestJson) : PollJson
@@ -37,5 +35,17 @@ interface CustomPackApi {
     suspend fun getPollStatistic(
         @Path("pollId") pollId: Long
     ): PollStatisticJson
+
+    @GET("custom-packs/{id}")
+    suspend fun getCustomPack(
+        @Path("id") id: Long,
+        @Query("token") token: String,
+    ): CustomPackJson
+
+    @GET("custom-packs/{id}/polls")
+    suspend fun getCustomPackPolls(
+        @Path("id") id: Long,
+        @Query("token") token: String,
+    ) : List<PollJson>
 
 }

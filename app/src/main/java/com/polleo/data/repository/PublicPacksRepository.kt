@@ -26,7 +26,7 @@ interface PublicPacksRepository {
     val packs: SharedFlow<List<Pack.Public>>
 
     @WorkerThread
-    suspend fun fetch()
+    suspend fun fetchFeed()
 
     @WorkerThread
     suspend fun getPackPolls(packId: Long): List<Poll>
@@ -61,7 +61,7 @@ class PublicPacksRepositoryImpl(
 
     private val polls = hashMapOf<Long, List<Poll>>()
 
-    override suspend fun fetch() {
+    override suspend fun fetchFeed() {
         val newPacks = packsApi.getPacks()
             .map(Pack.Public::fromJson)
             .map(::validateForCountUpdated)
