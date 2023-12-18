@@ -6,21 +6,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.pickone.IzumApplication"
+        android:name="com.pickone.PickOneApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_pick_one"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Izum"
+        android:theme="@style/Theme.PickOne"
         tools:targetApi="31">
         <activity
             android:name="com.pickone.ui.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Izum">
+            android:theme="@style/Theme.PickOne">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

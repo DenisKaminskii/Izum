@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Izum" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.PickOne" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSecondary">@color/black</item>

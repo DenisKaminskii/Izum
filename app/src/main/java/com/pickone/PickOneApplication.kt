@@ -8,7 +8,7 @@ import com.revenuecat.purchases.getOfferingsWith
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class IzumApplication : Application() {
+class PickOneApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
