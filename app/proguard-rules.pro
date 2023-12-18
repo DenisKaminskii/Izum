@@ -24,8 +24,8 @@
 -dontnote retrofit2.*
 -dontnote retrofit2.OkHttpCall
 
--keep class com.polleo.api.GetTokenRequest
--keep class com.polleo.api.GetTokenResponse
+-keep class com.pickone.api.GetTokenRequest
+-keep class com.pickone.api.GetTokenResponse
 
 -dontwarn com.squareup.moshi.**
 

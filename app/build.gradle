@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.polleo'
+    namespace 'com.pickone'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.polleo"
+        applicationId "com.pickone"
         minSdk 28
         targetSdk 33
         versionCode 3

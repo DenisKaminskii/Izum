@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Polleo</string>
+    <string name="app_name">PickOne</string>
 
     <string name="network_problems_try_reload">Network problems.\nTry to reload the application.</string>
     <string name="set_up_your_profile">Set up your profile</string>

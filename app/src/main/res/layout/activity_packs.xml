@@ -57,7 +57,7 @@
     <View
         android:id="@+id/vBottomBackground"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="80dp"
         android:background="@drawable/rect_filled_black_soft_top_corners_20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/vSuggest"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/vBottomBackground">
 
         <ImageView
             android:layout_width="20dp"
@@ -107,7 +108,8 @@
         android:paddingVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/vgSubscription"
-        app:layout_constraintStart_toEndOf="@id/vCreatePack">
+        app:layout_constraintStart_toEndOf="@id/vCreatePack"
+        app:layout_constraintTop_toTopOf="@id/vBottomBackground">
 
         <ImageView
             android:layout_width="20dp"
@@ -136,7 +138,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/vSuggest"
-        app:layout_constraintTop_toTopOf="@id/vSuggest">
+        app:layout_constraintTop_toTopOf="@id/vBottomBackground">
 
         <TextView
             android:id="@+id/tvSubscribe"
@@ -150,19 +152,21 @@
             android:maxLines="1"
             android:text="Get all packs"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tvSubscribed"
             style="@style/Text.Button.Subscribed"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical|end"
+            android:layout_gravity="center"
+            android:drawablePadding="8dp"
             android:ellipsize="end"
-            android:gravity="center"
             android:maxLines="1"
-            android:text="@string/subscribed"
-            android:visibility="gone" />
+            android:text="PREMIUM"
+            android:textSize="18sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </FrameLayout>
 

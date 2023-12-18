@@ -96,8 +96,8 @@
     </style>
 
     <style name="Text.Button.Subscribed" parent="Text.Button.Medium">
-        <item name="android:textColor">@color/subscribed</item>
-        <item name="android:drawableTint">@color/subscribed</item>
+        <item name="android:textColor">@color/grey_dark</item>
+        <item name="android:drawableTint">@color/grey_dark</item>
         <item name="android:textStyle">bold</item>
         <item name="android:drawableStart">@drawable/ic_stars_24</item>
     </style>

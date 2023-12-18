@@ -23,9 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:ellipsize="end"
         android:gravity="center"
-        android:text="Premium"
-        android:textAllCaps="true"
+        android:maxLines="1"
+        android:text="PickOne Premium"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,21 +34,21 @@
 
     <ImageView
         android:id="@+id/ivPremium"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="64dp"
-        android:layout_marginVertical="48dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="32dp"
         android:src="@drawable/img_onboarding_premium"
         app:layout_constraintBottom_toTopOf="@id/tvExtraFirst"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tvExtraFirst"
+        app:layout_constraintStart_toStartOf="@id/tvExtraFirst"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <LinearLayout
         android:id="@+id/tvExtraFirst"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="40dp"
         android:layout_marginVertical="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -59,13 +60,14 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="1dp"
             android:src="@drawable/ic_unlock_paywall" />
 
         <TextView
             style="@style/Text.Body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="15dp"
             android:layout_weight="1"
             android:text="Unlock 500+ intriguing questions across 7+ diverse packs"
             android:textSize="14sp" />
@@ -76,7 +78,7 @@
         android:id="@+id/tvExtraSecond"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="40dp"
         android:layout_marginVertical="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -105,8 +107,9 @@
         android:id="@+id/tvExtraThird"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/vgPrices"
@@ -117,13 +120,14 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="1dp"
             android:src="@drawable/ic_people_paywall" />
 
         <TextView
             style="@style/Text.Body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="15dp"
             android:layout_weight="1"
             android:text="Design your personalized question packs and share fun challenges among friends"
             android:textSize="14sp" />
@@ -134,7 +138,7 @@
         android:id="@+id/vgPrices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="40dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:gravity="center_vertical"
@@ -144,14 +148,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvExtraThird">
 
-        <com.polleo.ui.paywall.PremiumPriceItemView
+        <com.pickone.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceFirst"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             tools:background="@drawable/rect_outline_white_10_stroke_2" />
 
-        <com.polleo.ui.paywall.PremiumPriceItemView
+        <com.pickone.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceSecond"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -166,7 +170,7 @@
         style="@style/Text.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="40dp"
         android:layout_marginVertical="8dp"
         android:gravity="center_horizontal"
         android:text="You have a free 3 days! 🥳🙌"
@@ -181,7 +185,7 @@
         style="@style/Text.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="40dp"
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:text="After 3 free days subscription price will be 5€ / month"
@@ -196,7 +200,8 @@
         style="@style/Text.Button.Subscribe"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_margin="24dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="24dp"
         android:drawableStart="@null"
         android:text="TRY FREE &amp; SUBSCRIBE"
         app:layout_constraintBottom_toBottomOf="parent"
