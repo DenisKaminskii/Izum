@@ -193,7 +193,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     private fun checkAge(
         onSuccess: () -> Unit
     ) {
-        val isAdult = preferenceCache.getBoolean(PreferenceKey.IsAdult, false)
+        val isAdult = preferenceCache.getBoolean(PreferenceKey.IsAdult.name, false)
         if (isAdult) {
             onSuccess()
             return
@@ -205,7 +205,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             .setTitle("Are you 18 years old or above?")
             .setMessage("Content contains obscene language and is not suitable for kids.")
             .setPositiveButton("Yes") { dialog, _ ->
-                preferenceCache.putBoolean(PreferenceKey.IsAdult, true)
+                preferenceCache.putBoolean(PreferenceKey.IsAdult.name, true)
                 onSuccess.invoke()
                 dialog.dismiss()
             }

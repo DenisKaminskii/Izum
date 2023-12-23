@@ -19,7 +19,8 @@ import javax.net.ssl.HttpsURLConnection
 class TokenInterceptor(
     private val tokenApi: TokenApi,
     private val preferenceCache: PreferenceCache,
-    private val deviceIdProvider: DeviceIdProvider
+    private val deviceIdProvider: DeviceIdProvider,
+    private val onUserIdUpdated: OnUserIdUpdated
 ) : Interceptor {
 
     private val mutex = Mutex()
@@ -27,7 +28,7 @@ class TokenInterceptor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val currentToken = preferenceCache.getString(PreferenceKey.Token)
+        val currentToken = preferenceCache.getString(PreferenceKey.Token.name)
 
         val authenticatedRequest = request.newBuilder()
             .header(HeadersInterceptor.KEY_HEADER_AUTHORIZATION, currentToken ?: "")
@@ -54,7 +55,7 @@ class TokenInterceptor(
 
     @WorkerThread
     private suspend fun getOrUpdateToken(oldToken: String): String? = mutex.withLock {
-        val currentToken = preferenceCache.getString(PreferenceKey.Token)
+        val currentToken = preferenceCache.getString(PreferenceKey.Token.name)
 
         if (currentToken != null && currentToken != oldToken) {
             return currentToken
@@ -63,14 +64,18 @@ class TokenInterceptor(
         try {
             val response = tokenApi.getToken(GetTokenRequest(deviceId = deviceIdProvider.deviceId))
             val token = response.token
-            preferenceCache.putString(PreferenceKey.Token, token)
+            val userId = response.userId
+            preferenceCache.putString(PreferenceKey.Token.name, token)
+            preferenceCache.putLong(PreferenceKey.UserId.name, userId)
+
+            onUserIdUpdated.emit(userId)
 
             return token
         } catch (e: Exception) {
             val unauthorized = HttpsURLConnection.HTTP_UNAUTHORIZED
             val forbidden = HttpsURLConnection.HTTP_FORBIDDEN
             if (e is HttpException && (e.code() == unauthorized || e.code() == forbidden)) {
-                preferenceCache.putString(PreferenceKey.Token, null)
+                preferenceCache.putString(PreferenceKey.Token.name, null)
             }
             Log.d("Steve", "Error while fetching token", e)
 

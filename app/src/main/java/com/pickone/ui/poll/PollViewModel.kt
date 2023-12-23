@@ -165,7 +165,7 @@ class PollViewModel @Inject constructor(
     }
 
     private fun checkGoogleStoreReviewShow() {
-        val isShown = preferenceCache.getBoolean(PreferenceKey.GoogleStoreReviewShown, false)
+        val isShown = preferenceCache.getBoolean(PreferenceKey.GoogleStoreReviewShown.name, false)
         val commonVotesCount = preferenceCache.getLong(PreferenceKey.CommonVotesCount.name, 0L)
         if (!isShown && commonVotesCount >= VOTES_UNTIL_GOOGLE_STORE_REVIEW) {
             val manager = ReviewManagerFactory.create(context)

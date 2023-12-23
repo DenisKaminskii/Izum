@@ -84,7 +84,7 @@ class UserInfoActivity : BaseActivity() {
     }
 
     private fun checkOnboardingShow() {
-        val isOnboardingShowed = preferenceCache.getBoolean(PreferenceKey.IsOnboardingShowed, false)
+        val isOnboardingShowed = preferenceCache.getBoolean(PreferenceKey.IsOnboardingShowed.name, false)
         if (!isOnboardingShowed) {
             router.route(Router.Route.Onboarding)
         }

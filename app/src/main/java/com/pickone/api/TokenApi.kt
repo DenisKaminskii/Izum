@@ -21,5 +21,7 @@ data class GetTokenRequest(
 @JsonClass(generateAdapter = true)
 data class GetTokenResponse(
     @Json(name = "token")
-    val token: String
+    val token: String,
+    @Json(name = "userId")
+    val userId: Long
 )

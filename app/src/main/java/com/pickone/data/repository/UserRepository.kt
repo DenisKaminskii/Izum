@@ -15,6 +15,8 @@ interface UserRepository  {
 
     var isStatisticInfoProvided: Boolean
 
+    val userId: Long?
+
     suspend fun updateUserInfo(age: Int, gender: Gender) : Boolean
 
 }
@@ -28,14 +30,17 @@ class UserRepositoryImpl(
     override var hasSubscription: Boolean
         get() = true // preferenceCache.getBoolean(key = PreferenceKey.HasSubscription, fallback = false)
         set(value) {
-            preferenceCache.putBoolean(PreferenceKey.HasSubscription, value)
+            preferenceCache.putBoolean(PreferenceKey.HasSubscription.name, value)
         }
 
     override var isStatisticInfoProvided: Boolean
-        get() = preferenceCache.getBoolean(key = PreferenceKey.UserInfoProvided, fallback = false)
+        get() = preferenceCache.getBoolean(key = PreferenceKey.UserInfoProvided.name, fallback = false)
         set(value) {
-            preferenceCache.putBoolean(PreferenceKey.UserInfoProvided, value)
+            preferenceCache.putBoolean(PreferenceKey.UserInfoProvided.name, value)
         }
+
+    override val userId: Long?
+        get() = preferenceCache.getLongOrNull(PreferenceKey.UserId.name)
 
     override suspend fun updateUserInfo(age: Int, gender: Gender) : Boolean = withContext(ioDispatcher) {
         try {

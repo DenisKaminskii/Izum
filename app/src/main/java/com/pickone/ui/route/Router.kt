@@ -179,7 +179,7 @@ class RouterImpl @Inject constructor(
             val manager = ReviewManagerFactory.create(activity)
             val flow = manager.launchReviewFlow(activity, reviewInfo)
             flow.addOnCompleteListener { _ ->
-                preferenceCache.putBoolean(PreferenceKey.GoogleStoreReviewShown, true)
+                preferenceCache.putBoolean(PreferenceKey.GoogleStoreReviewShown.name, true)
             }
         }
     }

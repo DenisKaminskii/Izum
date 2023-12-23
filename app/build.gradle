@@ -72,8 +72,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.6.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation 'com.revenuecat.purchases:purchases:6.0.0'
-    implementation 'com.revenuecat.purchases:purchases-store-amazon:6.0.0'
+    implementation 'com.revenuecat.purchases:purchases:7.0.0'
     implementation 'com.google.android.play:review:2.0.1'
     implementation 'com.google.android.play:review-ktx:2.0.1'
 

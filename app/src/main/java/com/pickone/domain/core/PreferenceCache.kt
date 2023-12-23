@@ -9,19 +9,15 @@ import javax.inject.Inject
 
 interface PreferenceCache {
 
-    fun putString(key: PreferenceKey, value: String?)
-
     fun putString(key: String, value: String?)
 
-    fun putBoolean(key: PreferenceKey, value: Boolean)
+    fun putBoolean(key: String, value: Boolean)
 
-    fun putLong(key: String, value: Long)
-
-    fun getString(key: PreferenceKey) : String?
+    fun putLong(key: String, value: Long?)
 
     fun getString(key: String) : String?
 
-    fun getBoolean(key: PreferenceKey, fallback: Boolean) : Boolean
+    fun getBoolean(key: String, fallback: Boolean) : Boolean
 
     fun getLong(key: String, fallback: Long) : Long
 
@@ -39,6 +35,7 @@ interface PreferenceCache {
 
 enum class PreferenceKey {
     Token,
+    UserId,
     HasSubscription,
     UserInfoProvided,
     IsAdult,
@@ -58,44 +55,40 @@ class PreferenceCacheImpl @Inject constructor(
 
     private val preferences: SharedPreferences = context.getSharedPreferences(KEY_IZUM_CACHE, Context.MODE_PRIVATE)
 
-    override fun putString(key: PreferenceKey, value: String?) {
-        preferences.edit()
-            .putString(key.name, value)
-            .apply()
-    }
-
     override fun putString(key: String, value: String?) {
         preferences.edit()
             .putString(key, value)
             .apply()
     }
 
-    override fun putBoolean(key: PreferenceKey, value: Boolean) {
+    override fun putBoolean(key: String, value: Boolean) {
         preferences.edit()
-            .putBoolean(key.name, value)
+            .putBoolean(key, value)
             .apply()
-    }
-
-    override fun putLong(key: String, value: Long) {
-        preferences.edit()
-            .putLong(key, value)
-            .apply()
-    }
-
-    override fun getString(key: PreferenceKey): String? {
-        return preferences.getString(key.name, "")
     }
 
     override fun getString(key: String): String? {
         return preferences.getString(key, "")
     }
 
-    override fun getBoolean(key: PreferenceKey, fallback: Boolean) : Boolean {
-        return preferences.getBoolean(key.name, fallback)
+    override fun getBoolean(key: String, fallback: Boolean) : Boolean {
+        return preferences.getBoolean(key, fallback)
     }
 
     override fun getLong(key: String, fallback: Long) : Long {
         return preferences.getLong(key, fallback)
+    }
+
+    override fun putLong(key: String, value: Long?) {
+        if (value == null) {
+            preferences.edit()
+                .remove(key)
+                .apply()
+        } else {
+            preferences.edit()
+                .putLong(key, value)
+                .apply()
+        }
     }
 
     override fun getLongOrNull(key: String) : Long? {

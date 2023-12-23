@@ -16,7 +16,7 @@ class HeadersInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
 
-        val token = preferenceCache.getString(PreferenceKey.Token)
+        val token = preferenceCache.getString(PreferenceKey.Token.name)
         request.header(KEY_HEADER_AUTHORIZATION, token ?: "")
 
         return chain.proceed(request.build())

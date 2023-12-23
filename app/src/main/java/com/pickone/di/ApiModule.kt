@@ -11,6 +11,7 @@ import com.pickone.api.PollApi
 import com.pickone.api.TokenApi
 import com.pickone.network.TokenInterceptor
 import com.pickone.data.DeviceIdProvider
+import com.pickone.network.OnUserIdUpdated
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -100,13 +101,14 @@ class ApiModule {
         @ApplicationContext context: Context,
         tokenApi: TokenApi,
         deviceIdProvider: DeviceIdProvider,
-        preferenceCache: PreferenceCache
+        preferenceCache: PreferenceCache,
+        onUserIdUpdated: OnUserIdUpdated
     ): OkHttpClient {
         val cacheFolder = File(context.cacheDir, CACHE_FOLDER)
         val cache = Cache(cacheFolder, CACHE_SIZE)
 
         return OkHttpClient.Builder()
-            .addInterceptor(TokenInterceptor(tokenApi, preferenceCache, deviceIdProvider))
+            .addInterceptor(TokenInterceptor(tokenApi, preferenceCache, deviceIdProvider, onUserIdUpdated))
             .addInterceptor(HeadersInterceptor(preferenceCache))
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

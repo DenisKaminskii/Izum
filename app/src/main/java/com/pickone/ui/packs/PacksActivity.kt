@@ -73,7 +73,6 @@ class PacksActivity : BaseActivity() {
     private fun update(viewState: PacksViewState) {
         val hasSubscription = viewState.hasSubscription
         binding.tvSubscribe.isVisible = !hasSubscription
-        binding.tvSubscribed.isVisible = hasSubscription
     }
 
     private var createPackDialog: PackTitleEditDialog? = null

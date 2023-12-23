@@ -1,36 +1,22 @@
 package com.pickone
 
 import android.app.Application
-import com.revenuecat.purchases.LogLevel
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesConfiguration
-import com.revenuecat.purchases.getOfferingsWith
+import com.pickone.domain.billing.Billing
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class PickOneApplication : Application() {
 
+    @Inject lateinit var billing: Billing
+
     override fun onCreate() {
         super.onCreate()
-        Purchases.logLevel = LogLevel.DEBUG // §
-        Purchases.configure(
-            PurchasesConfiguration.Builder(
-                this,
-                getString(R.string.revenue_cat_api_key)
-            ).build()
-        )
+        initBilling()
+    }
 
-        Purchases.sharedInstance.getOfferingsWith(
-            onError = { error ->
-                /* Optional error handling */
-            },
-            onSuccess = { offerings ->
-                // Display current offering with offerings.current
-
-            }
-        )
-
-
+    private fun initBilling() {
+        billing.init()
     }
 
 }

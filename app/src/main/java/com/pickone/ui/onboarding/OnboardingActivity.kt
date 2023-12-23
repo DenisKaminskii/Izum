@@ -128,7 +128,7 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun close() {
-        preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed, true)
+        preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed.name, true)
         finish()
     }
 
