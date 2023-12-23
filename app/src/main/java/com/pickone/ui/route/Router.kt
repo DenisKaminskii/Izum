@@ -18,7 +18,7 @@ import com.pickone.ui.pack.PackDialog
 import com.pickone.ui.pack.PackDialogInput
 import com.pickone.ui.pack.history.PackHistoryActivity
 import com.pickone.ui.packs.PacksActivity
-import com.pickone.ui.paywall.SubscriptionPaywallActivity
+import com.pickone.ui.paywall.PaywallActivity
 import com.pickone.ui.poll.PollActivity
 import com.pickone.ui.poll.statistic.PollStatisticActivity
 import com.pickone.ui.poll.statistic.PollStatisticInput
@@ -162,7 +162,7 @@ class RouterImpl @Inject constructor(
 
     private fun showSubscriptionPaywall() {
         host?.let { activity ->
-            val intent = Intent(activity, SubscriptionPaywallActivity::class.java)
+            val intent = Intent(activity, PaywallActivity::class.java)
             activity.startActivity(intent)
         }
     }

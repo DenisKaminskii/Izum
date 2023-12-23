@@ -10,7 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:minHeight="64dp"
+        android:orientation="vertical"
+        android:paddingVertical="12dp">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -18,11 +21,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
             android:layout_marginBottom="3dp"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:maxLines="1"
+            android:minHeight="20dp"
             android:text="Weekly / 5$"
             android:textStyle="bold" />
 
@@ -32,11 +36,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="12dp"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:maxLines="1"
+            android:minHeight="20dp"
             android:text="Try 3 days free, then 5$ / week"
             android:textColor="@color/grey"
             android:textSize="14sp" />

@@ -65,7 +65,7 @@
             android:name=".ui.create.EditPackActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.paywall.SubscriptionPaywallActivity"
+        <activity android:name=".ui.paywall.PaywallActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.onboarding.OnboardingActivity"

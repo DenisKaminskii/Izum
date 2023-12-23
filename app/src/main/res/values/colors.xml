@@ -8,11 +8,12 @@
     <color name="disabledText">#B6B6B6</color>
     <color name="disabledIcon">#9E9E9E</color>
 
-    <color name="black_soft">#121212</color>
+    <color name="black_soft">#1E1E1E</color>
     <color name="black_background">#101010</color>
     <color name="white_25">#40EFEFEF</color>
     <color name="white_35">#59EFEFEF</color>
     <color name="white_50">#80EFEFEF</color>
+    <color name="white_75">#BFEFEFEF</color>
     <color name="white_95">#E0E0E0</color>
     <color name="purple">#AF30DC</color>
     <color name="sand">#DFB45F</color>
@@ -37,8 +38,8 @@
     <color name="gender_male">#3A96EA</color>
     <color name="gender_other">#E49E17</color>
 
-    <color name="subscribe_gradient_start">#E0A228</color>
-    <color name="subscribe_gradient_end">#D03513</color>
+    <color name="subscribe_gradient_start">#BC2488</color>
+    <color name="subscribe_gradient_end">#DB3F27</color>
     <color name="subscribed">#6EE5FF</color>
 
     <color name="red_gradient_start">#961676</color>
@@ -52,12 +53,12 @@
     <color name="white_gradient_end">#FEFEFE</color>
 
     <color name="paywall_grey">#838383</color>
-    <color name="paywall_yellow">#E3A631</color>
-    <color name="paywall_green">#78E038</color>
-    <color name="paywall_gradient_week_start">#D49A29</color>
-    <color name="paywall_gradient_week_end">#BC3315</color>
+    <color name="paywall_pink">#D22B90</color>
+    <color name="paywall_green">#7ED22B</color>
+    <color name="paywall_gradient_week_start">@color/paywall_pink</color>
+    <color name="paywall_gradient_week_end">#DA3E2C</color>
     <color name="paywall_gradient_lifetime_start">#F1C321</color>
-    <color name="paywall_gradient_lifetime_end">#78E038</color>
+    <color name="paywall_gradient_lifetime_end">@color/paywall_green</color>
 
     <color name="onboarding_black">#141414</color>
     <color name="edit_pack_item_stroke">@color/white_35</color>
