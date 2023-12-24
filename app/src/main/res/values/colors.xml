@@ -56,6 +56,7 @@
     <color name="paywall_grey">#838383</color>
     <color name="paywall_pink">#D22B90</color>
     <color name="paywall_green">#7ED22B</color>
+    <color name="paywall_green_dark">#295011</color>
     <color name="paywall_gradient_week_start">@color/paywall_pink</color>
     <color name="paywall_gradient_week_end">#DA3E2C</color>
     <color name="paywall_gradient_lifetime_start">#F1C321</color>

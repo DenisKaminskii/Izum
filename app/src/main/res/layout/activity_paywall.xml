@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:background="@drawable/rect_outline_white_10_stroke_2" />
+            tools:background="@drawable/rect_outline_white_10_stroke_2_coreners_10" />
 
         <com.pickone.ui.paywall.PremiumPriceItemView
             android:id="@+id/iPriceSecond"
@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            tools:background="@drawable/rect_outline_white_10_stroke_2" />
+            tools:background="@drawable/rect_outline_white_10_stroke_2_coreners_10" />
 
     </LinearLayout>
 

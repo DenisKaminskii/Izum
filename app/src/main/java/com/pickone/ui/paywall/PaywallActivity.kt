@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.pickone.R
 import com.pickone.databinding.ActivityPaywallBinding
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.LoadingDialog
@@ -32,7 +33,18 @@ class PaywallActivity : BaseActivity() {
         ivClose.setOnClickListener { finish() }
 
         iPriceFirst.setOnClickListener { viewModel.onWeeklyOptionSelected() }
-        iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
+        // iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
+        iPriceSecond.update(
+            PremiumPriceItemState(
+                title = "Lifetime",
+                subtitle = "Will be soon ..",
+                isSelected = false,
+                titleColor = getColor(R.color.paywall_green_dark),
+                subtitleColor = getColor(R.color.white_25),
+                icon = null,
+                accentColor = getColor(R.color.paywall_green_dark)
+            )
+        )
         tvSubscribe.setOnClickListener { viewModel.onPurchaseClicked() }
 
         viewModel.onViewInitialized(Unit)
@@ -50,7 +62,7 @@ class PaywallActivity : BaseActivity() {
         if (viewState !is PaywallViewState.Content) return@with
 
         iPriceFirst.update(viewState.weeklyItem)
-        iPriceSecond.update(viewState.lifetimeItem)
+        // iPriceSecond.update(viewState.lifetimeItem)
 
         with(tvSubscribe) {
             background = GradientDrawable(

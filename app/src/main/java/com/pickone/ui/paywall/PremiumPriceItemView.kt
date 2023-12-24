@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import com.pickone.databinding.ItemPricePremiumBinding
 import com.pickone.ui.dp
 import com.pickone.ui.dpF
@@ -17,7 +18,7 @@ data class PremiumPriceItemState(
     val isSelected: Boolean,
     @ColorInt val titleColor: Int,
     @ColorInt val subtitleColor: Int,
-    @DrawableRes val icon: Int,
+    @DrawableRes val icon: Int?,
     @ColorInt val accentColor: Int
 )
 
@@ -50,7 +51,9 @@ class PremiumPriceItemView : LinearLayout {
 
         tvTitle.setTextColor(state.titleColor)
         tvSubtitle.setTextColor(state.subtitleColor)
-        ivCheck.setImageResource(state.icon)
+
+        ivCheck.isVisible = state.icon != null
+        state.icon?.let(ivCheck::setImageResource)
 
         root.background = GradientDrawable().apply {
             setColor(
