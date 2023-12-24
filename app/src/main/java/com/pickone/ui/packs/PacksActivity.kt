@@ -11,6 +11,7 @@ import com.pickone.R
 import com.pickone.databinding.ActivityPacksBinding
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.create.PackTitleEditDialog
+import com.revenuecat.purchases.Purchases
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -73,6 +74,11 @@ class PacksActivity : BaseActivity() {
     private fun update(viewState: PacksViewState) {
         val hasSubscription = viewState.hasSubscription
         binding.tvSubscribe.isVisible = !hasSubscription
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Purchases.sharedInstance.removeUpdatedCustomerInfoListener()
     }
 
     private var createPackDialog: PackTitleEditDialog? = null

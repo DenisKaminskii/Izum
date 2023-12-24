@@ -38,7 +38,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override var hasSubscription: Boolean
-        get() = false // preferenceCache.getBoolean(key = PreferenceKey.HasSubscription, fallback = false)
+        get() = preferenceCache.getBoolean(key = PreferenceKey.HasSubscription.name, fallback = false)
         set(value) {
             preferenceCache.putBoolean(PreferenceKey.HasSubscription.name, value)
         }

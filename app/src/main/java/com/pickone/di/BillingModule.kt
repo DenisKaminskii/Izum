@@ -5,6 +5,7 @@ import com.pickone.data.repository.UserRepository
 import com.pickone.domain.billing.Billing
 import com.pickone.domain.billing.BillingImpl
 import com.pickone.network.OnUserIdUpdated
+import com.pickone.ui.paywall.OnPremiumPurchased
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,13 +24,15 @@ class BillingModule {
         @ApplicationContext context: Context,
         userRepository: UserRepository,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-        onUserIdUpdated: OnUserIdUpdated
+        onUserIdUpdated: OnUserIdUpdated,
+        onPremiumPurchased: OnPremiumPurchased
     ): Billing {
         return BillingImpl(
             context,
             userRepository,
             ioDispatcher,
-            onUserIdUpdated
+            onUserIdUpdated,
+            onPremiumPurchased
         )
     }
 

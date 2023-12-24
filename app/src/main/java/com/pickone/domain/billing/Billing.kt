@@ -6,6 +6,7 @@ import com.pickone.R
 import com.pickone.data.repository.UserRepository
 import com.pickone.network.OnUserIdUpdated
 import com.pickone.ui.ViewAction
+import com.pickone.ui.paywall.OnPremiumPurchased
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Package
@@ -14,9 +15,11 @@ import com.revenuecat.purchases.PurchasesConfiguration
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.getOfferingsWith
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
+import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import com.revenuecat.purchases.logInWith
 import com.revenuecat.purchases.models.StoreProduct
 import com.revenuecat.purchases.models.StoreTransaction
+import com.revenuecat.purchases.syncPurchasesWith
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -77,7 +80,8 @@ class BillingImpl(
     private val context: Context,
     private val userRepository: UserRepository,
     private val ioDispatcher: CoroutineDispatcher,
-    private val onUserIdUpdated: OnUserIdUpdated
+    private val onUserIdUpdated: OnUserIdUpdated,
+    private val onPremiumPurchased: OnPremiumPurchased
 ) : Billing,
     CoroutineScope by CoroutineScope(SupervisorJob() + ioDispatcher) {
 
@@ -106,10 +110,14 @@ class BillingImpl(
             val configuration = PurchasesConfiguration.Builder(context, apiKey).build()
             Purchases.configure(configuration)
 
+            Purchases.sharedInstance.updatedCustomerInfoListener =
+                UpdatedCustomerInfoListener { customerInfo -> checkForSubscription(customerInfo) }
+
             onInitialized()
             Log.d("Steve", "RevenueCat: configure success with userId: ${userRepository.userId}")
         } catch (e: Exception) {
             isInitializedFailed = true
+            Purchases.sharedInstance.removeUpdatedCustomerInfoListener()
             Log.d("Steve", "RevenueCat: init error: $e")
         }
     }
@@ -118,11 +126,20 @@ class BillingImpl(
         subscribeToUserIdUpdates()
         checkSubscription()
         fetchWeeklyPackage()
+        restorePurchases()
     }
 
     private suspend fun fetchWeeklyPackage() {
         if (weeklyPackage != null) return
         weeklyPackage = getWeeklyPackage()
+    }
+
+    private fun restorePurchases() {
+        checkIsInitialized()
+
+        Purchases.sharedInstance.syncPurchasesWith { customerInfo ->
+            checkForSubscription(customerInfo)
+        }
     }
 
     override fun setUserId(userId: Long) {
@@ -134,7 +151,7 @@ class BillingImpl(
                 Log.d("Steve", "RevenueCat: set user id error: $error")
             },
             onSuccess = { purchaserInfo, created ->
-                checkForSubscription(purchaserInfo)
+                restorePurchases()
             })
     }
 
@@ -232,7 +249,11 @@ class BillingImpl(
 
     private fun checkForSubscription(customerInfo: CustomerInfo) {
         val entitlement = customerInfo.entitlements[PREMIUM_ENTITLEMENT_ID]
-        userRepository.hasSubscription = entitlement?.isActive == true
+        val hasSubscription = entitlement?.isActive == true
+        userRepository.hasSubscription = hasSubscription
+        if (hasSubscription) {
+            launch { onPremiumPurchased.emit(Unit) }
+        }
     }
 
     @Throws(BillingException.NotInitialized::class)

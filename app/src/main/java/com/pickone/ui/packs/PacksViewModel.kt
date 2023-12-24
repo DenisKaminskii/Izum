@@ -12,6 +12,7 @@ import com.pickone.ui.ViewAction
 import com.pickone.ui.create.EditPackInput
 import com.pickone.ui.edit.EditPollVariant
 import com.pickone.ui.pack.PackDialogInput
+import com.pickone.ui.paywall.OnPremiumPurchased
 import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,6 +32,7 @@ class PacksViewModel @Inject constructor(
     private val customPacksRepository: CustomPacksRepository,
     private val userRepository: UserRepository,
     private val preferenceCache: PreferenceCache,
+    private val onPremiumPurchased: OnPremiumPurchased,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : StateViewModel<Unit, PacksViewState>(
     initialState = PacksViewState()
@@ -67,6 +69,11 @@ class PacksViewModel @Inject constructor(
                     isCustomFetched = true
                     updateView()
                 }
+        }
+
+        viewModelScope.launch {
+            onPremiumPurchased
+                .collect { updateView() }
         }
     }
 
