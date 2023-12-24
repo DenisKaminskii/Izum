@@ -18,6 +18,7 @@ class PickOneApplication : Application() {
         super.onCreate()
         initBilling()
         auth()
+        checkSubscription()
     }
 
     private fun initBilling() {
@@ -26,6 +27,10 @@ class PickOneApplication : Application() {
 
     private fun auth() = GlobalScope.launch {
         userRepository.auth()
+    }
+
+    private fun checkSubscription() {
+        billing.checkSubscription()
     }
 
 }

@@ -89,7 +89,7 @@ class PacksActivity : BaseActivity() {
                 createPackDialog = null
             }
         )
-        createPackDialog?.show(supportFragmentManager, "PackTitleEditDialog")
+        createPackDialog?.show(supportFragmentManager, PackTitleEditDialog::class.simpleName)
     }
 
 }

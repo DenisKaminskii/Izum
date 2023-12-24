@@ -168,6 +168,7 @@ class PackDialog : BaseDialogFragment() {
         }
     }
 
+    // duplicated code
     private fun createInsetDrawable(
         context: Context,
         horizontalOffset: Float,

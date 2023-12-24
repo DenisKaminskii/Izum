@@ -6,7 +6,11 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.pickone.databinding.ActivityPaywallBinding
 import com.pickone.ui.BaseActivity
+import com.pickone.ui.LoadingDialog
 import com.pickone.ui.dpF
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.models.StoreTransaction
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -64,6 +68,39 @@ class PaywallActivity : BaseActivity() {
 
         tvSubscribeSubtitle.isVisible = viewState.extraSubtitle != null
         tvSubscribeSubtitle.text = viewState.extraSubtitle
+
+        val isLoadingDialogVisibleNow = loadingDialog?.isAdded == true
+        if (viewState.isShowDelegateLoading && !isLoadingDialogVisibleNow) {
+            showLoadingDialog()
+        }
+
+        if (!viewState.isShowDelegateLoading && isLoadingDialogVisibleNow) {
+            hideLoadingDialog()
+        }
+    }
+
+    override fun onPurchaseSuccess(storeTransaction: StoreTransaction?, customerInfo: CustomerInfo) {
+        super.onPurchaseSuccess(storeTransaction, customerInfo)
+        viewModel.onPurchaseSuccess(storeTransaction, customerInfo)
+    }
+
+    override fun onPurchaseError(error: PurchasesError, userCancelled: Boolean) {
+        super.onPurchaseError(error, userCancelled)
+        viewModel.onPurchaseError(error, userCancelled)
+    }
+
+    private var loadingDialog: LoadingDialog? = null
+
+    private fun showLoadingDialog() {
+        loadingDialog?.dismissAllowingStateLoss()
+        loadingDialog = null
+        loadingDialog = LoadingDialog.getInstance()
+        loadingDialog?.show(supportFragmentManager, LoadingDialog::class.simpleName)
+    }
+
+    private fun hideLoadingDialog() {
+        loadingDialog?.dismissAllowingStateLoss()
+        loadingDialog = null
     }
 
 }

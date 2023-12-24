@@ -23,6 +23,7 @@
     <color name="grey_dark">#2F2F2F</color>
 
     <color name="black">#000000</color>
+    <color name="black_70">#B3000000</color>
     <color name="black_95">#0E0E0E</color>
     <color name="white">#E5E5E5</color>
     <color name="tomato">#B94E2C</color>

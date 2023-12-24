@@ -7,6 +7,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.pickone.data.Pack
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceKey
+import com.pickone.ui.BaseActivity
 import com.pickone.ui.KEY_ARGS_INPUT
 import com.pickone.ui.KEY_ARGS_PACK
 import com.pickone.ui.onboarding.OnboardingActivity
@@ -47,7 +48,7 @@ interface Router {
 
     fun route(route: Route)
 
-    fun attachHost(activity: FragmentActivity)
+    fun attachHost(activity: BaseActivity)
 
     fun detachHost()
 
@@ -59,9 +60,9 @@ class RouterImpl @Inject constructor(
 
     private val routeQueue = ConcurrentLinkedQueue<Router.Route>()
 
-    private var host: FragmentActivity? = null
+    private var host: BaseActivity? = null
 
-    override fun attachHost(activity: FragmentActivity) {
+    override fun attachHost(activity: BaseActivity) {
         this.host = activity
         executeRoutes()
     }
