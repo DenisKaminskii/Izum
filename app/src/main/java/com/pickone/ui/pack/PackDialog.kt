@@ -119,7 +119,7 @@ class PackDialog : BaseDialogFragment() {
         binding.ivHistory.setOnClickListener { viewModel.onPackHistoryClick(input.pack) }
 
         binding.tvPolls.text = if (input.answeredPollsCount > 0) {
-            "${input.answeredPollsCount} / ${input.pack.pollsCount}"
+            "${input.answeredPollsCount} / ${input.pack.pollsCount} answered"
         } else {
             "${input.pack.pollsCount} questions"
         }

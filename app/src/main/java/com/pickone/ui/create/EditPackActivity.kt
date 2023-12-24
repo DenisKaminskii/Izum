@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -147,7 +148,7 @@ class EditPackActivity : BaseActivity() {
     private fun onPackRemoveClick() {
         removeDialog?.hide()
         removeDialog = null
-        removeDialog = AlertDialog.Builder(this)
+        removeDialog = AlertDialog.Builder(this, R.style.RoundedDialog)
             .setTitle("Are you sure?")
             .setMessage("Do you really want to remove this pack?")
             .setPositiveButton("Yes") { dialog, _ ->
@@ -159,12 +160,27 @@ class EditPackActivity : BaseActivity() {
             }
             .create()
         removeDialog?.show()
+        removeDialog?.let {
+            val window = it.window
+            if (window != null) {
+                val layoutParams = WindowManager.LayoutParams()
+                layoutParams.copyFrom(window.attributes)
+
+                // Set the width of the dialog to fill the parent width minus the desired margin on each side
+                // Adjust 'marginSize' to your desired margin size in pixels
+                val displayMetrics = resources.displayMetrics
+                val marginSize = (32 * displayMetrics.density).toInt() // for 20dp margin on each side
+                layoutParams.width = displayMetrics.widthPixels - 2 * marginSize
+
+                window.attributes = layoutParams
+            }
+        }
     }
 
     private fun onPollsRemoveApproved() {
         removeDialog?.hide()
         removeDialog = null
-        removeDialog = AlertDialog.Builder(this)
+        removeDialog = AlertDialog.Builder(this, R.style.RoundedDialog)
             .setTitle("Are you sure?")
             .setMessage("Do you really want to remove this questions?")
             .setPositiveButton("Yes") { dialog, _ ->

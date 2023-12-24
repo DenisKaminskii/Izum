@@ -12,7 +12,7 @@
         android:layout_marginHorizontal="16dp"
         android:gravity="center"
         android:text="Expand questions limit to 100 with subscription"
-        android:textColor="@color/white_35" />
+        android:textColor="@color/white_25" />
 
     <TextView
         android:id="@+id/tvSubscribe"

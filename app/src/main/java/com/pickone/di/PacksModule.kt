@@ -24,10 +24,9 @@ class PacksModule {
     @Singleton
     fun providePacksRepository(
         packsApi: PackApi,
-        pollsApi: PollApi,
-        preferenceCache: PreferenceCache
+        pollsApi: PollApi
     ) : PublicPacksRepository {
-        return PublicPacksRepositoryImpl(packsApi, pollsApi, preferenceCache)
+        return PublicPacksRepositoryImpl(packsApi, pollsApi)
     }
 
     @Provides

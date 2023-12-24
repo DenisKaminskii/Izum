@@ -129,7 +129,7 @@ class PackHistoryViewModel @Inject constructor(
 
     fun onSubscribeAndStartClicked() {
         viewModelScope.launch {
-            route(Router.Route.SubscriptionPaywall)
+            route(Router.Route.Paywall)
         }
     }
 

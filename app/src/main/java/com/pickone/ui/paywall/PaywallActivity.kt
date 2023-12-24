@@ -22,6 +22,11 @@ class PaywallActivity : BaseActivity() {
 
     private val viewModel: PaywallViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+    }
+
     override fun initLayout() {
         super.initLayout()
         _binding = ActivityPaywallBinding.inflate(layoutInflater)

@@ -111,7 +111,7 @@
             android:layout_marginHorizontal="48dp"
             android:gravity="center"
             android:text="Unfortunately, no one has responded to this pack yet"
-            android:textColor="@color/white_35" />
+            android:textColor="@color/white_25" />
 
         <TextView
             android:id="@+id/tvShare"
@@ -142,7 +142,7 @@
             android:layout_marginHorizontal="48dp"
             android:gravity="center"
             android:text="Extended statistic data available only with premium subscription"
-            android:textColor="@color/white_35" />
+            android:textColor="@color/white_25" />
 
         <TextView
             android:id="@+id/tvSubscribe"

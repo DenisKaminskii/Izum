@@ -36,23 +36,13 @@ class PackViewHolder(
             arrayOf(intArrayOf(android.R.attr.state_enabled)),
             intArrayOf(item.contentColor)
         )
-        binding.tvUpdated.setTextColor(item.contentColor)
-        binding.tvUpdated.compoundDrawableTintList = ColorStateList(
-            arrayOf(intArrayOf(android.R.attr.state_enabled)),
-            intArrayOf(item.contentColor)
-        )
-        binding.tvUpdated.isVisible = item.isUpdated
 
         binding.ivLock.isVisible = item.isPaid && !item.hasSubscription
         binding.ivLock.setColorFilter(item.contentColor)
 
         val pollsCommonCount = item.pollsCount
-        val pollsAnsweredCount = item.answeredPollsCount ?: 0
 
-        binding.tvPolls.text = "$pollsAnsweredCount/$pollsCommonCount"
-        binding.tvPolls.text = item.answeredPollsCount?.let { answeredCount ->
-            "$answeredCount/$pollsCommonCount"
-        } ?: "$pollsCommonCount"
+        binding.tvPolls.text = pollsCommonCount.toString()
 
         binding.root.setOnClickListener {
             onClick(item.pack)

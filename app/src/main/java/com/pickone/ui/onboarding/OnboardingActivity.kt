@@ -2,14 +2,17 @@ package com.pickone.ui.onboarding
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.pickone.R
 import com.pickone.databinding.ActivityOnboardingBinding
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceKey
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.dpF
+import com.pickone.ui.route.Router
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -53,6 +56,10 @@ class OnboardingActivity : BaseActivity() {
 
     override fun initView(args: Bundle) {
         super.initView(args)
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = getColor(R.color.onboarding_black)
 
         binding.tvContinue.setOnClickListener {
             if (isLockInput) return@setOnClickListener
@@ -128,7 +135,8 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun close() {
-        preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed.name, true)
+        // preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed.name, true)
+        router.route(Router.Route.Paywall)
         finish()
     }
 
@@ -139,6 +147,11 @@ class OnboardingActivity : BaseActivity() {
                 binding.tvTitle.animate()
                     .translationY(-dpF(500))
                     .setDuration(500)
+                    .start()
+
+                binding.tvTitle.animate()
+                    .alpha(0f)
+                    .setDuration(150)
                     .start()
 
                 binding.ivFirstPolls.animate()
@@ -160,6 +173,11 @@ class OnboardingActivity : BaseActivity() {
                 binding.tvTitle.animate()
                     .translationY(-dpF(500))
                     .setDuration(500)
+                    .start()
+
+                binding.tvTitle.animate()
+                    .alpha(0f)
+                    .setDuration(150)
                     .start()
 
                 binding.vgSecondGenders.animate()
@@ -206,6 +224,11 @@ class OnboardingActivity : BaseActivity() {
                     .setDuration(500)
                     .start()
 
+                binding.tvTitle.animate()
+                    .alpha(1f)
+                    .setDuration(150)
+                    .start()
+
                 binding.vgSecondGenders.animate()
                     .alpha(1f)
                     .setDuration(500)
@@ -240,6 +263,11 @@ class OnboardingActivity : BaseActivity() {
                 binding.tvTitle.animate()
                     .translationY(0f)
                     .setDuration(500)
+                    .start()
+
+                binding.tvTitle.animate()
+                    .alpha(1f)
+                    .setDuration(150)
                     .start()
 
                 binding.tvThirdSubtitle.animate()

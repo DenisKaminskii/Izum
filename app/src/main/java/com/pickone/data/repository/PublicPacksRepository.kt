@@ -51,8 +51,7 @@ interface PublicPacksRepository {
 
 class PublicPacksRepositoryImpl(
     private val packsApi: PackApi,
-    private val pollsApi: PollApi,
-    private val preferenceCache: PreferenceCache
+    private val pollsApi: PollApi
 ) : PublicPacksRepository {
 
     private val _packs = MutableSharedFlow<List<Pack.Public>>(replay = 1)
@@ -64,19 +63,9 @@ class PublicPacksRepositoryImpl(
     override suspend fun fetchFeed() {
         val newPacks = packsApi.getPacks()
             .map(Pack.Public::fromJson)
-            .map(::validateForCountUpdated)
+            .sortedBy { it.isPaid }
 
         _packs.emit(newPacks)
-    }
-
-    private fun validateForCountUpdated(pack: Pack.Public): Pack.Public {
-        return preferenceCache.getLongOrNull("${pack.id}_count")
-            ?.let { cacheCount ->
-                pack.copy(
-                    isUpdated = cacheCount < pack.pollsCount
-                )
-            }
-            ?: pack
     }
 
     override suspend fun getPackPolls(packId: Long): List<Poll> {

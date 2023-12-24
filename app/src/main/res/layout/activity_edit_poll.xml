@@ -58,7 +58,7 @@
             android:gravity="center"
             android:lineSpacingExtra="4dp"
             android:text="Suggest your question and it might be featured in the 'Suggests' pack!"
-            android:textColor="@color/white_35" />
+            android:textColor="@color/white_25" />
 
         <TextView
             android:id="@+id/tvAction"

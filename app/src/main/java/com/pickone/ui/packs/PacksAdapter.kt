@@ -14,12 +14,10 @@ data class PacksItem(
     @ColorInt val gradientStartColor: Int,
     @ColorInt val gradientEndColor: Int,
     @ColorInt val contentColor: Int,
-    val answeredPollsCount: Long?,
     val pollsCount: Long,
     val isPaid: Boolean,
     val hasSubscription: Boolean,
-    val pack: Pack,
-    val isUpdated: Boolean = false
+    val pack: Pack
 )
 
 class PacksAdapter(

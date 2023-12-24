@@ -21,6 +21,13 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <style name="RoundedDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/rect_filled_black_soft_14</item>
+        <item name="android:textColorPrimary">@color/white</item> <!-- Title text color -->
+        <item name="android:textColorSecondary">@color/white_25</item> <!-- Message text color -->
+        <item name="colorAccent">@color/white_50</item> <!-- Button text color -->
+    </style>
+
     <!-- region Text -->
 
     <style name="Text.Header" parent="TextAppearance.MaterialComponents.Headline6">

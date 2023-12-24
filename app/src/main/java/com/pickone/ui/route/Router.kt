@@ -1,7 +1,6 @@
 package com.pickone.ui.route
 
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.pickone.data.Pack
@@ -41,7 +40,7 @@ interface Router {
         data class PackHistory(val pack: com.pickone.data.Pack) : Route
         object ProvideUserInfo : Route
         object Finish : Route
-        object SubscriptionPaywall : Route
+        object Paywall : Route
         object Onboarding : Route
         data class GoogleReview(val reviewInfo: ReviewInfo) : Route
     }
@@ -91,7 +90,7 @@ class RouterImpl @Inject constructor(
                     is Router.Route.PackHistory -> showPackHistory(route.pack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
-                    is Router.Route.SubscriptionPaywall -> showSubscriptionPaywall()
+                    is Router.Route.Paywall -> showSubscriptionPaywall()
                     is Router.Route.Onboarding -> showOnboarding()
                     is Router.Route.GoogleReview -> showGoogleReview(route.reviewInfo)
                 }

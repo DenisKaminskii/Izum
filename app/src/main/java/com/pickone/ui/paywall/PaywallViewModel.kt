@@ -169,7 +169,7 @@ class PaywallViewModel @Inject constructor(
                 .collect { purchaseState ->
                     when (purchaseState) {
                         is PurchaseState.Success -> {
-                            emit(ViewAction.ShowToast("Enjoy you premium! \uD83E\uDD70"))
+                            emit(ViewAction.ShowToast("Enjoy your premium! \uD83E\uDD70"))
                             route(Router.Route.Finish)
                         }
 

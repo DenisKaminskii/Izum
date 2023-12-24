@@ -9,7 +9,6 @@ import kotlinx.parcelize.Parcelize
 sealed class Pack(
     open val id: Long,
     open val title: String,
-    open val isUpdated: Boolean,
     open val description: String?,
     open val isPaid: Boolean,
     open val pollsCount: Long,
@@ -30,12 +29,10 @@ sealed class Pack(
         @ColorInt override val contentColor: Int,
         @ColorInt override val gradientStartColor: Int,
         @ColorInt override val gradientEndColor: Int,
-        val preview: List<PackPreview>,
-        override val isUpdated: Boolean = false
+        val preview: List<PackPreview>
     ) : Pack(
         id,
         title,
-        isUpdated,
         description,
         isPaid,
         pollsCount,
@@ -79,12 +76,10 @@ sealed class Pack(
         @ColorInt override val gradientEndColor: Int,
         val token: String,
         val code: String,
-        val isMine: Boolean,
-        override val isUpdated: Boolean = false
+        val isMine: Boolean
     ) : Pack(
         id,
         title,
-        isUpdated,
         description,
         false,
         pollsCount,

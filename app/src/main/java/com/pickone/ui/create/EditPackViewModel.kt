@@ -255,7 +255,7 @@ class EditPackViewModel @Inject constructor(
 
     fun onSubscribeClick() {
         viewModelScope.launch {
-            route(Router.Route.SubscriptionPaywall)
+            route(Router.Route.Paywall)
         }
     }
 
