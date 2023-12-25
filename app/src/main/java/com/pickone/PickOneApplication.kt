@@ -3,9 +3,11 @@ package com.pickone
 import android.app.Application
 import com.pickone.data.repository.UserRepository
 import com.pickone.domain.billing.Billing
+import com.pickone.log.CrashReportingTree
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -19,10 +21,19 @@ class PickOneApplication : Application() {
         initBilling()
         auth()
         checkSubscription()
+        initTimber()
     }
 
     private fun initBilling() {
         billing.init()
+    }
+
+    private fun initTimber() {
+        Timber.plant(if (true) {
+            Timber.DebugTree()
+        } else {
+            CrashReportingTree()
+        })
     }
 
     private fun auth() = GlobalScope.launch {

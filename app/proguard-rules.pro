@@ -29,6 +29,8 @@
 
 -dontwarn com.squareup.moshi.**
 
+-keep class com.revenuecat.purchases.** { *; }
+
 -keepclassmembers class ** {
     @com.squareup.moshi.FromJson *;
     @com.squareup.moshi.ToJson *;

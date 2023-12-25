@@ -199,7 +199,7 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
         ageCheckDialog?.hide()
         ageCheckDialog = null
-        ageCheckDialog = AlertDialog.Builder(requireContext())
+        ageCheckDialog = AlertDialog.Builder(requireContext(), R.style.RoundedDialog)
             .setTitle("Are you 18 years old or above?")
             .setMessage("Content contains obscene language and is not suitable for kids.")
             .setPositiveButton("Yes") { dialog, _ ->
