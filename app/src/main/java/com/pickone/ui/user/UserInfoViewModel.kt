@@ -2,6 +2,7 @@ package com.pickone.ui.user
 
 import androidx.annotation.IntRange
 import androidx.lifecycle.viewModelScope
+import com.pickone.analytics.Analytics
 import com.pickone.data.repository.UserRepository
 import com.pickone.domain.core.StateViewModel
 import com.pickone.ui.ViewAction
@@ -20,7 +21,8 @@ data class UserInfoViewState(
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val analytics: Analytics
 ) : StateViewModel<Unit, UserInfoViewState>(
     initialState = UserInfoViewState()
 ) {
@@ -70,6 +72,7 @@ class UserInfoViewModel @Inject constructor(
         updatingJob = viewModelScope.launch {
             val isUserInfoUpdated = userRepository.updateUserInfo(age, gender)
             if (isUserInfoUpdated) {
+                analytics.profileSetupConfigured()
                 userRepository.isStatisticInfoProvided = true
                 route(Router.Route.Packs)
             } else {

@@ -1,10 +1,10 @@
 package com.pickone.ui.paywall
 
 import android.content.Context
-import timber.log.Timber
 import androidx.annotation.ColorInt
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.data.repository.UserRepository
 import com.pickone.domain.billing.Billing
 import com.pickone.domain.billing.BillingException
@@ -12,15 +12,11 @@ import com.pickone.domain.billing.PurchaseState
 import com.pickone.domain.core.StateViewModel
 import com.pickone.ui.ViewAction
 import com.pickone.ui.route.Router
-import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.models.StoreProduct
-import com.revenuecat.purchases.models.StoreTransaction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 enum class Price {
@@ -50,8 +46,9 @@ sealed class PaywallViewState {
 class PaywallViewModel @Inject constructor(
     private val billing: Billing,
     private val userRepository: UserRepository,
+    private val analytics: Analytics,
     @ApplicationContext private val context: Context
-) : StateViewModel<Unit, PaywallViewState>(
+) : StateViewModel<PaywallInput, PaywallViewState>(
     initialState = PaywallViewState.Loading
 ), PurchaseDelegate by PurchaseDelegateImpl(billing) {
 
@@ -59,8 +56,13 @@ class PaywallViewModel @Inject constructor(
 
     private var weeklySubscription: StoreProduct? = null
 
-    override fun onViewInitialized(input: Unit) {
+    private lateinit var input: PaywallInput
+
+    override fun onViewInitialized(input: PaywallInput) {
         super.onViewInitialized(input)
+        analytics.paywall0pen()
+
+        this.input = input
 
         if (userRepository.hasSubscription)  {
             viewModelScope.launch {
@@ -156,6 +158,9 @@ class PaywallViewModel @Inject constructor(
     }
 
     fun onPurchaseClicked() = viewModelScope.launch {
+        if (input.fromOnboarding) analytics.onboardingTapOnPurchase(selectedPrice)
+        analytics.paywallTapOnPurchase(selectedPrice)
+
         showDelegateLoading()
 
         tryWithBilling {
@@ -169,24 +174,36 @@ class PaywallViewModel @Inject constructor(
                 .collect { purchaseState ->
                     when (purchaseState) {
                         is PurchaseState.Success -> {
+                            if (input.fromOnboarding) analytics.onboardingPurchaseSucceeded(selectedPrice)
+                            analytics.paywallPurchaseSucceeded(selectedPrice)
+
                             emit(ViewAction.ShowToast("Enjoy your premium! \uD83E\uDD70"))
                             route(Router.Route.Finish)
                         }
 
                         is PurchaseState.Error -> {
-                            Timber.e("RevenueCat: error: ${purchaseState.message}")
+                            hideDelegateLoading()
                             if (!purchaseState.userCancelled) {
-                                emit(ViewAction.ShowToast("Purchase declined :("))
-                            }
-                            hideDelegateLoading()
-                        }
+                                if (input.fromOnboarding) analytics.onboardingPurchaseError()
+                                analytics.paywallPurchaseError()
 
-                        is PurchaseState.Canceled -> {
-                            hideDelegateLoading()
+                                Timber.e("RevenueCat: error: ${purchaseState.message}")
+                                emit(ViewAction.ShowToast("Purchase declined :("))
+                            } else {
+                                if (input.fromOnboarding) analytics.onboardingPurchaseCancelled()
+                                analytics.paywallPurchaseCancelled()
+                            }
                         }
                     }
 
                 }
+        }
+    }
+
+    fun onBackPressed() {
+        analytics.paywallClosed()
+        viewModelScope.launch {
+            route(Router.Route.Finish)
         }
     }
 

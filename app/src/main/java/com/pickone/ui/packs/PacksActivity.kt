@@ -1,21 +1,24 @@
 package com.pickone.ui.packs
 
 import android.os.Bundle
-import timber.log.Timber
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.databinding.ActivityPacksBinding
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.create.PackTitleEditDialog
 import com.revenuecat.purchases.Purchases
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PacksActivity : BaseActivity() {
+
+    @Inject lateinit var analytics: Analytics
 
     private var _binding: ActivityPacksBinding? = null
     private val binding: ActivityPacksBinding
@@ -84,6 +87,8 @@ class PacksActivity : BaseActivity() {
     private var createPackDialog: PackTitleEditDialog? = null
 
     private fun onCreatePackClick() {
+        analytics.customPackCreateTap()
+
         createPackDialog?.dismissAllowingStateLoss()
         createPackDialog = null
         createPackDialog = PackTitleEditDialog.getInstance(

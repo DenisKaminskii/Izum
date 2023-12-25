@@ -2,20 +2,33 @@ package com.pickone.ui.paywall
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Parcelable
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.databinding.ActivityPaywallBinding
 import com.pickone.ui.BaseActivity
+import com.pickone.ui.KEY_ARGS_INPUT
 import com.pickone.ui.LoadingDialog
 import com.pickone.ui.dpF
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.models.StoreTransaction
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.parcelize.Parcelize
+import javax.inject.Inject
+
+@Parcelize
+data class PaywallInput(
+    val fromOnboarding: Boolean
+) : Parcelable
 
 @AndroidEntryPoint
 class PaywallActivity : BaseActivity() {
+
+    @Inject lateinit var analytics: Analytics
 
     private var _binding: ActivityPaywallBinding? = null
     private val binding get() = _binding!!
@@ -35,10 +48,13 @@ class PaywallActivity : BaseActivity() {
 
     override fun initView(args: Bundle) = with(binding) {
         super.initView(args)
-        ivClose.setOnClickListener { finish() }
+        ivClose.setOnClickListener {
+            analytics.paywallClosed()
+            finish()
+        }
 
         iPriceFirst.setOnClickListener { viewModel.onWeeklyOptionSelected() }
-        // iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
+        // § iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
         iPriceSecond.update(
             PremiumPriceItemState(
                 title = "Lifetime",
@@ -52,7 +68,17 @@ class PaywallActivity : BaseActivity() {
         )
         tvSubscribe.setOnClickListener { viewModel.onPurchaseClicked() }
 
-        viewModel.onViewInitialized(Unit)
+        onBackPressedDispatcher.addCallback(
+            this@PaywallActivity,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.onBackPressed()
+                }
+            })
+
+        viewModel.onViewInitialized(
+            input = args.getParcelable(KEY_ARGS_INPUT)!!
+        )
     }
 
     override fun initSubs() {

@@ -55,6 +55,9 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     override fun onStop() {
         super.onStop()
         router.detachHost()
+        if (!isChangingConfigurations && !isFinishing) {
+            onMovedToBackground()
+        }
     }
 
     override fun accept(action: ViewAction) {
@@ -92,6 +95,10 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     open fun onPurchaseSuccess(storeTransaction: StoreTransaction?, customerInfo: CustomerInfo) {
 
+    }
+
+    open fun onMovedToBackground() {
+        // § test
     }
 
     protected fun <T> subscribe(viewModel: StateViewModel<*, T>, onViewState: (T) -> Unit) {

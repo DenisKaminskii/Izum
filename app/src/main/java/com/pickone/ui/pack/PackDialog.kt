@@ -2,6 +2,7 @@ package com.pickone.ui.pack
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.data.Pack
 import com.pickone.data.repository.UserRepository
 import com.pickone.databinding.DialogPackBinding
@@ -56,11 +58,9 @@ class PackDialog : BaseDialogFragment() {
         }
     }
 
-    @Inject
-    lateinit var userRepository: UserRepository
-
-    @Inject
-    lateinit var preferenceCache: PreferenceCache
+    @Inject lateinit var userRepository: UserRepository
+    @Inject lateinit var preferenceCache: PreferenceCache
+    @Inject lateinit var analytics: Analytics
 
     private var _binding: DialogPackBinding? = null
     private val binding get() = _binding!!
@@ -77,6 +77,12 @@ class PackDialog : BaseDialogFragment() {
         arguments?.let {
             input = it.getParcelable(KEY_ARGS_INPUT)!!
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (input.pack is Pack.Public) analytics.packPreviewClose(input.pack.id, input.pack.title)
+        if (input.pack is Pack.Custom) analytics.customPackPreviewClose(input.pack.id, input.pack.title)
     }
 
     override fun onCreateView(
@@ -111,7 +117,7 @@ class PackDialog : BaseDialogFragment() {
         )
 
         binding.tvStart.setOnClickListener {
-            viewModel.onNewCustomPackStartClick(input.pack)
+            viewModel.onPackDialogStartClick(input.pack)
             dismissAllowingStateLoss()
         }
 

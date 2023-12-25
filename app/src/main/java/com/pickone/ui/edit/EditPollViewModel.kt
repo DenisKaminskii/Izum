@@ -1,9 +1,9 @@
 package com.pickone.ui.edit
 
-import timber.log.Timber
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.data.EditPoll
 import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.repository.PublicPacksRepository
@@ -13,6 +13,7 @@ import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 sealed interface EditPollViewState {
@@ -31,7 +32,8 @@ sealed interface EditPollViewState {
 @HiltViewModel
 class EditPollViewModel @Inject constructor(
     private val publicPacksRepository: PublicPacksRepository,
-    private val customPacksRepository: CustomPacksRepository
+    private val customPacksRepository: CustomPacksRepository,
+    private val analytics: Analytics
 ) : StateViewModel<EditPollVariant, EditPollViewState>(
     initialState = EditPollViewState.Input()
 ) {
@@ -42,7 +44,7 @@ class EditPollViewModel @Inject constructor(
     )
 
     private var inputArgs: EditPollVariant = EditPollVariant.Suggest
-    
+
     private val actionTitle: String
         get() = when (inputArgs) {
             is EditPollVariant.Suggest -> "SEND"
@@ -109,9 +111,9 @@ class EditPollViewModel @Inject constructor(
                 try {
                     val packId = (inputArgs as? EditPollVariant.CustomPackAdd)?.packId ?: return@launch
                     customPacksRepository.addPoll(packId, editPoll)
-                    emit(ViewAction.ShowToast("Poll added"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
+                    analytics.customPackAddPollError()
                     Timber.e(exception, "On custom pack add poll error")
                     emit(ViewAction.ShowToast("Sorry. Try Again"))
                     updateView()

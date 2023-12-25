@@ -7,11 +7,13 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.databinding.ActivityOnboardingBinding
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceKey
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.dpF
+import com.pickone.ui.paywall.PaywallInput
 import com.pickone.ui.route.Router
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -26,6 +28,7 @@ class OnboardingActivity : BaseActivity() {
     private val binding get() = _binding!!
 
     @Inject lateinit var preferenceCache: PreferenceCache
+    @Inject lateinit var analytics: Analytics
 
     private val firstTitle = "Over 500+ exciting questions!"
     private val secondTitle = "Explore statistics for each question"
@@ -135,8 +138,11 @@ class OnboardingActivity : BaseActivity() {
     }
 
     private fun close() {
-        // preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed.name, true)
-        router.route(Router.Route.Paywall)
+        preferenceCache.putBoolean(PreferenceKey.IsOnboardingShowed.name, true)
+        analytics.onboardingClosed()
+        router.route(Router.Route.Paywall(
+            input = PaywallInput(fromOnboarding = true)
+        ))
         finish()
     }
 

@@ -1,9 +1,9 @@
 package com.pickone.ui.pack.history
 
 import android.content.Context
-import timber.log.Timber
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.data.Pack
 import com.pickone.data.Poll
 import com.pickone.data.repository.CustomPacksRepository
@@ -16,6 +16,7 @@ import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 sealed interface PackHistoryViewState {
@@ -41,7 +42,8 @@ class PackHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository,
-    private val preferenceCache: PreferenceCache
+    private val preferenceCache: PreferenceCache,
+    private val analytics: Analytics
 ) : StateViewModel<Pack, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
@@ -121,6 +123,9 @@ class PackHistoryViewModel @Inject constructor(
     }
 
     fun onStartClicked() {
+        if (pack is Pack.Public) analytics.packStartTap(pack.id, pack.title)
+        if (pack is Pack.Custom) analytics.customPackStartTap()
+
         viewModelScope.launch {
             route(Router.Route.Finish)
             route(Router.Route.Polls(pack))
@@ -129,7 +134,7 @@ class PackHistoryViewModel @Inject constructor(
 
     fun onSubscribeAndStartClicked() {
         viewModelScope.launch {
-            route(Router.Route.Paywall)
+            route(Router.Route.Paywall())
         }
     }
 

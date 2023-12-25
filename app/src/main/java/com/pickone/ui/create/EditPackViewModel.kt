@@ -2,8 +2,8 @@ package com.pickone.ui.create
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import timber.log.Timber
 import androidx.lifecycle.viewModelScope
+import com.pickone.analytics.Analytics
 import com.pickone.data.Poll
 import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.repository.UserRepository
@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 sealed interface EditPackViewState {
@@ -45,6 +46,7 @@ sealed interface EditPackViewState {
 class EditPackViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val customPacksRepository: CustomPacksRepository,
+    private val analytics: Analytics,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : StateViewModel<EditPackInput, EditPackViewState>(
     initialState = EditPackViewState.Loading
@@ -97,7 +99,7 @@ class EditPackViewModel @Inject constructor(
     }
 
     private fun updateView() {
-        updateState {
+        updateState { prevState ->
             if (!isPackFetched) {
                 EditPackViewState.Loading
             } else {
@@ -126,6 +128,12 @@ class EditPackViewModel @Inject constructor(
 
                 if (polls.size >= limit) {
                     items.add(PollsItem.Subscribe(onClick = ::onSubscribeClick))
+                }
+
+                if (prevState is EditPackViewState.Content) {
+                    if (prevState.polls.size < items.size) {
+                        analytics.customPackAddedPoll(items.size)
+                    }
                 }
 
                 EditPackViewState.Content(
@@ -162,6 +170,7 @@ class EditPackViewModel @Inject constructor(
             }
         }.invokeOnCompletion {
             resetEditMode()
+            analytics.customPackRemovedPoll()
             viewModelScope.launch {
                 emit(ViewAction.ShowToast("Questions successfully removed"))
             }
@@ -242,6 +251,7 @@ class EditPackViewModel @Inject constructor(
     }
 
     fun onAddPollClick() {
+        analytics.customPackAddPollTap()
         viewModelScope.launch {
             route(Router.Route.EditPoll(EditPollVariant.CustomPackAdd(packId)))
         }
@@ -255,7 +265,7 @@ class EditPackViewModel @Inject constructor(
 
     fun onSubscribeClick() {
         viewModelScope.launch {
-            route(Router.Route.Paywall)
+            route(Router.Route.Paywall())
         }
     }
 

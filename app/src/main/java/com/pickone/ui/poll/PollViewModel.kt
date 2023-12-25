@@ -1,11 +1,11 @@
 package com.pickone.ui.poll
 
 import android.content.Context
-import timber.log.Timber
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.model.ReviewErrorCode
+import com.pickone.analytics.Analytics
 import com.pickone.data.Pack
 import com.pickone.data.Poll
 import com.pickone.data.PollOption
@@ -20,6 +20,7 @@ import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 sealed interface PollViewState {
@@ -55,7 +56,8 @@ class PollViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository,
-    private val preferenceCache: PreferenceCache
+    private val preferenceCache: PreferenceCache,
+    private val analytics: Analytics
 ) : StateViewModel<Pack, PollViewState>(
     initialState = PollViewState.Loading
 ) {
@@ -210,6 +212,10 @@ class PollViewModel @Inject constructor(
         }
     }
 
+    fun onMovedToBackground() {
+        analytics.pollExited(poll.id)
+    }
+
     private fun onVote(optionId: Long) {
         if (votedOptionId != null) return
         votedOptionId = optionId
@@ -219,9 +225,12 @@ class PollViewModel @Inject constructor(
             try {
                 if (pack is Pack.Custom) {
                     customPacksRepository.vote(poll.id, optionId)
+                    analytics.customPollVoted(poll.id, optionId)
                 } else {
                     publicPacksRepository.vote(poll.id, optionId)
+                    analytics.pollVoted(poll.id, optionId)
                 }
+
                 increaseAnsweredPollsCount()
             } catch (exception: Exception) {
                 emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))

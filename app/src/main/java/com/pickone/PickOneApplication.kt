@@ -30,7 +30,7 @@ class PickOneApplication : Application() {
     }
 
     private fun initTimber() {
-        Timber.plant(if (false) {
+        Timber.plant(if (false) { //§TODO: Release important
             Timber.DebugTree()
         } else {
             CrashReportingTree()

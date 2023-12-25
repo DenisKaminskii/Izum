@@ -9,16 +9,17 @@ import com.pickone.domain.core.PreferenceKey
 import com.pickone.ui.BaseActivity
 import com.pickone.ui.KEY_ARGS_INPUT
 import com.pickone.ui.KEY_ARGS_PACK
-import com.pickone.ui.onboarding.OnboardingActivity
 import com.pickone.ui.create.EditPackActivity
 import com.pickone.ui.create.EditPackInput
 import com.pickone.ui.edit.EditPollActivity
 import com.pickone.ui.edit.EditPollVariant
+import com.pickone.ui.onboarding.OnboardingActivity
 import com.pickone.ui.pack.PackDialog
 import com.pickone.ui.pack.PackDialogInput
 import com.pickone.ui.pack.history.PackHistoryActivity
 import com.pickone.ui.packs.PacksActivity
 import com.pickone.ui.paywall.PaywallActivity
+import com.pickone.ui.paywall.PaywallInput
 import com.pickone.ui.poll.PollActivity
 import com.pickone.ui.poll.statistic.PollStatisticActivity
 import com.pickone.ui.poll.statistic.PollStatisticInput
@@ -40,7 +41,7 @@ interface Router {
         data class PackHistory(val pack: com.pickone.data.Pack) : Route
         object ProvideUserInfo : Route
         object Finish : Route
-        object Paywall : Route
+        data class Paywall(val input: PaywallInput = PaywallInput(fromOnboarding = false)) : Route
         object Onboarding : Route
         data class GoogleReview(val reviewInfo: ReviewInfo) : Route
     }
@@ -90,7 +91,7 @@ class RouterImpl @Inject constructor(
                     is Router.Route.PackHistory -> showPackHistory(route.pack)
                     is Router.Route.ProvideUserInfo -> showUserInfo()
                     is Router.Route.Finish -> finish()
-                    is Router.Route.Paywall -> showSubscriptionPaywall()
+                    is Router.Route.Paywall -> showSubscriptionPaywall(route.input)
                     is Router.Route.Onboarding -> showOnboarding()
                     is Router.Route.GoogleReview -> showGoogleReview(route.reviewInfo)
                 }
@@ -160,9 +161,10 @@ class RouterImpl @Inject constructor(
         }
     }
 
-    private fun showSubscriptionPaywall() {
+    private fun showSubscriptionPaywall(input: PaywallInput) {
         host?.let { activity ->
             val intent = Intent(activity, PaywallActivity::class.java)
+            intent.putExtra(KEY_ARGS_INPUT, input)
             activity.startActivity(intent)
         }
     }

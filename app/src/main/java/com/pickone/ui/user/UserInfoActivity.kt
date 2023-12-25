@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import com.pickone.analytics.Analytics
 import com.pickone.databinding.ActivityUserInfoBinding
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceKey
@@ -18,12 +19,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class UserInfoActivity : BaseActivity() {
 
+    @Inject lateinit var preferenceCache: PreferenceCache
+    @Inject lateinit var analytics: Analytics
+
     private var _binding: ActivityUserInfoBinding? = null
     val binding: ActivityUserInfoBinding get() = _binding!!
 
     private val viewModel: UserInfoViewModel by viewModels()
-
-    @Inject lateinit var preferenceCache: PreferenceCache
 
     override fun initLayout() {
         super.initLayout()
@@ -81,6 +83,13 @@ class UserInfoActivity : BaseActivity() {
     override fun initSubs() {
         super.initSubs()
         subscribe(viewModel) { viewState -> update(viewState)}
+    }
+
+    override fun onMovedToBackground() {
+        super.onMovedToBackground()
+        if (!binding.vProgress.isVisible) {
+            analytics.profileSetupExitedApp()
+        }
     }
 
     private fun checkOnboardingShow() {

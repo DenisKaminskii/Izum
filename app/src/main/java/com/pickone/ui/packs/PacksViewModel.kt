@@ -1,6 +1,7 @@
 package com.pickone.ui.packs
 
 import androidx.lifecycle.viewModelScope
+import com.pickone.analytics.Analytics
 import com.pickone.data.Pack
 import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.repository.PublicPacksRepository
@@ -17,6 +18,7 @@ import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 data class PacksViewState(
@@ -33,6 +35,7 @@ class PacksViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preferenceCache: PreferenceCache,
     private val onPremiumPurchased: OnPremiumPurchased,
+    private val analytics: Analytics,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : StateViewModel<Unit, PacksViewState>(
     initialState = PacksViewState()
@@ -135,14 +138,23 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onNewCustomPackStartClick(pack: Pack) {
+    fun onPackDialogStartClick(pack: Pack) {
+        if (pack is Pack.Public) analytics.packStartTap(pack.id, pack.title)
+        if (pack is Pack.Custom) analytics.customPackStartTap()
+
         viewModelScope.launch {
             route(Router.Route.Polls(pack))
         }
     }
 
-    fun onNewCustomPackStartClick(packId: Long) {
-        val pack = customPacks.firstOrNull { it.id == packId } ?: return
+    fun onNewCustomPackStartClick(packId: Long) { // § кажется не работало
+        analytics.customPackStartTap()
+        val pack = customPacks.firstOrNull { it.id == packId }
+
+        if (pack == null) {
+            Timber.e(NoSuchElementException("Couldn't start custom pack, didn't find added custom pack"))
+            return
+        }
 
         viewModelScope.launch {
             route(Router.Route.Polls(pack))
@@ -150,6 +162,9 @@ class PacksViewModel @Inject constructor(
     }
 
     fun onPackHistoryClick(pack: Pack) {
+        if (pack is Pack.Public) analytics.packStatsTap()
+        if (pack is Pack.Custom) analytics.customPackStatsTap()
+
         viewModelScope.launch {
             route(Router.Route.PackHistory(pack))
         }
@@ -157,7 +172,7 @@ class PacksViewModel @Inject constructor(
 
     fun onSubscribeClick() {
         viewModelScope.launch {
-            route(Router.Route.Paywall)
+            route(Router.Route.Paywall())
         }
     }
 
@@ -165,6 +180,7 @@ class PacksViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val newPackData = customPacksRepository.createPack(title)
+                analytics.customPackCreated()
                 val newPackId = newPackData.first
                 val newPackLink = newPackData.second
 
@@ -174,6 +190,7 @@ class PacksViewModel @Inject constructor(
                     packCode = newPackLink
                 )))
             } catch (ex: Exception) {
+                analytics.customPackCreateError()
                 emit(ViewAction.ShowToast("Error creating pack. Try again."))
             }
         }

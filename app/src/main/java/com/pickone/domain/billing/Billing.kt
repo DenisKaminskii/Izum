@@ -1,7 +1,6 @@
 package com.pickone.domain.billing
 
 import android.content.Context
-import timber.log.Timber
 import com.pickone.R
 import com.pickone.data.repository.UserRepository
 import com.pickone.network.OnUserIdUpdated
@@ -28,9 +27,9 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlin.jvm.Throws
 
 sealed class BillingException(
     override val message: String,
@@ -46,7 +45,6 @@ sealed class BillingException(
 sealed class PurchaseState {
     object Success : PurchaseState()
     data class Error(val message: String, val userCancelled: Boolean) : PurchaseState()
-    object Canceled : PurchaseState()
 }
 
 interface Billing {

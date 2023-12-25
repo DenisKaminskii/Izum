@@ -105,5 +105,10 @@ class  PollActivity : BaseActivity() {
         }
     }
 
+    override fun onMovedToBackground() {
+        super.onMovedToBackground()
+        viewModel.onMovedToBackground()
+    }
+
 
 }

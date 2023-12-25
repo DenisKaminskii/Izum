@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
+import com.pickone.analytics.Analytics
 import com.pickone.data.PollStatistic
 import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.repository.PublicPacksRepository
@@ -48,7 +49,8 @@ class PollStatisticViewModel @Inject constructor(
     private val customPacksRepository: CustomPacksRepository,
     private val publicPacksRepository: PublicPacksRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val analytics: Analytics
 ) : StateViewModel<PollStatisticInput, PollStatisticViewState>(
     initialState = PollStatisticViewState.Loading
 ) {
@@ -212,11 +214,13 @@ class PollStatisticViewModel @Inject constructor(
 
     fun onSubscribeClick() {
         viewModelScope.launch {
-            route(Router.Route.Paywall)
+            route(Router.Route.Paywall())
         }
     }
 
     fun onShareClick(clipBoard: ClipboardManager) {
+        analytics.customPackShareTap()
+
         if (shareLink == null) {
             viewModelScope.launch { emit(ViewAction.ShowToast("Something get wrong. Try again.")) }
             return
