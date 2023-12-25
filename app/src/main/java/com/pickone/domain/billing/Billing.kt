@@ -7,7 +7,6 @@ import com.pickone.network.OnUserIdUpdated
 import com.pickone.ui.ViewAction
 import com.pickone.ui.paywall.OnPremiumPurchased
 import com.revenuecat.purchases.CustomerInfo
-import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
@@ -104,7 +103,7 @@ class BillingImpl(
         try {
             isInitializedFailed = false
 
-            Purchases.logLevel = LogLevel.DEBUG // §
+            // Purchases.logLevel = LogLevel.DEBUG //§TODO: Release important
             val configuration = PurchasesConfiguration.Builder(context, apiKey).build()
             Purchases.configure(configuration)
 

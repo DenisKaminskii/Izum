@@ -2,7 +2,6 @@ package com.pickone.ui.packs
 
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
@@ -56,12 +55,6 @@ class PacksActivity : BaseActivity() {
         }.attach()
 
         viewModel.onViewInitialized(Unit)
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // §
-            }
-        })
     }
 
     override fun onStart() {

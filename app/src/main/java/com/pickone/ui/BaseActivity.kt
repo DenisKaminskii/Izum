@@ -98,7 +98,7 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
     }
 
     open fun onMovedToBackground() {
-        // § test
+
     }
 
     protected fun <T> subscribe(viewModel: StateViewModel<*, T>, onViewState: (T) -> Unit) {
