@@ -127,8 +127,13 @@ class BillingImpl(
     }
 
     private suspend fun fetchWeeklyPackage() {
-        if (weeklyPackage != null) return
-        weeklyPackage = getWeeklyPackage()
+        try {
+            if (weeklyPackage == null) {
+                weeklyPackage = getWeeklyPackage()
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception, "Failed to fetch weekly package")
+        }
     }
 
     private fun restorePurchases() {

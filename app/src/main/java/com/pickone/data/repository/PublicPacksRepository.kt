@@ -1,6 +1,5 @@
 package com.pickone.data.repository
 
-import timber.log.Timber
 import androidx.annotation.WorkerThread
 import com.pickone.api.PackApi
 import com.pickone.api.PollApi
@@ -16,9 +15,9 @@ import com.pickone.data.PollStatistic
 import com.pickone.data.PollStatisticCategory
 import com.pickone.data.PollStatisticSection
 import com.pickone.data.Vote
-import com.pickone.domain.core.PreferenceCache
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import timber.log.Timber
 import java.io.IOException
 
 interface PublicPacksRepository {
@@ -39,7 +38,7 @@ interface PublicPacksRepository {
 
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun vote(pollId: Long, optionId: Long)
+    suspend fun vote(pollId: Long, optionId: Long, elapsedTimeMs: Int)
 
     @WorkerThread
     suspend fun getPollStatistic(pollId: Long): PollStatistic
@@ -61,20 +60,30 @@ class PublicPacksRepositoryImpl(
     private val polls = hashMapOf<Long, List<Poll>>()
 
     override suspend fun fetchFeed() {
-        val newPacks = packsApi.getPacks()
-            .map(Pack.Public::fromJson)
-            .sortedBy { it.isPaid }
+        try {
+            val newPacks = packsApi.getPacks()
+                .map(Pack.Public::fromJson)
+                .sortedBy { it.id }
+                .sortedBy { it.isPaid }
 
-        _packs.emit(newPacks)
+            _packs.emit(newPacks)
+        } catch (exception: Exception) {
+            Timber.e(exception, "Failed fo fetch feed packs")
+        }
     }
 
     override suspend fun getPackPolls(packId: Long): List<Poll> {
-        val newPolls = pollsApi
-            .getPackPolls(packId)
-            .map(::mapFromJson)
+       try {
+           val newPolls = pollsApi
+               .getPackPolls(packId)
+               .map(::mapFromJson)
 
-        polls[packId] = newPolls
-        return newPolls
+           polls[packId] = newPolls
+           return newPolls
+       } catch (exception: Exception) {
+           Timber.e(exception, "Failed fo fetch pack polls")
+           return emptyList()
+       }
     }
 
     override suspend fun getPackUnvotedPolls(packId: Long): List<Poll> =
@@ -85,9 +94,9 @@ class PublicPacksRepositoryImpl(
         getPackPolls(packId)
             .filter { poll -> poll.voted?.optionId != null }
 
-    override suspend fun vote(pollId: Long, optionId: Long) {
+    override suspend fun vote(pollId: Long, optionId: Long, elapsedTimeMs: Int) {
         try {
-            val request = VoteRequestJson(optionId)
+            val request = VoteRequestJson(optionId, elapsedTimeMs)
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
             Timber.e(exception, "Failed to vote")

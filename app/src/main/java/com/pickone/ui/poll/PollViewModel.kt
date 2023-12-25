@@ -14,6 +14,7 @@ import com.pickone.data.repository.PublicPacksRepository
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceKey
 import com.pickone.domain.core.StateViewModel
+import com.pickone.network.NetworkMonitor
 import com.pickone.ui.ViewAction
 import com.pickone.ui.poll.statistic.PollStatisticInput
 import com.pickone.ui.route.Router
@@ -34,6 +35,7 @@ sealed interface PollViewState {
     object Error : PollViewState
 
     data class Content(
+        val pollId: Long,
         val packTitle: String,
         val votesCount: Long,
         val top: OptionViewState,
@@ -57,7 +59,8 @@ class PollViewModel @Inject constructor(
     private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository,
     private val preferenceCache: PreferenceCache,
-    private val analytics: Analytics
+    private val analytics: Analytics,
+    private val networkMonitor: NetworkMonitor
 ) : StateViewModel<Pack, PollViewState>(
     initialState = PollViewState.Loading
 ) {
@@ -87,6 +90,15 @@ class PollViewModel @Inject constructor(
         super.onViewInitialized(input)
         this.pack = input
         fetchPolls()
+
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .collect { isOnline ->
+                    if (isOnline && !isPollFetched) {
+                        fetchPolls()
+                    }
+                }
+        }
     }
 
     private fun fetchPolls() = viewModelScope.launch {
@@ -98,7 +110,8 @@ class PollViewModel @Inject constructor(
             }
             isPollFetched = true
             polls.clear()
-            polls.addAll(newPolls)
+            newPolls.firstOrNull()?.let { firstPoll -> polls.add(firstPoll) }
+            polls.addAll(newPolls.drop(1).shuffled())
             updateView()
         } catch (exception: Exception) {
             Timber.e(exception, "Failed to fetch polls")
@@ -119,6 +132,7 @@ class PollViewModel @Inject constructor(
             val allCount = topCount + bottomCount
 
             PollViewState.Content(
+                pollId = poll.id,
                 packTitle = pack.title,
                 votesCount = allCount,
                 top = OptionViewState(
@@ -158,12 +172,12 @@ class PollViewModel @Inject constructor(
         checkGoogleStoreReviewShow()
     }
 
-    fun onTopVote() {
-        onVote(optionTop.id)
+    fun onTopVote(elapsedTimeMs: Long) {
+        onVote(optionTop.id, elapsedTimeMs)
     }
 
-    fun onBottomVote() {
-        onVote(optionBottom.id)
+    fun onBottomVote(elapsedTimeMs: Long) {
+        onVote(optionBottom.id, elapsedTimeMs)
     }
 
     private fun checkGoogleStoreReviewShow() {
@@ -216,7 +230,7 @@ class PollViewModel @Inject constructor(
         analytics.pollExited(poll.id)
     }
 
-    private fun onVote(optionId: Long) {
+    private fun onVote(optionId: Long, elapsedTimeMs: Long) {
         if (votedOptionId != null) return
         votedOptionId = optionId
         updateView()
@@ -224,16 +238,17 @@ class PollViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (pack is Pack.Custom) {
-                    customPacksRepository.vote(poll.id, optionId)
+                    customPacksRepository.vote(poll.id, optionId, elapsedTimeMs.toInt())
                     analytics.customPollVoted(poll.id, optionId)
                 } else {
-                    publicPacksRepository.vote(poll.id, optionId)
+                    publicPacksRepository.vote(poll.id, optionId, elapsedTimeMs.toInt())
                     analytics.pollVoted(poll.id, optionId)
                 }
 
                 increaseAnsweredPollsCount()
             } catch (exception: Exception) {
-                emit(ViewAction.ShowToast("Send vote error: poll id: ${poll.id}, option id: ${optionId}"))
+                Timber.e(exception, "Failed while voting")
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
                 updateState { viewState }
                 return@launch
             }

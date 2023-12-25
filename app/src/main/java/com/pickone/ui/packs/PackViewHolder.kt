@@ -11,9 +11,9 @@ import com.pickone.ui.dpF
 class PackViewHolder(
     private val binding: ItemPackBinding,
     private val onClick: (Pack) -> Unit
-) : BaseViewHolder<PacksItem>(binding.root) {
+) : BaseViewHolder<PacksItem.Pack>(binding.root) {
 
-    override fun bind(item: PacksItem) {
+    override fun bind(item: PacksItem.Pack) {
         super.bind(item)
         val context = itemView.context
 

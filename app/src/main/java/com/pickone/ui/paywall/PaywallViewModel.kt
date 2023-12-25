@@ -10,11 +10,13 @@ import com.pickone.domain.billing.Billing
 import com.pickone.domain.billing.BillingException
 import com.pickone.domain.billing.PurchaseState
 import com.pickone.domain.core.StateViewModel
+import com.pickone.network.NetworkMonitor
 import com.pickone.ui.ViewAction
 import com.pickone.ui.route.Router
 import com.revenuecat.purchases.models.StoreProduct
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,12 +49,14 @@ class PaywallViewModel @Inject constructor(
     private val billing: Billing,
     private val userRepository: UserRepository,
     private val analytics: Analytics,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val networkMonitor: NetworkMonitor
 ) : StateViewModel<PaywallInput, PaywallViewState>(
     initialState = PaywallViewState.Loading
 ), PurchaseDelegate by PurchaseDelegateImpl(billing) {
 
     private var selectedPrice = Price.WEEK
+    private var isOnline = true
 
     private var weeklySubscription: StoreProduct? = null
 
@@ -65,10 +69,18 @@ class PaywallViewModel @Inject constructor(
         this.input = input
 
         if (userRepository.hasSubscription)  {
-            viewModelScope.launch {
-                route(Router.Route.Finish)
-            }
+            viewModelScope.launch { route(Router.Route.Finish) }
             return
+        }
+
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .collect { isOnline ->
+                    this@PaywallViewModel.isOnline = isOnline
+                    if (isOnline && weeklySubscription == null) {
+                        fetchProducts()
+                    }
+                }
         }
 
         fetchProducts()
@@ -158,6 +170,11 @@ class PaywallViewModel @Inject constructor(
     }
 
     fun onPurchaseClicked() = viewModelScope.launch {
+        if (!isOnline) {
+            emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
+            return@launch
+        }
+
         if (input.fromOnboarding) analytics.onboardingTapOnPurchase(selectedPrice)
         analytics.paywallTapOnPurchase(selectedPrice)
 
@@ -188,7 +205,7 @@ class PaywallViewModel @Inject constructor(
                                 analytics.paywallPurchaseError()
 
                                 Timber.e("RevenueCat: error: ${purchaseState.message}")
-                                emit(ViewAction.ShowToast("Purchase declined :("))
+                                emit(ViewAction.ShowToast("Purchase failed"))
                             } else {
                                 if (input.fromOnboarding) analytics.onboardingPurchaseCancelled()
                                 analytics.paywallPurchaseCancelled()
@@ -230,19 +247,19 @@ class PaywallViewModel @Inject constructor(
     private suspend fun <T> tryWithBilling(
         action: suspend () -> T
     ) : T? {
+        var isNetworkAvailable = false
+
         return try {
+            isNetworkAvailable = networkMonitor.isOnline.firstOrNull() ?: false
             action.invoke()
-        } catch (exception: BillingException.NotInitialized) {
+        } catch (exception: BillingException) {
             Timber.e(exception, "BillingException not initialized")
-            emit(ViewAction.ShowToast("Unable to connect with Google services :( \n" +
-                    "Try again later \uD83D\uDE4F"))
-            route(Router.Route.Finish)
-            null
-        } catch (exception: BillingException.NoSubscriptionFound) {
-            Timber.e(exception, "BillingException no subscription found")
-            emit(ViewAction.ShowToast("Unable to connect with Google services :( \n" +
-                    "Try again later \uD83D\uDE4F"))
-            route(Router.Route.Finish)
+            if (isNetworkAvailable) {
+                emit(ViewAction.ShowToast("Unable to connect with Google services :( \n" +
+                        "Try again later \uD83D\uDE4F"))
+            } else {
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
+            }
             null
         } catch (exception: Exception) {
             Timber.e(exception, "Unknown Exception")

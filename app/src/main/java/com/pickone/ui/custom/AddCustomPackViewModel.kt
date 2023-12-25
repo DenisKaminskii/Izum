@@ -6,6 +6,7 @@ import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.retrieveCodeData
 import com.pickone.di.IoDispatcher
 import com.pickone.domain.core.StateViewModel
+import com.pickone.network.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ sealed class AddCustomPackViewState {
     object Default : AddCustomPackViewState()
     object InvalidCode : AddCustomPackViewState()
     object NotFound : AddCustomPackViewState()
+    object NoNetwork : AddCustomPackViewState()
     object Loading : AddCustomPackViewState()
     data class Success(
         val pack: Pack.Custom
@@ -24,7 +26,8 @@ sealed class AddCustomPackViewState {
 @HiltViewModel
 class AddCustomPackViewModel @Inject constructor(
     private val customPacksRepository: CustomPacksRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val networkMonitor: NetworkMonitor
 ) : StateViewModel<Unit, AddCustomPackViewState>(
     initialState = AddCustomPackViewState.Default
 ) {
@@ -44,8 +47,14 @@ class AddCustomPackViewModel @Inject constructor(
                 AddCustomPackViewState.Success(customPack)
             }
         } else {
-            updateState {
-                AddCustomPackViewState.NotFound
+            networkMonitor.isOnline.collect { isOnline ->
+                updateState {
+                    if (isOnline) {
+                        AddCustomPackViewState.NotFound
+                    } else {
+                        AddCustomPackViewState.NoNetwork
+                    }
+                }
             }
         }
     }

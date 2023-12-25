@@ -178,7 +178,7 @@ class EditPackViewModel @Inject constructor(
     } catch (ex: Exception) {
         Timber.e(ex, "Something went wrong when removing polls")
         viewModelScope.launch {
-            emit(ViewAction.ShowToast("Questions remove failed :( Try again."))
+            emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
         }
     }
 
@@ -218,7 +218,7 @@ class EditPackViewModel @Inject constructor(
                 this@EditPackViewModel.packTitle = title
                 updateView()
             } catch (ex: Exception) {
-                emit(ViewAction.ShowToast("Title update failed :( Try again."))
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
                 Timber.e( ex.toString())
             }
         }
@@ -245,7 +245,7 @@ class EditPackViewModel @Inject constructor(
                 route(Router.Route.Finish)
             } catch (ex: Exception) {
                 Timber.e( ex.toString())
-                emit(ViewAction.ShowToast("Pack remove failed :( Try again."))
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
             }
         }
     }

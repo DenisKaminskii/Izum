@@ -88,6 +88,7 @@ class PacksActivity : BaseActivity() {
 
     private fun onCreatePackClick() {
         analytics.customPackCreateTap()
+        if (viewModel.isAvailableToCreateNewPack().not()) return
 
         createPackDialog?.dismissAllowingStateLoss()
         createPackDialog = null

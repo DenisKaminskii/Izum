@@ -1,15 +1,15 @@
-package com.pickone.ui.poll.list
+package com.pickone.ui.packs
 
 import com.pickone.databinding.ItemPackHeaderBinding
 import com.pickone.ui.BaseViewHolder
 
-class PollsHeaderViewHolder(
+class PackHeaderViewHolder(
     private val binding: ItemPackHeaderBinding
-) : BaseViewHolder<PollsItem.Header>(binding.root) {
+) : BaseViewHolder<PacksItem.Header>(binding.root) {
 
-    override fun bind(item: PollsItem.Header) {
+    override fun bind(item: PacksItem.Header) {
         super.bind(item)
-
         binding.root.text = item.title
     }
+
 }

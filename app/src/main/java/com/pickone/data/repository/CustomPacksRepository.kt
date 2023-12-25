@@ -2,10 +2,10 @@ package com.pickone.data.repository
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import com.pickone.api.custom.CustomPackAddPollRequestJson
-import com.pickone.api.custom.CustomPackApi
 import com.pickone.api.TitleJson
 import com.pickone.api.VoteRequestJson
+import com.pickone.api.custom.CustomPackAddPollRequestJson
+import com.pickone.api.custom.CustomPackApi
 import com.pickone.api.custom.toModel
 import com.pickone.data.EditPoll
 import com.pickone.data.Pack
@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import java.io.IOException
-import java.lang.Exception
 
 data class CustomPacksState(
     val myPacks: List<Pack.Custom> = emptyList(),
@@ -72,7 +71,7 @@ interface CustomPacksRepository {
 
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun vote(pollId: Long, optionId: Long)
+    suspend fun vote(pollId: Long, optionId: Long, elapsedTimeMs: Int)
 
 }
 
@@ -96,27 +95,38 @@ class CustomPacksRepositoryImpl(
         get() = preferenceCache.getList(KEY_ADDED_CUSTOM_PACKS, AddedCustomPack::class.java).orEmpty()
 
     override suspend fun fetchMyPacks() {
-        val myPacks = customPacksApi.getMyPacks()
-            .map { it.toModel(isMine = true, context = context) }
+        try {
+            val myPacks = customPacksApi.getMyPacks()
+                .map { it.toModel(isMine = true, context = context) }
+                .sortedBy { it.id }
 
-        _packs.update { state ->
-            state.copy(myPacks = myPacks,)
+            _packs.update { state ->
+                state.copy(myPacks = myPacks)
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception, "Failed fo fetch my packs")
         }
     }
 
     override suspend fun fetchAddedPacks() {
-        val addedPacks = addedPacks
-            .mapNotNull { pack ->
-                try {
-                    customPacksApi.getCustomPack(pack.id, pack.token)
-                        .toModel(isMine = false, context = context)
-                } catch (e: Exception) {
-                    null
+        try {
+            val addedPacks = addedPacks
+                .mapNotNull { pack ->
+                    try {
+                        customPacksApi.getCustomPack(pack.id, pack.token)
+                            .toModel(isMine = false, context = context)
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error while fetching custom pack with id ${pack.id}")
+                        null
+                    }
                 }
-            }
+                .sortedBy { it.id }
 
-        _packs.update { state ->
-            state.copy(addedPacks = addedPacks)
+            _packs.update { state ->
+                state.copy(addedPacks = addedPacks)
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception, "Failed fo fetch added packs")
         }
     }
 
@@ -150,7 +160,8 @@ class CustomPacksRepositoryImpl(
         }
         polls[packId]?.emit(newPolls)
 
-        return newPolls.filter { poll -> poll.voted?.optionId == null }
+        return newPolls
+            .filter { poll -> poll.voted?.optionId == null }
     }
 
     override suspend fun getPackVotedPolls(packId: Long): List<Poll> {
@@ -270,9 +281,9 @@ class CustomPacksRepositoryImpl(
         }
     }
 
-    override suspend fun vote(pollId: Long, optionId: Long) {
+    override suspend fun vote(pollId: Long, optionId: Long, elapsedTimeMs: Int) {
         try {
-            val request = VoteRequestJson(optionId)
+            val request = VoteRequestJson(optionId, elapsedTimeMs)
             customPacksApi.vote(pollId, request)
         } catch (exception: Exception) {
             Timber.e(exception, "Error while voting")

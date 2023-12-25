@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
             android:gravity="center"
-            android:text="Poll statistic loading error :("
+            android:text="No internet connection 📡"
             android:textColor="@color/white" />
 
         <TextView

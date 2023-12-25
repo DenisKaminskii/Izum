@@ -99,11 +99,11 @@ class EditPollViewModel @Inject constructor(
             is EditPollVariant.Suggest -> viewModelScope.launch {
                 try {
                     publicPacksRepository.suggestPoll(editPoll)
-                    emit(ViewAction.ShowToast("Thanks! We will check your poll soon :3"))
+                    emit(ViewAction.ShowToast("Thanks! We will check soon :3"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
                     Timber.e(exception, "On suggest poll error")
-                    emit(ViewAction.ShowToast("Sorry. Try Again"))
+                    emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
                     updateView()
                 }
             }
@@ -115,7 +115,7 @@ class EditPollViewModel @Inject constructor(
                 } catch (exception: Exception) {
                     analytics.customPackAddPollError()
                     Timber.e(exception, "On custom pack add poll error")
-                    emit(ViewAction.ShowToast("Sorry. Try Again"))
+                    emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
                     updateView()
                 }
             }

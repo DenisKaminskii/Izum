@@ -45,7 +45,7 @@ sealed class Pack(
 
             fun fromJson(packJson: PackJson) : Public = Public(
                 id = packJson.id,
-                title = packJson.title,
+                title = packJson.title.replace("\uD83E\uDEE6", "\uD83D\uDC44"),
                 description = packJson.description,
                 isPaid = packJson.isPaid,
                 productId = packJson.productId,

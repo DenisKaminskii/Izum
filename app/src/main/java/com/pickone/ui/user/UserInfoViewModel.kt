@@ -64,7 +64,7 @@ class UserInfoViewModel @Inject constructor(
 
         if(gender == null || age == null) {
             viewModelScope.launch {
-                emit(ViewAction.ShowToast("Please, fill the form :3"))
+                emit(ViewAction.ShowToast("☝️ Please, fill the form"))
             }
             return
         }
@@ -76,7 +76,7 @@ class UserInfoViewModel @Inject constructor(
                 userRepository.isStatisticInfoProvided = true
                 route(Router.Route.Packs)
             } else {
-                emit(ViewAction.ShowToast("Some problems with server :c"))
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
             }
         }
 

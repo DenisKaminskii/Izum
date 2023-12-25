@@ -10,6 +10,7 @@ import com.pickone.data.repository.CustomPacksRepository
 import com.pickone.data.repository.PublicPacksRepository
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.StateViewModel
+import com.pickone.network.NetworkMonitor
 import com.pickone.ui.poll.list.PollsItem
 import com.pickone.ui.poll.statistic.PollStatisticInput
 import com.pickone.ui.route.Router
@@ -43,7 +44,8 @@ class PackHistoryViewModel @Inject constructor(
     private val publicPacksRepository: PublicPacksRepository,
     private val customPacksRepository: CustomPacksRepository,
     private val preferenceCache: PreferenceCache,
-    private val analytics: Analytics
+    private val analytics: Analytics,
+    private val networkMonitor: NetworkMonitor
 ) : StateViewModel<Pack, PackHistoryViewState>(
     initialState = PackHistoryViewState.Loading
 ) {
@@ -58,6 +60,15 @@ class PackHistoryViewModel @Inject constructor(
         super.onViewInitialized(input)
         this.pack = input
         fetchPolls()
+
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .collect { isOnline ->
+                    if (isOnline && !isPollFetched) {
+                        fetchPolls()
+                    }
+                }
+        }
     }
 
     private fun fetchPolls() = viewModelScope.launch {

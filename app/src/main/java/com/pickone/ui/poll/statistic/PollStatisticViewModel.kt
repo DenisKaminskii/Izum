@@ -13,6 +13,7 @@ import com.pickone.data.repository.UserRepository
 import com.pickone.di.IoDispatcher
 import com.pickone.domain.core.StateViewModel
 import com.pickone.ui.ViewAction
+import com.pickone.ui.paywall.OnPremiumPurchased
 import com.pickone.ui.poll.list.PollsItem
 import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,7 +51,8 @@ class PollStatisticViewModel @Inject constructor(
     private val publicPacksRepository: PublicPacksRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val userRepository: UserRepository,
-    private val analytics: Analytics
+    private val analytics: Analytics,
+    private val onPremiumPurchased: OnPremiumPurchased,
 ) : StateViewModel<PollStatisticInput, PollStatisticViewState>(
     initialState = PollStatisticViewState.Loading
 ) {
@@ -71,6 +73,12 @@ class PollStatisticViewModel @Inject constructor(
 
         viewModelScope.launch {
             fetchStatistic()
+        }
+
+        viewModelScope.launch {
+            onPremiumPurchased.collect {
+                updateView()
+            }
         }
     }
 

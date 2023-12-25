@@ -9,6 +9,7 @@ import com.pickone.data.repository.UserRepository
 import com.pickone.di.IoDispatcher
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.StateViewModel
+import com.pickone.network.NetworkMonitor
 import com.pickone.ui.ViewAction
 import com.pickone.ui.create.EditPackInput
 import com.pickone.ui.edit.EditPollVariant
@@ -36,6 +37,7 @@ class PacksViewModel @Inject constructor(
     private val preferenceCache: PreferenceCache,
     private val onPremiumPurchased: OnPremiumPurchased,
     private val analytics: Analytics,
+    private val networkMonitor: NetworkMonitor,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : StateViewModel<Unit, PacksViewState>(
     initialState = PacksViewState()
@@ -78,9 +80,22 @@ class PacksViewModel @Inject constructor(
             onPremiumPurchased
                 .collect { updateView() }
         }
+
+        viewModelScope.launch {
+            networkMonitor.isOnline
+                .collect { isOnline ->
+                    if (isOnline && (!isPublicFetched || !isCustomFetched)) {
+                        fetch()
+                    }
+                }
+        }
     }
 
-    fun onStart() = viewModelScope.launch(ioDispatcher) {
+    fun onStart() {
+        fetch()
+    }
+
+    private fun fetch() = viewModelScope.launch(ioDispatcher) {
         launch { publicPacksRepository.fetchFeed() }
         launch { customPacksRepository.fetchMyPacks() }
         launch { customPacksRepository.fetchAddedPacks() }
@@ -147,7 +162,7 @@ class PacksViewModel @Inject constructor(
         }
     }
 
-    fun onNewCustomPackStartClick(packId: Long) { // § кажется не работало
+    fun onNewCustomPackStartClick(packId: Long) {
         analytics.customPackStartTap()
         val pack = customPacks.firstOrNull { it.id == packId }
 
@@ -191,7 +206,7 @@ class PacksViewModel @Inject constructor(
                 )))
             } catch (ex: Exception) {
                 analytics.customPackCreateError()
-                emit(ViewAction.ShowToast("Error creating pack. Try again."))
+                emit(ViewAction.ShowToast("No internet connection \uD83D\uDCE1"))
             }
         }
     }
@@ -202,4 +217,13 @@ class PacksViewModel @Inject constructor(
         }
     }
 
+    fun isAvailableToCreateNewPack() : Boolean {
+        if (!userRepository.hasSubscription && customPacks.any { it.isMine }) {
+            viewModelScope.launch {
+                route(Router.Route.Paywall())
+            }
+            return false
+        }
+        return true
+    }
 }

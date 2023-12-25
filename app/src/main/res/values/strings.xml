@@ -18,14 +18,14 @@
     <string name="create_pack">Create</string>
     <string name="suggest">Suggest</string>
     <string name="suggest_poll">Suggest poll</string>
-    <string name="polls_loading_error">Polls loading error :(</string>
+    <string name="polls_loading_error">No internet connection 📡</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
     <string name="retry">Retry</string>
     <string name="send">Send</string>
     <string name="start">Start</string>
-    <string name="no_more_new_unvoted_polls">No more new polls yet.\nCome back later :)</string>
-    <string name="no_more_new_voted_polls">You did not answer any of questions.\nDo that!</string>
+    <string name="no_more_new_unvoted_polls">No more new question yet</string>
+    <string name="no_more_new_voted_polls">You did not answer any of questions</string>
 
 
     <string name="button_reload">Reload</string>

@@ -12,7 +12,7 @@ import com.pickone.ui.BaseActivity
 import com.pickone.ui.KEY_ARGS_PACK
 
 @SuppressLint("ClickableViewAccessibility")
-class  PollActivity : BaseActivity() {
+class PollActivity : BaseActivity() {
 
     private var _binding: ActivityPollBinding? = null
     private val binding: ActivityPollBinding
@@ -26,10 +26,20 @@ class  PollActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
+    private var idTime: Long = -1
+    private var startTime: Long = 0
+    private var resultTime: Long = 0
+    private val currentTime: Long
+        get() = System.currentTimeMillis()
+
     override fun initView(args: Bundle) {
         binding.ivBack.setOnClickListener { finish() }
-        binding.tvTop.setOnClickListener { viewModel.onTopVote() }
-        binding.tvBottom.setOnClickListener { viewModel.onBottomVote() }
+        binding.tvTop.setOnClickListener {
+            viewModel.onTopVote(elapsedTimeMs = stopTimer())
+        }
+        binding.tvBottom.setOnClickListener {
+            viewModel.onBottomVote(elapsedTimeMs = stopTimer())
+        }
         binding.tvNext.setOnClickListener { viewModel.onNextClick() }
         binding.tvStatistic.setOnClickListener { viewModel.onStatisticClick() }
         binding.tvRetry.setOnClickListener { viewModel.onRetryClick() }
@@ -59,17 +69,54 @@ class  PollActivity : BaseActivity() {
         subscribe(viewModel) { viewState -> update(viewState) }
     }
 
+    override fun onStop() {
+        super.onStop()
+        pauseTimer()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        playTimer()
+    }
+
+    private fun startTimer(id: Long) {
+        idTime = id
+        startTime = currentTime
+        resultTime = 0
+    }
+
+    private fun pauseTimer() {
+        resultTime += (currentTime - startTime)
+    }
+
+    private fun playTimer() {
+        startTime = currentTime
+    }
+
+    private fun stopTimer() : Long {
+        resultTime += (currentTime - startTime)
+        val final = resultTime
+        resultTime = 0
+        return final
+    }
+
     private fun update(state: PollViewState) {
         binding.vProgress.isVisible = state is PollViewState.Loading
         binding.vgContent.isVisible = state is PollViewState.Content
         binding.vgError.isVisible = state is PollViewState.Error
         binding.vgNoPolls.isVisible = state is PollViewState.Empty
 
+        if (state !is PollViewState.Content) stopTimer()
+
         when(state) {
             is PollViewState.Empty -> {
                 binding.tvPackTitle.text = state.packTitle
             }
             is PollViewState.Content -> {
+                if (state.pollId != idTime) {
+                    startTimer(state.pollId)
+                }
+
                 val isTopVoted = state.votedOptionId == state.top.id
                 val isBottomVoted = state.votedOptionId == state.bottom.id
                 val isVoted = isTopVoted || isBottomVoted

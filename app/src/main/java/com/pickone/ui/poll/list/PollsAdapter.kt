@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
-import com.pickone.databinding.ItemPollsHeaderBinding
+import com.pickone.databinding.ItemPackHeaderBinding
 import com.pickone.databinding.ItemPollsTwoOptionsBarBinding
 import com.pickone.databinding.ItemPollsTwoOptionsEditBinding
 import com.pickone.databinding.ItemSubscribeBinding
@@ -102,7 +102,7 @@ class PollsAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             ViewType.HEADER.ordinal -> {
-                val binding = ItemPollsHeaderBinding.inflate(inflater, parent, false)
+                val binding = ItemPackHeaderBinding.inflate(inflater, parent, false)
                 PollsHeaderViewHolder(binding)
             }
             ViewType.TWO_OPTIONS_BAR.ordinal -> {

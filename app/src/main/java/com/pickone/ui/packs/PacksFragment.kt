@@ -119,7 +119,15 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
     }
 
     private fun initView() {
-        binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) =
+                    when (adapter.getItemViewType(position)) {
+                        PacksAdapter.ViewType.HEADER.ordinal -> 2
+                        else -> 1
+                    }
+            }
+        }
         binding.rvPacks.adapter = adapter
         binding.rvPacks.addItemDecoration(RecyclerGridItemDecoration(vertical = requireContext().dp(8)))
 
@@ -150,39 +158,60 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
         if (!isPacksVisible) return
 
-        val items = if (!isCustom) state.publicPacks?.map {
-            PacksItem(
-                pack = it,
-                description = it.description ?: "",
-                hasSubscription = state.hasSubscription,
-                title = it.title,
-                gradientStartColor = it.gradientStartColor,
-                gradientEndColor = it.gradientEndColor,
-                contentColor = it.contentColor,
-                pollsCount = it.pollsCount,
-                isPaid = it.isPaid
-            )
-        } else state.customPacks?.map {
-            PacksItem(
-                pack = it,
-                description = it.description ?: "",
-                hasSubscription = state.hasSubscription,
-                title = it.title,
-                gradientStartColor =
-                if (it.isMine) requireContext().getColor(R.color.black_gradient_start)
-                else requireContext().getColor(R.color.white_gradient_start),
-                gradientEndColor =
-                if (it.isMine) requireContext().getColor(R.color.black_gradient_end)
-                else requireContext().getColor(R.color.white_gradient_end),
-                contentColor =
-                if (it.isMine) requireContext().getColor(R.color.white)
-                else requireContext().getColor(R.color.black_soft),
-                pollsCount = it.pollsCount,
-                isPaid = false
-            )
+        val items = mutableListOf<PacksItem>()
+
+        if (!isCustom) {
+            items.addAll(state.publicPacks?.map {
+                PacksItem.Pack(
+                    pack = it,
+                    description = it.description ?: "",
+                    hasSubscription = state.hasSubscription,
+                    title = it.title,
+                    gradientStartColor = it.gradientStartColor,
+                    gradientEndColor = it.gradientEndColor,
+                    contentColor = it.contentColor,
+                    pollsCount = it.pollsCount,
+                    isPaid = it.isPaid,
+                    isMine = false
+                )
+            } ?: emptyList())
+        } else {
+            val customPacks = state.customPacks?.map {
+                PacksItem.Pack(
+                    pack = it,
+                    description = it.description ?: "",
+                    hasSubscription = state.hasSubscription,
+                    title = it.title,
+                    gradientStartColor =
+                    if (it.isMine) requireContext().getColor(R.color.black_gradient_start)
+                    else requireContext().getColor(R.color.white_gradient_start),
+                    gradientEndColor =
+                    if (it.isMine) requireContext().getColor(R.color.black_gradient_end)
+                    else requireContext().getColor(R.color.white_gradient_end),
+                    contentColor =
+                    if (it.isMine) requireContext().getColor(R.color.white)
+                    else requireContext().getColor(R.color.black_soft),
+                    pollsCount = it.pollsCount,
+                    isPaid = false,
+                    isMine = it.isMine
+                )
+            } ?: emptyList()
+
+            val myPacks = customPacks.filter { it.isMine }
+            val addedPacks = customPacks.filter { !it.isMine }
+
+            if (myPacks.isNotEmpty()) {
+                items.add(PacksItem.Header("Created"))
+                items.addAll(myPacks)
+            }
+
+            if (addedPacks.isNotEmpty()) {
+                items.add(PacksItem.Header("Added"))
+                items.addAll(addedPacks)
+            }
         }
 
-        items?.let(adapter::setItems)
+        adapter.setItems(items)
 
     }
 
@@ -220,7 +249,9 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         addCustomPackDialog?.dismissAllowingStateLoss()
         addCustomPackDialog = null
         addCustomPackDialog = AddCustomPackDialog.getInstance(
-            onStart = { packId ->  viewModel.onNewCustomPackStartClick(packId) }
+            onStart = { packId ->
+                viewModel.onNewCustomPackStartClick(packId)
+            }
         )
         addCustomPackDialog?.show(childFragmentManager, "PackTitleEditDialog")
     }

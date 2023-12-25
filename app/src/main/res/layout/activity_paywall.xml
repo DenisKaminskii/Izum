@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
-            android:text="Unlock 500+ intriguing questions across 7+ diverse packs"
+            android:text="Unlock 500+ intriguing questions across 6+ diverse packs"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
-            android:text="Design your personalized question packs and share fun challenges among friends"
+            android:text="Design more your personalized packs and share among friends"
             android:textSize="14sp" />
 
     </LinearLayout>

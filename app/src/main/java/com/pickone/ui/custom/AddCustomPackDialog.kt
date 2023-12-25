@@ -27,7 +27,7 @@ class AddCustomPackDialog : BaseDialogFragment() {
         ) : AddCustomPackDialog {
             val dialog = AddCustomPackDialog()
             dialog.onStart = onStart
-            return AddCustomPackDialog()
+            return dialog
         }
 
     }
@@ -126,7 +126,8 @@ class AddCustomPackDialog : BaseDialogFragment() {
                 || state is AddCustomPackViewState.InvalidCode
                 || state is AddCustomPackViewState.NotFound
 
-        tvAdd.isEnabled = state is AddCustomPackViewState.Default && !etCode.text.isNullOrBlank()
+        tvAdd.isEnabled = (state is AddCustomPackViewState.Default || state is AddCustomPackViewState.NoNetwork)
+                && !etCode.text.isNullOrBlank()
 
         vgButtons.animate()
             .alpha(
@@ -141,13 +142,17 @@ class AddCustomPackDialog : BaseDialogFragment() {
 
         tvError.text = when (state) {
             AddCustomPackViewState.NotFound -> "There is no pack with such code"
+            AddCustomPackViewState.NoNetwork -> "No internet connection \uD83D\uDCE1"
             else -> "Invalid code"
         }
 
         tvError.animate()
             .alpha(
                 when(state) {
-                    AddCustomPackViewState.InvalidCode, AddCustomPackViewState.NotFound -> 1f
+                    AddCustomPackViewState.InvalidCode,
+                    AddCustomPackViewState.NotFound,
+                    AddCustomPackViewState.NoNetwork -> 1f
+
                     else -> 0f
                 }
             )
@@ -175,47 +180,6 @@ class AddCustomPackDialog : BaseDialogFragment() {
     }
 
     private fun showCustomPackAdded(state: AddCustomPackViewState.Success) = with(binding) {
-//        launch {
-//            delay(animDuration)
-//
-//            val startFrom = requireContext().getColor(R.color.black_gradient_start)
-//            val endFrom = requireContext().getColor(R.color.black_gradient_end)
-//
-//            val startTo = requireContext().getColor(R.color.white_gradient_start)
-//            val endTo = requireContext().getColor(R.color.white_gradient_end)
-//
-//            val colorStartAnimation = ValueAnimator.ofObject(ArgbEvaluator(), startFrom, startTo)
-//            colorStartAnimation.duration = animDuration * 3
-//
-//            val colorEndAnimation = ValueAnimator.ofObject(ArgbEvaluator(), endFrom, endTo)
-//            colorEndAnimation.duration = animDuration * 3
-//
-//            var startColor = startFrom
-//            var endColor = endFrom
-//
-//            fun updateBackground() {
-//                root.background = GradientDrawable(
-//                    GradientDrawable.Orientation.BL_TR,
-//                    intArrayOf(startColor, endColor)
-//                ).apply {
-//                    cornerRadius = requireContext().dpF(14)
-//                }
-//            }
-//
-//            colorStartAnimation.addUpdateListener { animator ->
-//                startColor = animator.animatedValue as Int
-//                updateBackground()
-//            }
-//
-//            colorEndAnimation.addUpdateListener { animator ->
-//                endColor = animator.animatedValue as Int
-//                updateBackground()
-//            }
-//
-//            colorStartAnimation.start()
-//            colorEndAnimation.start()
-//        }
-
         launch {
             delay(animDuration * 2)
 

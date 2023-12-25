@@ -5,6 +5,8 @@ import com.pickone.data.repository.UserRepository
 import com.pickone.domain.billing.Billing
 import com.pickone.log.CrashReportingTree
 import com.pickone.log.PickoneUncaughtExceptionHandler
+import com.pickone.network.NetworkMonitor
+import com.revenuecat.purchases.Purchases
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,6 +18,7 @@ class PickOneApplication : Application() {
 
     @Inject lateinit var billing: Billing
     @Inject lateinit var userRepository: UserRepository
+    @Inject lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate() {
         super.onCreate()
@@ -27,10 +30,19 @@ class PickOneApplication : Application() {
 
     private fun initBilling() {
         billing.init()
+
+        GlobalScope.launch {
+            networkMonitor.isOnline
+                .collect { isOnline ->
+                    if (isOnline && !Purchases.isConfigured) {
+                        billing.init()
+                    }
+                }
+        }
     }
 
     private fun initTimber() {
-        Timber.plant(if (false) { //§TODO: Release important
+        Timber.plant(if (true) { //§TODO: Release important
             Timber.DebugTree()
         } else {
             CrashReportingTree()
