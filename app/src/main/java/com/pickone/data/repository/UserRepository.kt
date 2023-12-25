@@ -1,6 +1,6 @@
 package com.pickone.data.repository
 
-import android.util.Log
+import timber.log.Timber
 import com.pickone.api.GetTokenRequest
 import com.pickone.api.TokenApi
 import com.pickone.api.UpdateUserInfoRequest
@@ -66,7 +66,7 @@ class UserRepositoryImpl(
             this.userId = response.userId
             onUserIdUpdated.emit(response.userId)
         } catch (exception: Exception) {
-            Log.d("Steve", "Auth failed: ${exception.message}")
+            Timber.e(exception, "Failed to auth through repository")
         }
     }
 

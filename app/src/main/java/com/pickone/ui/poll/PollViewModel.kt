@@ -1,7 +1,7 @@
 package com.pickone.ui.poll
 
 import android.content.Context
-import android.util.Log
+import timber.log.Timber
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -62,7 +62,7 @@ class PollViewModel @Inject constructor(
 
     companion object {
 
-        private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 1 // 80
+        private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 50
     }
 
     private lateinit var pack: Pack
@@ -99,7 +99,7 @@ class PollViewModel @Inject constructor(
             polls.addAll(newPolls)
             updateView()
         } catch (exception: Exception) {
-            Log.e("Steve", exception.toString())
+            Timber.e(exception, "Failed to fetch polls")
             isPollFetched = false
             updateState { PollViewState.Error }
         }
@@ -153,7 +153,7 @@ class PollViewModel @Inject constructor(
         polls.removeFirstOrNull()
         votedOptionId = null
         updateView()
-        // § checkGoogleStoreReviewShow()
+        checkGoogleStoreReviewShow()
     }
 
     fun onTopVote() {
@@ -178,7 +178,7 @@ class PollViewModel @Inject constructor(
                     }
                 } else {
                     @ReviewErrorCode val reviewErrorCode = (task.getException() as ReviewException).errorCode
-                    Log.d("Steve", "Review error: $reviewErrorCode")
+                    Timber.e(task.exception,"Review error: $reviewErrorCode")
                 }
             }
         }

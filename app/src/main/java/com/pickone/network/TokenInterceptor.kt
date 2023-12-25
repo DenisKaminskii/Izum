@@ -1,6 +1,6 @@
 package com.pickone.network
 
-import android.util.Log
+import timber.log.Timber
 import androidx.annotation.WorkerThread
 import com.pickone.api.GetTokenRequest
 import com.pickone.api.TokenApi
@@ -77,7 +77,7 @@ class TokenInterceptor(
             if (e is HttpException && (e.code() == unauthorized || e.code() == forbidden)) {
                 preferenceCache.putString(PreferenceKey.Token.name, null)
             }
-            Log.d("Steve", "Error while fetching token", e)
+            Timber.e(e, "Error while fetching token")
 
             return null
         }

@@ -1,6 +1,6 @@
 package com.pickone.ui.edit
 
-import android.util.Log
+import timber.log.Timber
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
@@ -100,7 +100,7 @@ class EditPollViewModel @Inject constructor(
                     emit(ViewAction.ShowToast("Thanks! We will check your poll soon :3"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
-                    Log.e("Steve", "CreatePollViewModel: $exception")
+                    Timber.e(exception, "On suggest poll error")
                     emit(ViewAction.ShowToast("Sorry. Try Again"))
                     updateView()
                 }
@@ -112,7 +112,7 @@ class EditPollViewModel @Inject constructor(
                     emit(ViewAction.ShowToast("Poll added"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
-                    Log.e("Steve", "CreatePollViewModel: $exception")
+                    Timber.e(exception, "On custom pack add poll error")
                     emit(ViewAction.ShowToast("Sorry. Try Again"))
                     updateView()
                 }

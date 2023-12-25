@@ -4,6 +4,7 @@ import android.app.Application
 import com.pickone.data.repository.UserRepository
 import com.pickone.domain.billing.Billing
 import com.pickone.log.CrashReportingTree
+import com.pickone.log.PickoneUncaughtExceptionHandler
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,11 +30,17 @@ class PickOneApplication : Application() {
     }
 
     private fun initTimber() {
-        Timber.plant(if (true) {
+        Timber.plant(if (false) {
             Timber.DebugTree()
         } else {
             CrashReportingTree()
         })
+
+        Thread.setDefaultUncaughtExceptionHandler(
+            PickoneUncaughtExceptionHandler(
+                Thread.getDefaultUncaughtExceptionHandler()
+            )
+        )
     }
 
     private fun auth() = GlobalScope.launch {

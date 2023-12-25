@@ -1,7 +1,7 @@
 package com.pickone.ui.paywall
 
 import android.content.Context
-import android.util.Log
+import timber.log.Timber
 import androidx.annotation.ColorInt
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
@@ -174,8 +174,10 @@ class PaywallViewModel @Inject constructor(
                         }
 
                         is PurchaseState.Error -> {
-                            Log.d("Steve", "RevenueCat: error: ${purchaseState.message}")
-                            emit(ViewAction.ShowToast("Purchase declined :("))
+                            Timber.e("RevenueCat: error: ${purchaseState.message}")
+                            if (!purchaseState.userCancelled) {
+                                emit(ViewAction.ShowToast("Purchase declined :("))
+                            }
                             hideDelegateLoading()
                         }
 
@@ -214,19 +216,19 @@ class PaywallViewModel @Inject constructor(
         return try {
             action.invoke()
         } catch (exception: BillingException.NotInitialized) {
-            Log.d("Steve", "RevenueCat: error: $exception")
+            Timber.e(exception, "BillingException not initialized")
             emit(ViewAction.ShowToast("Unable to connect with Google services :( \n" +
                     "Try again later \uD83D\uDE4F"))
             route(Router.Route.Finish)
             null
         } catch (exception: BillingException.NoSubscriptionFound) {
-            Log.d("Steve", "RevenueCat: error: $exception")
+            Timber.e(exception, "BillingException no subscription found")
             emit(ViewAction.ShowToast("Unable to connect with Google services :( \n" +
                     "Try again later \uD83D\uDE4F"))
             route(Router.Route.Finish)
             null
         } catch (exception: Exception) {
-            Log.d("Steve", "RevenueCat: error: $exception")
+            Timber.e(exception, "Unknown Exception")
             emit(ViewAction.ShowToast("Something went wrong :( \n" +
                     "Try again later \uD83D\uDE4F"))
             route(Router.Route.Finish)

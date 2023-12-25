@@ -1,7 +1,7 @@
 package com.pickone.ui.packs
 
 import android.os.Bundle
-import android.util.Log
+import timber.log.Timber
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -56,7 +56,7 @@ class PacksActivity : BaseActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.d("Steve", "Junk!")
+                // §
             }
         })
     }

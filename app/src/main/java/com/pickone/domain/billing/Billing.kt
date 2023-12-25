@@ -1,7 +1,7 @@
 package com.pickone.domain.billing
 
 import android.content.Context
-import android.util.Log
+import timber.log.Timber
 import com.pickone.R
 import com.pickone.data.repository.UserRepository
 import com.pickone.network.OnUserIdUpdated
@@ -45,7 +45,7 @@ sealed class BillingException(
 
 sealed class PurchaseState {
     object Success : PurchaseState()
-    data class Error(val message: String) : PurchaseState()
+    data class Error(val message: String, val userCancelled: Boolean) : PurchaseState()
     object Canceled : PurchaseState()
 }
 
@@ -114,11 +114,10 @@ class BillingImpl(
                 UpdatedCustomerInfoListener { customerInfo -> checkForSubscription(customerInfo) }
 
             onInitialized()
-            Log.d("Steve", "RevenueCat: configure success with userId: ${userRepository.userId}")
         } catch (e: Exception) {
             isInitializedFailed = true
             Purchases.sharedInstance.removeUpdatedCustomerInfoListener()
-            Log.d("Steve", "RevenueCat: init error: $e")
+            Timber.e(e, "RevenueCat init error")
         }
     }
 
@@ -148,7 +147,7 @@ class BillingImpl(
         Purchases.sharedInstance.logInWith(
             appUserID = userId.toString(),
             onError = { error ->
-                Log.d("Steve", "RevenueCat: set user id error: $error")
+                Timber.e(Exception() ,"RevenueCat: set user id error: $error")
             },
             onSuccess = { purchaserInfo, created ->
                 restorePurchases()
@@ -197,8 +196,6 @@ class BillingImpl(
                 continuation.resumeWithException(exception)
             },
             onSuccess = { offerings ->
-                Log.d("Steve", "RevenueCat: offerings: $offerings")
-
                 val packages = offerings.current?.availablePackages
                 if (packages.isNullOrEmpty()) {
                     val message = "No current offering available packages was found"
@@ -207,7 +204,6 @@ class BillingImpl(
                 } else {
                     val pack = packages.firstOrNull { it.identifier == WEEKLY_PACKAGE_ID }
                     if (pack != null) {
-                        Log.d("Steve", "Weekly product is fetched!")
                         continuation.resumeWith(Result.success(pack))
                     } else {
                         val message = "No found $WEEKLY_PACKAGE_ID in ${packages.map { it.identifier }}"
@@ -222,7 +218,7 @@ class BillingImpl(
     override fun checkSubscription() {
         Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
             override fun onError(error: PurchasesError) {
-                Log.d("Steve", "RevenueCat: get customer info error: $error")
+                Timber.e("RevenueCat: get customer info error: $error")
             }
 
             override fun onReceived(customerInfo: CustomerInfo) {
@@ -243,7 +239,7 @@ class BillingImpl(
 
     override fun onPurchaseError(error: PurchasesError, userCancelled: Boolean) {
         launch {
-            purchaseFlow.emit(PurchaseState.Error(error.message))
+            purchaseFlow.emit(PurchaseState.Error(error.message, userCancelled))
         }
     }
 

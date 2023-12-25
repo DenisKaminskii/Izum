@@ -1,7 +1,6 @@
 package com.pickone.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.WorkerThread
 import com.pickone.api.custom.CustomPackAddPollRequestJson
 import com.pickone.api.custom.CustomPackApi
@@ -22,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import java.io.IOException
 import java.lang.Exception
 
@@ -138,7 +138,7 @@ class CustomPacksRepositoryImpl(
             .firstOrNull { addedPack -> addedPack.id == packId }
             ?.token
             ?: run {
-                Log.e("Steve", "Error while fetching pack token")
+                Timber.e(Exception(), "Error while fetching pack token")
                 return emptyList()
             }
 
@@ -158,7 +158,7 @@ class CustomPacksRepositoryImpl(
             .firstOrNull { addedPack -> addedPack.id == packId }
             ?.token
             ?: run {
-                Log.e("Steve", "Error while fetching pack token")
+                Timber.e( "Error while fetching pack token")
                 return emptyList()
             }
 
@@ -265,7 +265,7 @@ class CustomPacksRepositoryImpl(
             addNewCustomPack(customPack)
             customPack
         } catch (e: Exception) {
-            Log.d("Steve", "Error while fetching custom pack", e)
+            Timber.e(e, "Error while fetching custom pack")
             null
         }
     }
@@ -275,7 +275,7 @@ class CustomPacksRepositoryImpl(
             val request = VoteRequestJson(optionId)
             customPacksApi.vote(pollId, request)
         } catch (exception: Exception) {
-            Log.e("Steve", exception.toString())
+            Timber.e(exception, "Error while voting")
             throw exception
         }
     }
@@ -285,7 +285,7 @@ class CustomPacksRepositoryImpl(
         val codeData = pack.code.retrieveCodeData()
 
         if (codeData == null) {
-            Log.e("Steve", "Error while parsing code data")
+            Timber.e( "Error while parsing code data")
             return
         }
 

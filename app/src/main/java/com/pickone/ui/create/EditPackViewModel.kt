@@ -2,7 +2,7 @@ package com.pickone.ui.create
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.util.Log
+import timber.log.Timber
 import androidx.lifecycle.viewModelScope
 import com.pickone.data.Poll
 import com.pickone.data.repository.CustomPacksRepository
@@ -91,7 +91,7 @@ class EditPackViewModel @Inject constructor(
             } catch (ex: Exception) {
                 isPackFetched = false
                 updateState { EditPackViewState.Error }
-                Log.e("Steve", ex.toString())
+                Timber.e(ex, "Failed to fetch polls")
             }
         }
     }
@@ -156,7 +156,7 @@ class EditPackViewModel @Inject constructor(
                     try {
                         customPacksRepository.removePoll(packId, pollId)
                     } catch (ex: Exception) {
-                        Log.e("Steve", ex.toString())
+                        Timber.e(ex, "Failed to remove poll")
                     }
                 }.join()
             }
@@ -167,7 +167,7 @@ class EditPackViewModel @Inject constructor(
             }
         }
     } catch (ex: Exception) {
-        Log.e("Steve", ex.toString())
+        Timber.e(ex, "Something went wrong when removing polls")
         viewModelScope.launch {
             emit(ViewAction.ShowToast("Questions remove failed :( Try again."))
         }
@@ -210,7 +210,7 @@ class EditPackViewModel @Inject constructor(
                 updateView()
             } catch (ex: Exception) {
                 emit(ViewAction.ShowToast("Title update failed :( Try again."))
-                Log.e("Steve", ex.toString())
+                Timber.e( ex.toString())
             }
         }
     }
@@ -235,7 +235,7 @@ class EditPackViewModel @Inject constructor(
                 emit(ViewAction.ShowToast("Pack successfully removed"))
                 route(Router.Route.Finish)
             } catch (ex: Exception) {
-                Log.e("Steve", ex.toString())
+                Timber.e( ex.toString())
                 emit(ViewAction.ShowToast("Pack remove failed :( Try again."))
             }
         }

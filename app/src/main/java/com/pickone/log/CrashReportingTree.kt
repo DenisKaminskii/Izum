@@ -1,8 +1,8 @@
 package com.pickone.log
 
 import android.util.Log
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 class CrashReportingTree : Timber.Tree() {
 

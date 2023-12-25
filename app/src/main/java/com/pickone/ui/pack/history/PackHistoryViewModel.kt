@@ -1,7 +1,7 @@
 package com.pickone.ui.pack.history
 
 import android.content.Context
-import android.util.Log
+import timber.log.Timber
 import androidx.lifecycle.viewModelScope
 import com.pickone.R
 import com.pickone.data.Pack
@@ -71,7 +71,7 @@ class PackHistoryViewModel @Inject constructor(
             polls.addAll(votedPolls)
             updateView()
         } catch (exception: Exception) {
-            Log.e("Steve", exception.toString())
+            Timber.e(exception, "Failed to fetch polls")
             isPollFetched = false
             updateState { PackHistoryViewState.Error }
         }

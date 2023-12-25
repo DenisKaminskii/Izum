@@ -1,6 +1,6 @@
 package com.pickone.data.repository
 
-import android.util.Log
+import timber.log.Timber
 import androidx.annotation.WorkerThread
 import com.pickone.api.PackApi
 import com.pickone.api.PollApi
@@ -90,7 +90,7 @@ class PublicPacksRepositoryImpl(
             val request = VoteRequestJson(optionId)
             pollsApi.vote(pollId, request)
         } catch (exception: Exception) {
-            Log.e("Steve", exception.toString())
+            Timber.e(exception, "Failed to vote")
             throw exception
         }
     }
