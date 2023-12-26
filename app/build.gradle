@@ -30,7 +30,7 @@ android {
             file("../local.properties").withInputStream { stream ->
                 properties.load(stream)
             }
-            storeFile rootProject.file("upload.keystore")
+            storeFile rootProject.file("release.keystore")
             storePassword = properties['storePassword']
             keyAlias = properties['keyAlias']
             keyPassword = properties['keyPassword']
@@ -42,7 +42,6 @@ android {
         }
         release {
             minifyEnabled true
-            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
