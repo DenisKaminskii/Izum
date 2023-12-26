@@ -15,6 +15,9 @@ import com.pickone.data.PollStatistic
 import com.pickone.data.PollStatisticCategory
 import com.pickone.data.PollStatisticSection
 import com.pickone.data.Vote
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import timber.log.Timber
@@ -164,5 +167,15 @@ class PublicPacksRepositoryImpl(
         },
         createdAt = poll.createdAt
     )
+
+    inline fun <reified T> Moshi.listAdapter(): JsonAdapter<List<T>> =
+        adapter(Types.newParameterizedType(List::class.java, T::class.java))
+
+    inline fun <reified T> Moshi.parseList(json: String?): List<T?>? =
+        try {
+            listAdapter<T>().fromJson(json ?: "")
+        } catch (_: Throwable) {
+            null
+        }
 
 }

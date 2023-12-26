@@ -100,9 +100,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        tools:visibility="gone"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        tools:visibility="gone">
 
         <TextView
             style="@style/Text.Body"
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="48dp"
             android:gravity="center"
-            android:text="Extended statistic data available only with premium subscription"
+            android:text="Extended statistic data available only with premium"
             android:textColor="@color/white_25" />
 
         <TextView

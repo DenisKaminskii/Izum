@@ -99,7 +99,7 @@ class EditPollViewModel @Inject constructor(
             is EditPollVariant.Suggest -> viewModelScope.launch {
                 try {
                     publicPacksRepository.suggestPoll(editPoll)
-                    emit(ViewAction.ShowToast("Thanks! We will check soon :3"))
+                    emit(ViewAction.ShowToast("Thanks! We will check soon \uD83D\uDC40"))
                     route(Router.Route.Finish)
                 } catch (exception: Exception) {
                     Timber.e(exception, "On suggest poll error")
