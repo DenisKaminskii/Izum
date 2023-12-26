@@ -16,6 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tabIconTint="@color/grey"
         app:tabIndicatorColor="@color/white"
         app:tabRippleColor="@color/white"
         app:tabSelectedTextColor="@color/white"
@@ -25,12 +26,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/official" />
+            android:text="Feed" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/custom" />
+            android:text="Mine" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile" />
 
     </com.google.android.material.tabs.TabLayout>
 

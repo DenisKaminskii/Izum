@@ -2,4 +2,6 @@
 <resources>
     <string name="backend_url" translatable="false">https://octopus-app-ztlqh.ondigitalocean.app/api/</string>
     <string name="revenue_cat_api_key" translatable="false">goog_dJDheGIfDVChqCDDVQnfdqsWZxL</string>
+    <string name="privacy_policy" translatable="false">https://tasteful-cowbell-a66.notion.site/Privacy-Policy-5c0d4cf650fd496b8efd92d9472c1b1a?pvs=74</string>
+    <string name="terms_use" translatable="false">https://tasteful-cowbell-a66.notion.site/Terms-Conditions-e1753e0b834c4b8b81bdcf1ef78b3856</string>
 </resources>

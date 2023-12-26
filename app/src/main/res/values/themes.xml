@@ -11,7 +11,7 @@
     </style>
 
     <style name="PacksTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">26sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

@@ -103,7 +103,7 @@ class BillingImpl(
         try {
             isInitializedFailed = false
 
-            // Purchases.logLevel = LogLevel.DEBUG //§TODO: Release important
+            // Purchases.logLevel = LogLevel.DEBUG //§PROD:
             val configuration = PurchasesConfiguration.Builder(context, apiKey).build()
             Purchases.configure(configuration)
 

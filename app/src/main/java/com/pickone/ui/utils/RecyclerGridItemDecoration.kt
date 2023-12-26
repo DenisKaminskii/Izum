@@ -28,8 +28,8 @@ class RecyclerGridItemDecoration(
         }
 
         if (viewType == PacksAdapter.ViewType.HEADER.ordinal) {
-            outRect.left = vertical
-            outRect.right = vertical
+            outRect.left = (vertical * 1.5).toInt()
+            outRect.right = (vertical * 1.5).toInt()
         }
     }
 

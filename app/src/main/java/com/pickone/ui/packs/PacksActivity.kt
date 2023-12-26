@@ -42,14 +42,15 @@ class PacksActivity : BaseActivity() {
 
         binding.vgPager.adapter = viewPagerAdapter
 
-        binding.vgSubscription.setOnClickListener { viewModel.onSubscribeClick() }
+        binding.tvSubscribe.setOnClickListener { viewModel.onSubscribeClick() }
         binding.vCreatePack.setOnClickListener { onCreatePackClick() }
         binding.vSuggest.setOnClickListener { viewModel.onSuggestPollClick() }
 
         TabLayoutMediator(binding.vgTabs, binding.vgPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Public"
-                1 -> "My Packs"
+                0 -> "Feed"
+                1 -> "My packs"
+                2 -> "Settings"
                 else -> ""
             }
         }.attach()

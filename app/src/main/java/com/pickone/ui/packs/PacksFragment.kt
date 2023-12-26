@@ -201,7 +201,8 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
             val addedPacks = customPacks.filter { !it.isMine }
 
             if (myPacks.isNotEmpty()) {
-                items.add(PacksItem.Header("Created"))
+                val subtitle = if (!state.hasSubscription && myPacks.isNotEmpty()) "1/1" else null
+                items.add(PacksItem.Header("Created", subtitle))
                 items.addAll(myPacks)
             }
 

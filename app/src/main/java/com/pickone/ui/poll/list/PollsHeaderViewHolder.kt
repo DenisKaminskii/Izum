@@ -10,6 +10,6 @@ class PollsHeaderViewHolder(
     override fun bind(item: PollsItem.Header) {
         super.bind(item)
 
-        binding.root.text = item.title
+        binding.tvTitle.text = item.title
     }
 }

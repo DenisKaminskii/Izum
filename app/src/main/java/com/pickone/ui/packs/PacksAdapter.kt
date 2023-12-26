@@ -25,7 +25,8 @@ sealed class PacksItem {
     ) : PacksItem()
 
     data class Header(
-        val title: String
+        val title: String,
+        val subtitle: String? = null
     ) : PacksItem()
 
 }

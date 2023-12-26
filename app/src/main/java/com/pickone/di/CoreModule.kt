@@ -3,6 +3,8 @@ package com.pickone.di
 import android.content.Context
 import com.pickone.data.DeviceIdProvider
 import com.pickone.data.DeviceIdProviderImpl
+import com.pickone.data.DeviceInfoProvider
+import com.pickone.data.DeviceInfoProviderImpl
 import com.pickone.domain.core.PreferenceCache
 import com.pickone.domain.core.PreferenceCacheImpl
 import com.pickone.ui.route.Router
@@ -25,6 +27,15 @@ class CoreModule {
         @ApplicationContext context: Context
     ) : DeviceIdProvider {
         return DeviceIdProviderImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceInfoProvider(
+        @ApplicationContext context: Context,
+        deviceIdProvider: DeviceIdProvider
+    ) : DeviceInfoProvider {
+        return DeviceInfoProviderImpl(context, deviceIdProvider)
     }
 
     @Provides
