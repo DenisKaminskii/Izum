@@ -97,7 +97,8 @@ class PreferenceCacheImpl @Inject constructor(
     }
 
     override fun <T> putDTO(name: String, value: T, clazz: Class<T>) {
-        val serializedValue = moshi.adapter(clazz).toJson(value)
+        val type = Types.newParameterizedType(clazz)
+        val serializedValue = moshi.adapter<T>(type).toJson(value)
 
         preferences.edit()
             .putString(name, serializedValue)
@@ -108,7 +109,8 @@ class PreferenceCacheImpl @Inject constructor(
         var result: T? = null
         if (preferences.contains(name)) {
             try {
-                result = moshi.adapter(clazz).fromJson(preferences.getString(name, null)!!)
+                val type = Types.newParameterizedType(clazz)
+                result = moshi.adapter<T>(type).fromJson(preferences.getString(name, null)!!)
             } catch (e: Exception) {
                 preferences.edit()
                     .remove(name)

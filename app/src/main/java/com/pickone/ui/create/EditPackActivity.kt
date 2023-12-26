@@ -97,6 +97,8 @@ class EditPackActivity : BaseActivity() {
         tvPollsCount.text = "${state.pollsCount} / ${state.pollsMax}"
         ivShare.isEnabled = state.isShareButtonEnabled
         ivEdit.isEnabled = state.isEditButtonEnabled
+        tvRemove.isEnabled = !state.isEditMode
+        tvRemove.alpha = if (!state.isEditMode) 1f else 0.25f
         ivEdit.setImageResource(
             when {
                 state.isEditMode -> if (state.isEditRemoveVisible) {
@@ -192,6 +194,21 @@ class EditPackActivity : BaseActivity() {
             }
             .create()
         removeDialog?.show()
+        removeDialog?.let {
+            val window = it.window
+            if (window != null) {
+                val layoutParams = WindowManager.LayoutParams()
+                layoutParams.copyFrom(window.attributes)
+
+                // Set the width of the dialog to fill the parent width minus the desired margin on each side
+                // Adjust 'marginSize' to your desired margin size in pixels
+                val displayMetrics = resources.displayMetrics
+                val marginSize = (32 * displayMetrics.density).toInt() // for 20dp margin on each side
+                layoutParams.width = displayMetrics.widthPixels - 2 * marginSize
+
+                window.attributes = layoutParams
+            }
+        }
     }
 
 }

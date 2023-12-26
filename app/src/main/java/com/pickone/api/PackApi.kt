@@ -18,7 +18,7 @@ data class PackJson(
     @Json(name="title")
     val title: String,
     @Json(name="description")
-    val description: String? = null,
+    val description: String?,
     @Json(name="isPaid")
     val isPaid: Boolean,
     @Json(name="productId")
@@ -26,13 +26,11 @@ data class PackJson(
     @Json(name="pollsCount")
     val pollsCount: Long,
     @Json(name="author")
-    val author: AuthorJson? = null,
+    val author: AuthorJson?,
     @Json(name="contentColor")
     val contentColor: String,
     @Json(name="gradientStartColor")
     val gradientStartColor: String,
     @Json(name="gradientEndColor")
-    val gradientEndColor: String,
-    @Json(name="preview")
-    val preview: List<PackPreviewJson>
+    val gradientEndColor: String
 )

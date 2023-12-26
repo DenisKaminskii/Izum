@@ -28,8 +28,7 @@ sealed class Pack(
         val authorId: Long?,
         @ColorInt override val contentColor: Int,
         @ColorInt override val gradientStartColor: Int,
-        @ColorInt override val gradientEndColor: Int,
-        val preview: List<PackPreview>
+        @ColorInt override val gradientEndColor: Int
     ) : Pack(
         id,
         title,
@@ -53,13 +52,7 @@ sealed class Pack(
                 authorId = packJson.author?.id,
                 gradientStartColor = Color.parseColor(packJson.gradientStartColor),
                 gradientEndColor = Color.parseColor(packJson.gradientEndColor),
-                contentColor = Color.parseColor(packJson.contentColor),
-                preview = packJson.preview.map { preview ->
-                    PackPreview(
-                        option1 = preview.option1,
-                        option2 = preview.option2
-                    )
-                }
+                contentColor = Color.parseColor(packJson.contentColor)
             )
         }
 

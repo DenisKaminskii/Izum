@@ -10,13 +10,13 @@ data class PollJson(
     @Json(name = "packId")
     val packId: Long,
     @Json(name = "author")
-    val author: AuthorJson? = null,
+    val author: AuthorJson?,
     @Json(name = "options")
     val options: List<PollOptionJson>,
     @Json(name = "totalVotesCount")
-    val totalVotesCount: Long? = null,
+    val totalVotesCount: Long?,
     @Json(name = "voted")
-    val voted: VoteJson? = null,
+    val voted: VoteJson?,
     @Json(name = "createdAt")
-    val createdAt: String? = null
+    val createdAt: String?
 )

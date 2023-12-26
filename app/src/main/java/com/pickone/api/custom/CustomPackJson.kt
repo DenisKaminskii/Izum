@@ -13,7 +13,7 @@ data class CustomPackJson(
     @Json(name = "title")
     val title: String,
     @Json(name = "description")
-    val description: String? = null,
+    val description: String?,
     @Json(name = "pollsCount")
     val pollsCount: Long,
     @Json(name = "token")

@@ -1,6 +1,5 @@
 package com.pickone.data.repository
 
-import timber.log.Timber
 import com.pickone.api.GetTokenRequest
 import com.pickone.api.TokenApi
 import com.pickone.api.UpdateUserInfoRequest
@@ -13,6 +12,7 @@ import com.pickone.network.OnUserIdUpdated
 import com.pickone.ui.user.Gender
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 interface UserRepository  {
 
@@ -82,6 +82,7 @@ class UserRepositoryImpl(
             ))
             true
         } catch (ex: Exception) {
+            Timber.e(ex, "Failed to update user info")
             false
         }
     }
