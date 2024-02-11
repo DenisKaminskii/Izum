@@ -16,6 +16,7 @@ import com.pickone.ui.user.UserInfoViewModel.Companion.AGE_LIMIT
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+// § Rename: InputInfoActivity
 @AndroidEntryPoint
 class UserInfoActivity : BaseActivity() {
 

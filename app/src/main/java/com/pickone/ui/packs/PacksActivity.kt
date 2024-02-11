@@ -38,7 +38,7 @@ class PacksActivity : BaseActivity() {
     override fun initView(args: Bundle) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = getColor(R.color.black_soft)
+        window.statusBarColor = getColor(R.color.black_top_bottom_bar)
 
         binding.vgPager.adapter = viewPagerAdapter
 
@@ -50,7 +50,7 @@ class PacksActivity : BaseActivity() {
             tab.text = when (position) {
                 0 -> "Feed"
                 1 -> "My packs"
-                2 -> "Settings"
+                2 -> "Info"
                 else -> ""
             }
         }.attach()
