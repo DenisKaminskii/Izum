@@ -1,6 +1,7 @@
 package com.pickone.data
 
 import android.content.Context
+import android.provider.Settings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -15,6 +16,6 @@ class DeviceIdProviderImpl @Inject constructor (
 ) : DeviceIdProvider {
 
     override val deviceId: String
-        get() = "SOME_TEST_DEVICE_ID_12" // Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        get() = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
 
 }

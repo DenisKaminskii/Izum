@@ -68,7 +68,6 @@ class PublicPacksRepositoryImpl(
                 .map(Pack.Public::fromJson)
                 .sortedBy { it.id }
                 .sortedBy { it.isPaid }
-                .filter { it.title.contains("Adult", ignoreCase = true).not() } // § Moderation filter
 
             _packs.emit(newPacks)
         } catch (exception: Exception) {
