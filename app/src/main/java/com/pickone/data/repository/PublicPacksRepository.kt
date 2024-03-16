@@ -114,7 +114,8 @@ class PublicPacksRepositoryImpl(
                 PollOption(
                     id = option.id,
                     title = option.title,
-                    votesCount = option.votesCount
+                    votesCount = option.votesCount,
+                    imageUrl = null
                 )
             },
             sections = poll.sections.map { section ->
@@ -127,7 +128,8 @@ class PublicPacksRepositoryImpl(
                                 PollOption(
                                     id = option.id,
                                     title = "",
-                                    votesCount = option.votesCount
+                                    votesCount = option.votesCount,
+                                    imageUrl = null
                                 )
                             }
                         )

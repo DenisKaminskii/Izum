@@ -246,7 +246,8 @@ class CustomPacksRepositoryImpl(
                 PollOption(
                     id = option.id,
                     title = option.title,
-                    votesCount = option.votesCount
+                    votesCount = option.votesCount,
+                    imageUrl = null
                 )
             },
             sections = poll.sections.map { section ->
@@ -259,7 +260,8 @@ class CustomPacksRepositoryImpl(
                                 PollOption(
                                     id = option.id,
                                     title = "",
-                                    votesCount = option.votesCount
+                                    votesCount = option.votesCount,
+                                    imageUrl = null
                                 )
                             }
                         )

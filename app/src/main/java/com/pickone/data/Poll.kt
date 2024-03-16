@@ -26,7 +26,8 @@ data class Poll(
                         id = it.id,
                         title = it.title,
                         votesCount = it.votesCount,
-                        createdAt = it.createdAt
+                        createdAt = it.createdAt,
+                        imageUrl = it.imageUrl
                     )
                 },
                 totalVotesCount = json.totalVotesCount,

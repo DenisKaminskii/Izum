@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class PollOption(
     val id: Long,
     val title: String,
-    val imageUrl: String? = null,
+    val imageUrl: String?,
     val votesCount: Long,
     val createdAt: String? = null
 ) : Parcelable
