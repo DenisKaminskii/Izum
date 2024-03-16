@@ -3,6 +3,7 @@ package com.pickone.ui.onboarding
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import com.pickone.ui.BaseActivity
 import com.pickone.ui.dpF
 import com.pickone.ui.paywall.PaywallInput
 import com.pickone.ui.route.Router
+import com.pickone.ui.utils.hideSystemBars
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -51,6 +53,14 @@ class OnboardingActivity : BaseActivity() {
             binding.lbSecondBottom
         )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.hideSystemBars()
+    }
+
     override fun initLayout() {
         super.initLayout()
         _binding = ActivityOnboardingBinding.inflate(layoutInflater)
@@ -69,6 +79,7 @@ class OnboardingActivity : BaseActivity() {
             onContinueClick()
         }
 
+        binding.tvTitle.text = firstTitle
         animateFirstScreenIntro()
     }
 
@@ -151,13 +162,8 @@ class OnboardingActivity : BaseActivity() {
             // More unique answers
             0 -> {
                 binding.tvTitle.animate()
-                    .translationY(-dpF(500))
-                    .setDuration(500)
-                    .start()
-
-                binding.tvTitle.animate()
                     .alpha(0f)
-                    .setDuration(150)
+                    .setDuration(500)
                     .start()
 
                 binding.ivFirstPolls.animate()
@@ -177,13 +183,8 @@ class OnboardingActivity : BaseActivity() {
             // Statistic
             1 -> {
                 binding.tvTitle.animate()
-                    .translationY(-dpF(500))
-                    .setDuration(500)
-                    .start()
-
-                binding.tvTitle.animate()
                     .alpha(0f)
-                    .setDuration(150)
+                    .setDuration(500)
                     .start()
 
                 binding.vgSecondGenders.animate()
@@ -226,13 +227,8 @@ class OnboardingActivity : BaseActivity() {
                 binding.lbSecondBottom.update(LinearBarState(listOf(34, 33, 33)))
 
                 binding.tvTitle.animate()
-                    .translationY(0f)
-                    .setDuration(500)
-                    .start()
-
-                binding.tvTitle.animate()
                     .alpha(1f)
-                    .setDuration(150)
+                    .setDuration(500)
                     .start()
 
                 binding.vgSecondGenders.animate()
@@ -267,13 +263,8 @@ class OnboardingActivity : BaseActivity() {
                 binding.vgThird.isVisible = true
 
                 binding.tvTitle.animate()
-                    .translationY(0f)
-                    .setDuration(500)
-                    .start()
-
-                binding.tvTitle.animate()
                     .alpha(1f)
-                    .setDuration(150)
+                    .setDuration(500)
                     .start()
 
                 binding.tvThirdSubtitle.animate()

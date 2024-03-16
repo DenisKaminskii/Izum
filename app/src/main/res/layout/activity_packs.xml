@@ -11,17 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="12dp"
-        android:background="@null"
+        android:hapticFeedbackEnabled="true"
         android:minHeight="64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabIconTint="@color/grey"
         app:tabIndicatorColor="@color/white"
-        app:tabRippleColor="@color/white"
+        app:tabRippleColor="@color/grey_dark"
         app:tabSelectedTextColor="@color/white"
         app:tabTextAppearance="@style/PacksTabTextAppearance"
-        app:tabTextColor="@color/grey">
+        app:tabTextColor="@color/grey"
+        app:tabUnboundedRipple="true">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -31,12 +32,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mine" />
+            android:text="My packs" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile" />
+            android:text="Info" />
 
     </com.google.android.material.tabs.TabLayout>
 

@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-// § Rename to SettingsFragment
 @AndroidEntryPoint
 class ProfileFragment : Fragment(), CoroutineScope by MainScope() {
 

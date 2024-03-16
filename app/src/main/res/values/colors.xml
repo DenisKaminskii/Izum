@@ -63,7 +63,7 @@
     <color name="paywall_gradient_lifetime_start">#F1C321</color>
     <color name="paywall_gradient_lifetime_end">@color/paywall_green</color>
 
-    <color name="onboarding_black">#141414</color>
+    <color name="onboarding_black">#000000</color>
     <color name="edit_pack_item_stroke">@color/white_25</color>
 
 </resources>

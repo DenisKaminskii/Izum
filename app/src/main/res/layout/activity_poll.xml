@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        tools:visibility="gone"
-        app:constraint_referenced_ids="vgTop, vgBottom, tvStatistic, tvNext" />
+        app:constraint_referenced_ids="vgTop, tvTop, tvTopCount, vgBottom, tvBottom, tvBottomCount, tvStatistic, tvNext"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/vProgress"
@@ -37,17 +37,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/vgToolbar"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             style="@style/Text.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:lineSpacingExtra="4dp"
             android:gravity="center"
-            android:textColor="@color/white_25"
-            android:text="@string/no_more_new_unvoted_polls" />
+            android:lineSpacingExtra="4dp"
+            android:text="@string/no_more_new_unvoted_polls"
+            android:textColor="@color/white_25" />
 
         <TextView
             android:id="@+id/tvHistory"
@@ -103,37 +103,69 @@
         android:layout_marginTop="72dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/selector_shape_red_25"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/vgBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvTop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLength="150"
-            android:padding="24dp"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            tools:text="Option 1" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:alpha="0"
+        android:padding="16dp"
+        android:scaleType="centerCrop"
+        android:tag=""
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/tvTop"
+        app:layout_constraintEnd_toEndOf="@id/vgTop"
+        app:layout_constraintHeight_max="170dp"
+        app:layout_constraintStart_toStartOf="@id/vgTop"
+        app:layout_constraintTop_toTopOf="@id/vgTop"
+        tools:alpha="1"
+        tools:src="@drawable/img_onboarding_premium"
+        tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tvTopCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="center_horizontal"
-            android:paddingVertical="16dp"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="36% (192)" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLength="150"
+        android:textColor="@color/white"
+        app:autoSizeMaxTextSize="24sp"
+        app:autoSizeMinTextSize="16sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@id/tvTopCount"
+        app:layout_constraintEnd_toEndOf="@id/vgTop"
+        app:layout_constraintStart_toStartOf="@id/vgTop"
+        app:layout_constraintTop_toBottomOf="@id/ivTop"
+        app:layout_goneMarginTop="40dp"
+        tools:alpha="0.5"
+        tools:text="Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag Nike Air Mag " />
 
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvTopCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:alpha="0"
+        android:gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/vgTop"
+        app:layout_constraintEnd_toEndOf="@id/vgTop"
+        app:layout_constraintStart_toStartOf="@id/vgTop"
+        tools:alpha="0.5"
+        tools:text="36% (192)" />
 
     <FrameLayout
         android:id="@+id/vgBottom"
@@ -143,36 +175,71 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/selector_shape_blue_25"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vgTop">
+        app:layout_constraintTop_toBottomOf="@id/vgTop" />
 
-        <TextView
-            android:id="@+id/tvBottom"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLength="150"
-            android:padding="24dp"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            tools:text="Option 2" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivBottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:alpha="0"
+        android:padding="16dp"
+        android:scaleType="centerCrop"
+        android:tag=""
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/vgBottom"
+        app:layout_constraintEnd_toEndOf="@id/vgBottom"
+        app:layout_constraintHeight_max="170dp"
+        app:layout_constraintStart_toStartOf="@id/vgBottom"
+        app:layout_constraintTop_toBottomOf="@id/tvBottom"
+        tools:alpha="1"
+        tools:src="@drawable/img_onboarding_premium"
+        tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tvBottomCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:gravity="center_horizontal"
-            android:paddingVertical="16dp"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="64% (391)" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLength="150"
+        android:textColor="@color/white"
+        app:autoSizeMaxTextSize="24sp"
+        app:autoSizeMinTextSize="16sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@id/ivBottom"
+        app:layout_constraintEnd_toEndOf="@id/vgBottom"
+        app:layout_constraintStart_toStartOf="@id/vgBottom"
+        app:layout_constraintTop_toBottomOf="@id/tvBottomCount"
+        app:layout_goneMarginBottom="40dp"
+        tools:alpha="1"
+        tools:text="Option 2 Option 2 Option 2 Option 2 Option 2 Option 2 " />
 
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvBottomCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginHorizontal="16dp"
+        android:alpha="0"
+        android:gravity="center_horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/vgBottom"
+        app:layout_constraintStart_toStartOf="@id/vgBottom"
+        app:layout_constraintTop_toTopOf="@id/vgBottom"
+        tools:alpha="0.5"
+        tools:text="64% (391)" />
 
     <LinearLayout
         android:id="@+id/vgToolbar"
@@ -216,7 +283,6 @@
         android:paddingVertical="12dp"
         android:paddingStart="20dp"
         android:text="@string/statistic"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvNext"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -234,7 +300,6 @@
         android:drawableEnd="@drawable/ic_arrow_forward_16"
         android:paddingVertical="12dp"
         android:text="NEXT"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvStatistic"

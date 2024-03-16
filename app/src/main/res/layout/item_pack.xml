@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vgRoot"
     android:layout_width="match_parent"
-    android:layout_height="190dp"
+    android:layout_height="200dp"
     android:layout_margin="8dp"
     android:orientation="vertical"
     android:paddingHorizontal="14dp"
@@ -12,14 +12,18 @@
     android:paddingBottom="14dp"
     tools:background="@drawable/rect_outline_white_10_stroke_2_coreners_10">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="Daily Life"
         android:textColor="@color/white"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:autoSizeMaxTextSize="26sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeTextType="uniform" />
 
     <TextView
         android:id="@+id/tvDescription"

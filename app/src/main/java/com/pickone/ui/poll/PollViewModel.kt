@@ -2,6 +2,7 @@ package com.pickone.ui.poll
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.google.android.play.core.review.ReviewException
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.model.ReviewErrorCode
@@ -20,7 +21,11 @@ import com.pickone.ui.poll.statistic.PollStatisticInput
 import com.pickone.ui.route.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -37,7 +42,6 @@ sealed interface PollViewState {
     data class Content(
         val pollId: Long,
         val packTitle: String,
-        val votesCount: Long,
         val top: OptionViewState,
         val bottom: OptionViewState,
         val votedOptionId: Long? = null,
@@ -49,7 +53,7 @@ sealed interface PollViewState {
 data class OptionViewState(
     val id: Long,
     val title: String,
-    val votesCount: Long,
+    val imageUrl: String? = null,
     val votesText: String
 )
 
@@ -66,8 +70,8 @@ class PollViewModel @Inject constructor(
 ) {
 
     companion object {
-
-        private const val VOTES_UNTIL_GOOGLE_STORE_REVIEW = 50
+        private const val VotesUntilGoogleReview = 15
+        private const val PreloadPollsCount = 7
     }
 
     private lateinit var pack: Pack
@@ -86,6 +90,8 @@ class PollViewModel @Inject constructor(
 
     private var votedOptionId: Long? = null
 
+    private var preloadImagesCounter = 0
+
     override fun onViewInitialized(input: Pack) {
         super.onViewInitialized(input)
         this.pack = input
@@ -101,22 +107,40 @@ class PollViewModel @Inject constructor(
         }
     }
 
-    private fun fetchPolls() = viewModelScope.launch {
-        try {
-            val newPolls = if (pack is Pack.Custom) {
-                customPacksRepository.getPackUnvotedPolls(pack.id)
-            } else {
-                publicPacksRepository.getPackUnvotedPolls(pack.id)
+    private val fetchMutex = Mutex()
+    private fun fetchPolls() = viewModelScope.launch(IO) {
+        if (fetchMutex.isLocked) return@launch
+        fetchMutex.withLock {
+            try {
+                val newPolls = if (pack is Pack.Custom) {
+                    customPacksRepository.getPackUnvotedPolls(pack.id)
+                } else {
+                    publicPacksRepository.getPackUnvotedPolls(pack.id)
+                }
+                isPollFetched = true
+                polls.clear()
+                polls.addAll(newPolls)
+                updateView()
+                preloadNextImages()
+            } catch (exception: Exception) {
+                Timber.e(exception, "Failed to fetch polls")
+                isPollFetched = false
+                updateState { PollViewState.Error }
             }
-            isPollFetched = true
-            polls.clear()
-            newPolls.firstOrNull()?.let { firstPoll -> polls.add(firstPoll) }
-            polls.addAll(newPolls.drop(1).shuffled())
-            updateView()
-        } catch (exception: Exception) {
-            Timber.e(exception, "Failed to fetch polls")
-            isPollFetched = false
-            updateState { PollViewState.Error }
+        }
+    }
+
+    private fun preloadNextImages() = viewModelScope.launch(IO) {
+        polls.take(PreloadPollsCount).forEach {
+            launch { preloadImages(it) }.join()
+        }
+    }
+
+    private fun preloadImages(poll: Poll) {
+        if (poll.options.none { !it.imageUrl.isNullOrBlank() }) return
+
+        poll.options.forEach {
+            Glide.with(context).load(it.imageUrl).override(512, 512).preload()
         }
     }
 
@@ -134,30 +158,25 @@ class PollViewModel @Inject constructor(
             PollViewState.Content(
                 pollId = poll.id,
                 packTitle = pack.title,
-                votesCount = allCount,
                 top = OptionViewState(
                     id = optionTop.id,
                     title = optionTop.title,
-                    votesCount = topCount.let {
-                        if (votedOptionId == optionTop.id) it + 1 else it
-                    },
                     votesText = try {
                         "${(topCount.toFloat() / allCount * 100).toInt()}% ($topCount)"
                     } catch (e: Exception) {
                         "0% ($topCount)"
-                    }
+                    },
+                    imageUrl = optionTop.imageUrl
                 ),
                 bottom = OptionViewState(
                     id = optionBottom.id,
                     title = optionBottom.title,
-                    votesCount = optionBottom.votesCount.let {
-                        if (votedOptionId == optionBottom.id) it + 1 else it
-                    },
                     votesText = try {
                         "${(bottomCount.toFloat() / allCount * 100).toInt()}% ($bottomCount)"
                     } catch (e: Exception) {
                         "0% ($bottomCount)"
-                    }
+                    },
+                    imageUrl = optionBottom.imageUrl
                 ),
                 votedOptionId = votedOptionId,
                 isFinishVisible = polls.size < 2
@@ -165,25 +184,23 @@ class PollViewModel @Inject constructor(
         }
     }
 
-    fun onNextClick() {
-        polls.removeFirstOrNull()
+    fun onNextClick() = doubleClickProtection {
         votedOptionId = null
+        polls.removeFirstOrNull()
         updateView()
+
         checkGoogleStoreReviewShow()
-    }
 
-    fun onTopVote(elapsedTimeMs: Long) {
-        onVote(optionTop.id, elapsedTimeMs)
-    }
-
-    fun onBottomVote(elapsedTimeMs: Long) {
-        onVote(optionBottom.id, elapsedTimeMs)
+        if (++preloadImagesCounter >= (PreloadPollsCount - 2)) {
+            preloadImagesCounter = 0
+            preloadNextImages()
+        }
     }
 
     private fun checkGoogleStoreReviewShow() {
         val isShown = preferenceCache.getBoolean(PreferenceKey.GoogleStoreReviewShown.name, false)
         val commonVotesCount = preferenceCache.getLong(PreferenceKey.CommonVotesCount.name, 0L)
-        if (!isShown && commonVotesCount >= VOTES_UNTIL_GOOGLE_STORE_REVIEW) {
+        if (!isShown && commonVotesCount >= VotesUntilGoogleReview) {
             val manager = ReviewManagerFactory.create(context)
 
             val request = manager.requestReviewFlow()
@@ -200,7 +217,7 @@ class PollViewModel @Inject constructor(
         }
     }
 
-    fun onStatisticClick() {
+    fun onStatisticClick() = doubleClickProtection {
         votedOptionId?.let {
             viewModelScope.launch {
                 route(
@@ -214,12 +231,12 @@ class PollViewModel @Inject constructor(
         }
     }
 
-    fun onRetryClick() {
+    fun onRetryClick() = doubleClickProtection {
         fetchPolls()
         updateView()
     }
 
-    fun onPackHistoryClick() {
+    fun onPackHistoryClick() = doubleClickProtection {
         viewModelScope.launch {
             route(Router.Route.Finish)
             route(Router.Route.PackHistory(pack))
@@ -228,6 +245,14 @@ class PollViewModel @Inject constructor(
 
     fun onMovedToBackground() {
         analytics.pollExited(poll.id)
+    }
+
+    fun onTopVote(elapsedTimeMs: Long) = doubleClickProtection {
+        onVote(optionTop.id, elapsedTimeMs)
+    }
+
+    fun onBottomVote(elapsedTimeMs: Long) = doubleClickProtection {
+        onVote(optionBottom.id, elapsedTimeMs)
     }
 
     private fun onVote(optionId: Long, elapsedTimeMs: Long) {
@@ -262,6 +287,16 @@ class PollViewModel @Inject constructor(
 
         val commonVotesCount = preferenceCache.getLong(PreferenceKey.CommonVotesCount.name, 0L)
         preferenceCache.putLong(PreferenceKey.CommonVotesCount.name, commonVotesCount + 1)
+    }
+
+    private val clickMutex = Mutex()
+    private fun doubleClickProtection(block: () -> Unit) = viewModelScope.launch {
+        if (clickMutex.isLocked) return@launch
+
+        clickMutex.withLock {
+            block.invoke()
+            delay(750)
+        }
     }
 
 }

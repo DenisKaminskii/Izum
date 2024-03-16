@@ -2,6 +2,7 @@ package com.pickone.ui.user
 
 import android.os.Bundle
 import android.text.Editable
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.pickone.analytics.Analytics
@@ -13,10 +14,10 @@ import com.pickone.ui.Keyboard
 import com.pickone.ui.SimpleTextWatcher
 import com.pickone.ui.route.Router
 import com.pickone.ui.user.UserInfoViewModel.Companion.AGE_LIMIT
+import com.pickone.ui.utils.hideSystemBars
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// § Rename: InputInfoActivity
 @AndroidEntryPoint
 class UserInfoActivity : BaseActivity() {
 
@@ -27,6 +28,13 @@ class UserInfoActivity : BaseActivity() {
     val binding: ActivityUserInfoBinding get() = _binding!!
 
     private val viewModel: UserInfoViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.hideSystemBars()
+    }
 
     override fun initLayout() {
         super.initLayout()

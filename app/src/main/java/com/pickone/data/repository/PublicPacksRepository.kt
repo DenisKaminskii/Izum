@@ -152,6 +152,7 @@ class PublicPacksRepositoryImpl(
             PollOption(
                 id = option.id,
                 title = option.title,
+                imageUrl = option.imageUrl,
                 votesCount = option.votesCount
             )
         },

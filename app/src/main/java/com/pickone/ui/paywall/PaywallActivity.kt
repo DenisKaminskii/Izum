@@ -3,6 +3,7 @@ package com.pickone.ui.paywall
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -13,6 +14,7 @@ import com.pickone.ui.BaseActivity
 import com.pickone.ui.KEY_ARGS_INPUT
 import com.pickone.ui.LoadingDialog
 import com.pickone.ui.dpF
+import com.pickone.ui.utils.hideSystemBars
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.models.StoreTransaction
@@ -37,7 +39,9 @@ class PaywallActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.hideSystemBars()
     }
 
     override fun initLayout() {

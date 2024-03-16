@@ -9,6 +9,8 @@ data class PollOptionJson(
     val id: Long,
     @Json(name="title")
     val title: String,
+    @Json(name="imageURL")
+    val imageUrl: String?,
     @Json(name="votesCount")
     val votesCount: Long,
     @Json(name="createdAt")

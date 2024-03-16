@@ -18,6 +18,9 @@ import com.revenuecat.purchases.models.StoreTransaction
 import com.revenuecat.purchases.purchaseWith
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.function.Consumer
 import javax.inject.Inject
@@ -26,7 +29,7 @@ const val KEY_ARGS_INPUT = "KEY_ARGS_INPUT"
 const val KEY_ARGS_PACK = "KEY_ARGS_PACK"
 
 @AndroidEntryPoint
-abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
+abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction>, CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     @Inject
     lateinit var router: Router
@@ -99,6 +102,11 @@ abstract class BaseActivity : FragmentActivity(), Consumer<ViewAction> {
 
     open fun onMovedToBackground() {
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancel()
     }
 
     protected fun <T> subscribe(viewModel: StateViewModel<*, T>, onViewState: (T) -> Unit) {
