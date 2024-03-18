@@ -135,7 +135,6 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
 
         binding.fabAddCustomPack.isVisible = isCustom
         binding.fabAddCustomPack.backgroundTintList = requireContext().getColorStateList(R.color.white_95)
-        binding.fabAddCustomPack.setColorFilter(requireContext().getColor(R.color.black_soft))
         binding.fabAddCustomPack.setOnClickListener { onAddCustomPackClicked() }
     }
 

@@ -17,7 +17,7 @@ import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import com.revenuecat.purchases.logInWith
 import com.revenuecat.purchases.models.StoreProduct
 import com.revenuecat.purchases.models.StoreTransaction
-import com.revenuecat.purchases.syncPurchasesWith
+import com.revenuecat.purchases.restorePurchasesWith
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -54,15 +54,21 @@ interface Billing {
     @Throws(BillingException::class)
     fun setUserId(userId: Long)
 
-
     @Throws(BillingException::class)
     suspend fun getWeeklySubscription(): StoreProduct
+
+    @Throws(BillingException::class)
+    suspend fun getLifetimeInApp(): StoreProduct
 
     @Throws(BillingException::class)
     suspend fun purchaseWeeklySubscription(
         onViewAction: (ViewAction) -> Unit
     ) : Flow<PurchaseState>
 
+    @Throws(BillingException::class)
+    suspend fun purchaseLifetimeInApp(
+        onViewAction: (ViewAction) -> Unit
+    ) : Flow<PurchaseState>
 
     fun checkSubscription()
 
@@ -84,6 +90,7 @@ class BillingImpl(
 
     companion object {
         private const val WEEKLY_PACKAGE_ID = "$" + "rc_weekly"
+        private const val LIFETIME_PACKAGE_ID = "$" + "rc_lifetime"
 
         private const val PREMIUM_ENTITLEMENT_ID = "com.polleo.app.premium"
     }
@@ -96,6 +103,7 @@ class BillingImpl(
     private var userIdUpdates: Job? = null
 
     private var weeklyPackage: Package? = null
+    private var lifetimePackage: Package? = null
 
     private var isInitializedFailed = false
 
@@ -106,6 +114,7 @@ class BillingImpl(
             // Purchases.logLevel = LogLevel.DEBUG //§PROD:
             val configuration = PurchasesConfiguration.Builder(context, apiKey).build()
             Purchases.configure(configuration)
+            userRepository.userId?.let(::setUserId)
 
             Purchases.sharedInstance.updatedCustomerInfoListener =
                 UpdatedCustomerInfoListener { customerInfo -> checkForSubscription(customerInfo) }
@@ -122,6 +131,7 @@ class BillingImpl(
         subscribeToUserIdUpdates()
         checkSubscription()
         fetchWeeklyPackage()
+        fetchLifetimePackage()
         restorePurchases()
     }
 
@@ -135,12 +145,27 @@ class BillingImpl(
         }
     }
 
+    private suspend fun fetchLifetimePackage() {
+        try {
+            if (lifetimePackage == null) {
+                lifetimePackage = getLifetimePackage()
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception, "Failed to fetch weekly package")
+        }
+    }
+
     private fun restorePurchases() {
         checkIsInitialized()
 
-        Purchases.sharedInstance.syncPurchasesWith { customerInfo ->
-            checkForSubscription(customerInfo)
-        }
+        Purchases.sharedInstance.restorePurchasesWith(
+            onError = { error ->
+                Timber.e("RevenueCat: restore purchases error: $error")
+            },
+            onSuccess = { customerInfo ->
+                checkForSubscription(customerInfo)
+            }
+        )
     }
 
     override fun setUserId(userId: Long) {
@@ -160,6 +185,10 @@ class BillingImpl(
         return getWeeklyPackage().product
     }
 
+    override suspend fun getLifetimeInApp(): StoreProduct {
+        return getLifetimePackage().product
+    }
+
     override suspend fun purchaseWeeklySubscription(
         onViewAction: (ViewAction) -> Unit
     ) : Flow<PurchaseState> {
@@ -170,6 +199,20 @@ class BillingImpl(
 
         return purchase(
             weeklyPackage!!,
+            onViewAction = onViewAction
+        )
+    }
+
+    override suspend fun purchaseLifetimeInApp(
+        onViewAction: (ViewAction) -> Unit
+    ) : Flow<PurchaseState> {
+        if (lifetimePackage == null) {
+            fetchLifetimePackage()
+            if (lifetimePackage == null) throw BillingException.NoSubscriptionFound(message = "Can't purchase lifetime subscription")
+        }
+
+        return purchase(
+            lifetimePackage!!,
             onViewAction = onViewAction
         )
     }
@@ -209,6 +252,40 @@ class BillingImpl(
                         continuation.resumeWith(Result.success(pack))
                     } else {
                         val message = "No found $WEEKLY_PACKAGE_ID in ${packages.map { it.identifier }}"
+                        val exception = BillingException.NoSubscriptionFound(message = message)
+                        continuation.resumeWithException(exception)
+                    }
+                }
+            }
+        )
+    }
+
+    private suspend fun getLifetimePackage(): Package = suspendCoroutine { continuation ->
+        if (lifetimePackage != null) {
+            continuation.resumeWith(Result.success(lifetimePackage!!))
+            return@suspendCoroutine
+        }
+
+        checkIsInitialized()
+
+        Purchases.sharedInstance.getOfferingsWith(
+            onError = { error ->
+                val message = error.message
+                val exception = BillingException.NoSubscriptionFound(message = message)
+                continuation.resumeWithException(exception)
+            },
+            onSuccess = { offerings ->
+                val packages = offerings.current?.availablePackages
+                if (packages.isNullOrEmpty()) {
+                    val message = "No current offering available packages was found"
+                    val exception = BillingException.NoSubscriptionFound(message = message)
+                    continuation.resumeWithException(exception)
+                } else {
+                    val pack = packages.firstOrNull { it.identifier == LIFETIME_PACKAGE_ID }
+                    if (pack != null) {
+                        continuation.resumeWith(Result.success(pack))
+                    } else {
+                        val message = "No found $LIFETIME_PACKAGE_ID in ${packages.map { it.identifier }}"
                         val exception = BillingException.NoSubscriptionFound(message = message)
                         continuation.resumeWithException(exception)
                     }

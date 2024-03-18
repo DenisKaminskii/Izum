@@ -59,6 +59,7 @@ class PaywallViewModel @Inject constructor(
     private var isOnline = true
 
     private var weeklySubscription: StoreProduct? = null
+    private var lifetime: StoreProduct? = null
 
     private lateinit var input: PaywallInput
 
@@ -88,12 +89,13 @@ class PaywallViewModel @Inject constructor(
 
     private fun fetchProducts() = viewModelScope.launch {
         weeklySubscription = tryWithBilling { billing.getWeeklySubscription() }
-        // §TODO: get in app
+        lifetime = tryWithBilling { billing.getLifetimeInApp() }
         updateView()
     }
 
     private fun updateView() {
         val weekly = weeklySubscription ?: return
+        val lifetime = lifetime ?: return
 
         val isWeeklySelected = selectedPrice == Price.WEEK
         val isLifetimeSelected = selectedPrice == Price.LIFETIME
@@ -115,7 +117,7 @@ class PaywallViewModel @Inject constructor(
                     accentColor = context.getColor(R.color.paywall_pink)
                 ),
                 lifetimeItem = PremiumPriceItemState(
-                    title = "Lifetime 50$",
+                    title = "Lifetime ${lifetime.price.formatted}",
                     subtitle = "One time payment",
                     isSelected = isLifetimeSelected,
                     titleColor = if (isLifetimeSelected) context.getColor(R.color.black) else context.getColor(R.color.paywall_green),
@@ -180,41 +182,83 @@ class PaywallViewModel @Inject constructor(
 
         showDelegateLoading()
 
-        tryWithBilling {
-            billing.purchaseWeeklySubscription(
-                onViewAction = { viewAction ->
-                    viewModelScope.launch {
-                        emit(viewAction)
-                    }
-                }
-            )
-                .collect { purchaseState ->
-                    when (purchaseState) {
-                        is PurchaseState.Success -> {
-                            if (input.fromOnboarding) analytics.onboardingPurchaseSucceeded(selectedPrice)
-                            analytics.paywallPurchaseSucceeded(selectedPrice)
-
-                            emit(ViewAction.ShowToast("Enjoy your premium! \uD83E\uDD70"))
-                            route(Router.Route.Finish)
-                        }
-
-                        is PurchaseState.Error -> {
-                            hideDelegateLoading()
-                            if (!purchaseState.userCancelled) {
-                                if (input.fromOnboarding) analytics.onboardingPurchaseError()
-                                analytics.paywallPurchaseError()
-
-                                Timber.e("RevenueCat: error: ${purchaseState.message}")
-                                emit(ViewAction.ShowToast("Purchase failed"))
-                            } else {
-                                if (input.fromOnboarding) analytics.onboardingPurchaseCancelled()
-                                analytics.paywallPurchaseCancelled()
-                            }
-                        }
-                    }
-
-                }
+        if (selectedPrice == Price.WEEK) {
+            purchaseWeeklySubscription()
+        } else {
+            purchaseLifetime()
         }
+    }
+
+    private suspend fun purchaseWeeklySubscription() = tryWithBilling {
+        billing.purchaseWeeklySubscription(
+            onViewAction = { viewAction ->
+                viewModelScope.launch {
+                    emit(viewAction)
+                }
+            }
+        )
+            .collect { purchaseState ->
+                when (purchaseState) {
+                    is PurchaseState.Success -> {
+                        if (input.fromOnboarding) analytics.onboardingPurchaseSucceeded(selectedPrice)
+                        analytics.paywallPurchaseSucceeded(selectedPrice)
+
+                        emit(ViewAction.ShowToast("Enjoy your premium forever! \uD83E\uDD70"))
+                        route(Router.Route.Finish)
+                    }
+
+                    is PurchaseState.Error -> {
+                        hideDelegateLoading()
+                        if (!purchaseState.userCancelled) {
+                            if (input.fromOnboarding) analytics.onboardingPurchaseError()
+                            analytics.paywallPurchaseError()
+
+                            Timber.e("RevenueCat: error: ${purchaseState.message}")
+                            emit(ViewAction.ShowToast("Purchase failed"))
+                        } else {
+                            if (input.fromOnboarding) analytics.onboardingPurchaseCancelled()
+                            analytics.paywallPurchaseCancelled()
+                        }
+                    }
+                }
+
+            }
+    }
+
+    private suspend fun purchaseLifetime() = tryWithBilling {
+        billing.purchaseLifetimeInApp(
+            onViewAction = { viewAction ->
+                viewModelScope.launch {
+                    emit(viewAction)
+                }
+            }
+        )
+            .collect { purchaseState ->
+                when (purchaseState) {
+                    is PurchaseState.Success -> {
+                        if (input.fromOnboarding) analytics.onboardingPurchaseSucceeded(selectedPrice)
+                        analytics.paywallPurchaseSucceeded(selectedPrice)
+
+                        emit(ViewAction.ShowToast("Enjoy your premium! \uD83E\uDD70"))
+                        route(Router.Route.Finish)
+                    }
+
+                    is PurchaseState.Error -> {
+                        hideDelegateLoading()
+                        if (!purchaseState.userCancelled) {
+                            if (input.fromOnboarding) analytics.onboardingPurchaseError()
+                            analytics.paywallPurchaseError()
+
+                            Timber.e("RevenueCat: error: ${purchaseState.message}")
+                            emit(ViewAction.ShowToast("Purchase failed"))
+                        } else {
+                            if (input.fromOnboarding) analytics.onboardingPurchaseCancelled()
+                            analytics.paywallPurchaseCancelled()
+                        }
+                    }
+                }
+
+            }
     }
 
     fun onBackPressed() {

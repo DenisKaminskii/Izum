@@ -121,6 +121,10 @@
         <item name="android:textStyle">bold</item>
         <item name="android:drawableStart">@drawable/ic_stars_24</item>
     </style>
+
+    <style name="SquareShapeAppearance" parent="Theme.MaterialComponents">
+        <item name="cornerSize">16dp</item>
+    </style>
     <!-- endregion -->
 
     <!-- endregion -->

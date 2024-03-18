@@ -7,7 +7,6 @@ import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import com.pickone.R
 import com.pickone.analytics.Analytics
 import com.pickone.databinding.ActivityPaywallBinding
 import com.pickone.ui.BaseActivity
@@ -58,18 +57,8 @@ class PaywallActivity : BaseActivity() {
         }
 
         iPriceFirst.setOnClickListener { viewModel.onWeeklyOptionSelected() }
-        // § iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
-        iPriceSecond.update(
-            PremiumPriceItemState(
-                title = "Lifetime",
-                subtitle = "Will be soon ..",
-                isSelected = false,
-                titleColor = getColor(R.color.paywall_green_dark),
-                subtitleColor = getColor(R.color.white_25),
-                icon = null,
-                accentColor = getColor(R.color.paywall_green_dark)
-            )
-        )
+        iPriceSecond.setOnClickListener { viewModel.onLifetimeOptionSelected() }
+
         tvSubscribe.setOnClickListener { viewModel.onPurchaseClicked() }
 
         onBackPressedDispatcher.addCallback(
@@ -97,7 +86,7 @@ class PaywallActivity : BaseActivity() {
         if (viewState !is PaywallViewState.Content) return@with
 
         iPriceFirst.update(viewState.weeklyItem)
-        // iPriceSecond.update(viewState.lifetimeItem)
+        iPriceSecond.update(viewState.lifetimeItem)
 
         with(tvSubscribe) {
             background = GradientDrawable(
