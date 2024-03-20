@@ -203,7 +203,7 @@ class PaywallViewModel @Inject constructor(
                         if (input.fromOnboarding) analytics.onboardingPurchaseSucceeded(selectedPrice)
                         analytics.paywallPurchaseSucceeded(selectedPrice)
 
-                        emit(ViewAction.ShowToast("Enjoy your premium forever! \uD83E\uDD70"))
+                        emit(ViewAction.ShowToast("Enjoy your premium! \uD83E\uDD70"))
                         route(Router.Route.Finish)
                     }
 

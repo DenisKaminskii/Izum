@@ -118,8 +118,8 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
         }
     }
 
-    private fun initView() {
-        binding.rvPacks.layoutManager = GridLayoutManager(requireContext(), 2).apply {
+    private fun initView() = with(binding) {
+        rvPacks.layoutManager = GridLayoutManager(requireContext(), 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int) =
                     when (adapter.getItemViewType(position)) {
@@ -128,14 +128,13 @@ class PacksFragment : Fragment(), CoroutineScope by MainScope() {
                     }
             }
         }
-        binding.rvPacks.adapter = adapter
-        binding.rvPacks.addItemDecoration(RecyclerGridItemDecoration(vertical = requireContext().dp(8)))
+        rvPacks.adapter = adapter
+        rvPacks.addItemDecoration(RecyclerGridItemDecoration(vertical = requireContext().dp(8)))
 
-        binding.tvCreatePack.setOnClickListener { onCreatePackClick?.invoke() }
+        tvCreatePack.setOnClickListener { onCreatePackClick?.invoke() }
 
-        binding.fabAddCustomPack.isVisible = isCustom
-        binding.fabAddCustomPack.backgroundTintList = requireContext().getColorStateList(R.color.white_95)
-        binding.fabAddCustomPack.setOnClickListener { onAddCustomPackClicked() }
+        fabAddCustomPack.isVisible = isCustom
+        fabAddCustomPack.setOnClickListener { onAddCustomPackClicked() }
     }
 
     private fun update(state: PacksViewState) {

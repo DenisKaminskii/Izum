@@ -49,7 +49,7 @@
         android:layout_gravity="center"
         android:indeterminateTint="@color/white" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <ImageView
         android:id="@+id/fabAddCustomPack"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -59,7 +59,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:tint="@color/grey_dark"
+        android:padding="12dp"
         android:src="@drawable/ic_add_24" />
 
 </FrameLayout>
