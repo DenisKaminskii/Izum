@@ -222,7 +222,7 @@ class PollViewModel @Inject constructor(
             viewModelScope.launch {
                 route(
                     Router.Route.Statistic(
-                        PollStatisticInput(poll.id, isCustomPack = false, votedOptionId = it)
+                        PollStatisticInput(poll.id, isCustomPack = pack is Pack.Custom, votedOptionId = it)
                     )
                 )
             }
